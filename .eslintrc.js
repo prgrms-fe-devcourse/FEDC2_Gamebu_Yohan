@@ -20,5 +20,7 @@ module.exports = {
     'react/jsx-filename-extension': ['warn', { extensions: ['.js', 'jsx'] }],
     'linebreak-style': 0,
     'react/react-in-jsx-scope': 0,
+    'comma-dangle': 0,
+    'no-unused-vars': 1,
   },
 };
