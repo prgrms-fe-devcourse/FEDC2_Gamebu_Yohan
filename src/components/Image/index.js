@@ -88,7 +88,7 @@ Image.defaultProps = {
   mode: propTypes.string,
   block: propTypes.bool,
   lazy: propTypes.bool,
-  threshold: propTypes.number,
+  threshold: 0,
   placeholder: propTypes.string,
   style: {},
 };
