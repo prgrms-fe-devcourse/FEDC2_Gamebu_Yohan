@@ -22,5 +22,6 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'comma-dangle': 0,
     'no-unused-vars': 1,
+    'import/no-unresolved': 0,
   },
 };
