@@ -8,7 +8,7 @@ const ContentWrapper = styled.div`
   padding: 1.5rem;
 `;
 
-function Home() {
+function Navbar() {
   return (
     <>
       <Topbar />
@@ -23,4 +23,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Navbar;
