@@ -24,5 +24,3 @@ export const authFetch = async (url, options) => {
     console.error(error);
   }
 };
-
-export const temp = 0;

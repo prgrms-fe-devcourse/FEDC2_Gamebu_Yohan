@@ -6,7 +6,7 @@
       "@hooks/*": ["./src/hooks/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@pages/*": ["./src/pages/*"],
-      "@util/*": ["./src/util/*"]
+      "@utils/*": ["src/utils/*"]
     }
   }
 }
