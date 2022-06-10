@@ -22,6 +22,7 @@ module.exports = {
       '../src/contexts'
     );
     config.resolve.alias['@pages'] = path.resolve(__dirname, '../src/pages');
+    config.resolve.alias['@util'] = path.resolve(__dirname, '../src/util');
     return config;
   },
 };
