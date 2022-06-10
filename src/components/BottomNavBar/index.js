@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import styled from '@emotion/styled';
+import HomeIcon from '@mui/icons-material/Home';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import SearchIcon from '@mui/icons-material/Search';
 
 const BottomNavbarWrapper = styled.div`
   position: absolute;
@@ -24,9 +24,9 @@ function BottomNavBar() {
           setValue(newValue);
         }}
       >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+        <BottomNavigationAction label="홈" icon={<HomeIcon />} />
+        <BottomNavigationAction label="채널" icon={<WidgetsIcon />} />
+        <BottomNavigationAction label="검색" icon={<SearchIcon />} />
       </BottomNavigation>
     </BottomNavbarWrapper>
   );
