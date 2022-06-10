@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import propTypes from 'prop-types';
-import ImageComponent from '../Image';
+import ImageComponent from '@components/Image';
 import AvatarGroup from './AvatarGroup';
 
 const ShapeToCssValue = {
