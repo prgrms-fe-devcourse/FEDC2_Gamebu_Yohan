@@ -1,5 +1,8 @@
+import Home from '@pages';
+
 function App() {
-  return <div>App</div>;
+  // TODO ROUTE 처리
+  return <Home />;
 }
 
 export default App;
