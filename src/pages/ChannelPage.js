@@ -1,7 +1,8 @@
 import React from 'react';
+import Channel from '@components/Channels';
 
 function ChannelPage() {
-  return <div>ChannelPage</div>;
+  return <Channel />;
 }
 
 export default ChannelPage;
