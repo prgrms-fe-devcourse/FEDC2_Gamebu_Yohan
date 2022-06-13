@@ -11,6 +11,10 @@ function ChannelImageContainer({ url }) {
       height="7.5rem"
       src={require('./ChannelImages/leagueoflegends.jpeg')}
       mode="cover"
+      block={false}
+      lazy={false}
+      threshold={0}
+      placeholder=""
     />
   );
 }
