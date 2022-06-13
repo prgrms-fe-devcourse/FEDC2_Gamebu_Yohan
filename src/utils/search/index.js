@@ -12,3 +12,8 @@ export const searchAll = (keyword) => {
 export const searchUser = (keyword) => {
   return fetch(endpoints.userList(keyword));
 };
+
+// FIXME: API 디렉토리 위치 수정할 것
+export const fetchUserById = (userId) => {
+  return fetch(`users/${userId}`);
+};
