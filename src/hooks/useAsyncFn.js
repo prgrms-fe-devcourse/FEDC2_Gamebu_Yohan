@@ -5,7 +5,7 @@ const useAsyncFn = (fn, deps) => {
   const [state, setState] = useState({ isLoading: false });
 
   const callback = useCallback((...args) => {
-    const callId = lastCallId.current;
+    const callId = lastCallId.current + 1;
     lastCallId.current += 1;
     if (!state.isLoading) {
       setState({ ...state, isLoading: true });
