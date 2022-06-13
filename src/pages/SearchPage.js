@@ -35,19 +35,23 @@ function SearchPage() {
   );
 
   const handleKeyDown = ({ key }) => {
-    if (key === 'Enter' && inputRef.current.value) {
+    if (key !== 'Enter' || !inputRef.current.value) return;
+    if (inputRef.current.value.length > 2)
       asyncSearchAll(inputRef.current.value);
-    }
+    // TODO: 별도 알림 인터페이스 생성
+    else console.log('3글자 이상 입력');
   };
-  const classify = (datas) => {
+
+  const classifyFetchData = (datas) => {
     if (!datas) return;
     setUserList(datas.filter((data) => data.fullName));
     setPostList(datas.filter((data) => data.title));
   };
+
   useEffect(() => {
     const { isLoading, value } = searchResult;
     if (!isLoading) {
-      classify(value);
+      classifyFetchData(value);
     }
   }, [searchResult]);
 
