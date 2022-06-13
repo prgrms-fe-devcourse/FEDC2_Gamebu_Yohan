@@ -1,17 +1,8 @@
 import React, { useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 import styled from '@emotion/styled';
+import CardActionArea from '@mui/material/CardActionArea';
 import { COLOR_MAIN } from '@utils/color';
-
-const PostCardContainer = styled.div`
-  box-sizing: border-box;
-  background-color: ${COLOR_MAIN};
-  width: 100%;
-  height: 5rem;
-  margin-bottom: 0.5rem;
-  padding: 1rem 0.5rem;
-  border-radius: 0.5rem;
-`;
 
 const PostCardInfo = styled.div`
   display: flex;
@@ -23,16 +14,26 @@ const Title = styled.div`
   font-size: 0.75rem;
 `;
 
+const cardStyles = {
+  boxSizing: 'border-box',
+  backgroundColor: `${COLOR_MAIN}`,
+  width: '100%',
+  height: '5rem',
+  marginBottom: '0.5rem',
+  padding: '1rem 0.5rem',
+  borderRadius: '0.5rem',
+};
+
 function ChannelPostCard({ title, createdAt }) {
   useEffect(() => {
     console.log(title);
   }, []);
   return (
-    <PostCardContainer>
+    <CardActionArea sx={cardStyles}>
       <PostCardInfo>
         <Title>{title}</Title>
       </PostCardInfo>
-    </PostCardContainer>
+    </CardActionArea>
   );
 }
 

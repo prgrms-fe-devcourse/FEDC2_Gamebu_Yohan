@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { fetch } from '@utils/fetch';
 import styled from '@emotion/styled';
 import { COLOR_BG } from '@utils/color';
+import Divider from '@components/Divider';
 import ChannelImageContainer from './ChannelImageContainer';
 import ChannelPostCard from './ChannelPostCard';
 
@@ -23,6 +24,7 @@ const SortBox = styled.div`
 const Text = styled.span`
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  font-weight: ${(props) => (props.isBold ? 'bold' : 'normal')};
 `;
 
 const CHANNEL_DUUMY_DATA = [
@@ -54,6 +56,8 @@ const CHANNEL_DUUMY_DATA = [
 
 function Channel() {
   const [channelData, setChannelData] = useState([]);
+  const [isNew, setIsNew] = useState(true);
+  const [isPopular, setIsPopular] = useState(false);
   const { channelId } = useParams('');
 
   const channelImages = {
@@ -64,16 +68,30 @@ function Channel() {
   };
 
   useEffect(() => {
-    // const result = fetch(`/posts/channels/${channelId}`);
+    // const result = fetch(`/posts/channel/${channelId}`);
     // setChannelData(result);
   }, [channelId]);
+
+  const renderNewList = () => {
+    setIsPopular(false);
+    setIsNew(true);
+  };
+  const renderPopularList = () => {
+    setIsNew(false);
+    setIsPopular(true);
+  };
 
   return (
     <ChannelContainer>
       <ChannelImageContainer url={channelImages[channelId]} />
       <SortBox>
-        <Text>최신순</Text>
-        <Text>인기글</Text>
+        <Text onClick={renderNewList} isBold={isNew}>
+          최신순
+        </Text>
+        <Divider type="vertical" size={8} />
+        <Text onClick={renderPopularList} isBold={isPopular}>
+          인기글
+        </Text>
       </SortBox>
       {CHANNEL_DUUMY_DATA.map((item) => (
         <ChannelPostCard
@@ -82,7 +100,6 @@ function Channel() {
           createdAt={item.createdAt}
         />
       ))}
-      {/* <ChannelPostCard title={CHANNEL_DUUMY_DATA.title} /> */}
       <button
         type="button"
         style={{
