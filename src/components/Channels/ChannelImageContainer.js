@@ -2,24 +2,16 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import styled from '@emotion/styled';
-
-const ImageContainer = styled.div`
-  width: 100%;
-  height: 7.5rem;
-  /* background-image: url('./ChannelImages/leagueoflegends.jpeg'); */
-`;
-
-const Image = styled.img`
-  object-fit: cover;
-  width: 100%;
-  height: 7.5rem;
-`;
+import Image from '@components/Image';
 
 function ChannelImageContainer({ url }) {
   return (
-    <ImageContainer>
-      <Image src={require('./ChannelImages/leagueoflegends.jpeg')} />
-    </ImageContainer>
+    <Image
+      width="100%"
+      height="7.5rem"
+      src={require('./ChannelImages/leagueoflegends.jpeg')}
+      mode="cover"
+    />
   );
 }
 
