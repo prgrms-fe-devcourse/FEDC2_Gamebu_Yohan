@@ -65,7 +65,7 @@ export default function PostForm() {
         rows={3}
       />
       <Button variant="contained" onClick={submitForm} disableElevation>
-        제출!
+        제출
       </Button>
     </Stack>
   );

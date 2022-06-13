@@ -1,8 +1,6 @@
 import PostForm from '@components/PostForm';
 import React from 'react';
 
-function PostWritePage() {
+export default function PostWritePage() {
   return <PostForm />;
 }
-
-export default PostWritePage;
