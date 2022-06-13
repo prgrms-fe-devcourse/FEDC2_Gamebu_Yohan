@@ -2,31 +2,30 @@ import Card from '@components/Card';
 import Header from '@components/Header';
 import styled from '@emotion/styled';
 import useAsyncFn from '@hooks/useAsyncFn';
+import { TextField } from '@mui/material';
 import { searchAll } from '@utils/search';
 import React, { useEffect, useRef, useState } from 'react';
 
-const Input = styled.input`
-  box-sizing: border-box;
-  width: 100%;
-  height: 2rem;
-  margin-bottom: 1rem;
-  padding: 0 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  font-size: 1rem;
-`;
 const List = styled.ul`
   margin: 8px 0;
   & > li {
     margin-top: 4px;
   }
 `;
+const Container = styled.div`
+  overflow-y: scroll;
+`;
 
 function SearchPage() {
   const inputRef = useRef(null);
+  const [inputError, setInputError] = useState(false);
   const [userList, setUserList] = useState([]);
   const [postList, setPostList] = useState([]);
 
+  const inputErrorAttr = {
+    error: inputError,
+    helperText: inputError ? '3글자 이상 입력해주세요.' : '',
+  };
   const [searchResult, asyncSearchAll] = useAsyncFn(
     async (keyword) => {
       return searchAll(keyword);
@@ -36,10 +35,10 @@ function SearchPage() {
 
   const handleKeyDown = ({ key }) => {
     if (key !== 'Enter' || !inputRef.current.value) return;
-    if (inputRef.current.value.length > 2)
+    if (inputRef.current.value.length > 2) {
+      setInputError(false);
       asyncSearchAll(inputRef.current.value);
-    // TODO: 별도 알림 인터페이스 생성
-    else console.log('3글자 이상 입력');
+    } else setInputError(true);
   };
 
   const classifyFetchData = (datas) => {
@@ -56,8 +55,13 @@ function SearchPage() {
   }, [searchResult]);
 
   return (
-    <>
-      <Input ref={inputRef} onKeyDown={handleKeyDown} />
+    <Container>
+      <TextField
+        inputRef={inputRef}
+        onKeyDown={handleKeyDown}
+        {...inputErrorAttr}
+        sx={{ width: '100%', marginBottom: '1rem' }}
+      />
       {userList.length !== 0 && (
         <Header level={1} strong>
           사용자
@@ -82,7 +86,7 @@ function SearchPage() {
           </li>
         ))}
       </List>
-    </>
+    </Container>
   );
 }
 
