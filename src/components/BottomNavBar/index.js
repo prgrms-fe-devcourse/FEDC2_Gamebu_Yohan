@@ -7,8 +7,6 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import SearchIcon from '@mui/icons-material/Search';
 
 const BottomNavbarWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
   width: 100%;
 `;
 
