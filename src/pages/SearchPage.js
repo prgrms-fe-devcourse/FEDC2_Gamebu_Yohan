@@ -5,6 +5,16 @@ import useAsyncFn from '@hooks/useAsyncFn';
 import { searchAll } from '@utils/search';
 import React, { useEffect, useRef, useState } from 'react';
 
+const Input = styled.input`
+  box-sizing: border-box;
+  width: 100%;
+  height: 2rem;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 1rem;
+`;
 const List = styled.ul`
   margin: 8px 0;
   & > li {
@@ -16,12 +26,14 @@ function SearchPage() {
   const inputRef = useRef(null);
   const [userList, setUserList] = useState([]);
   const [postList, setPostList] = useState([]);
+
   const [searchResult, asyncSearchAll] = useAsyncFn(
     async (keyword) => {
       return searchAll(keyword);
     },
     [inputRef]
   );
+
   const handleKeyDown = ({ key }) => {
     if (key === 'Enter' && inputRef.current.value) {
       asyncSearchAll(inputRef.current.value);
@@ -38,11 +50,10 @@ function SearchPage() {
       classify(value);
     }
   }, [searchResult]);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-      <div>
-        <input ref={inputRef} onKeyDown={handleKeyDown} />
-      </div>
+    <>
+      <Input ref={inputRef} onKeyDown={handleKeyDown} />
       {userList.length !== 0 && (
         <Header level={1} strong>
           사용자
