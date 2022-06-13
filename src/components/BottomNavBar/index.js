@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import HomeIcon from '@mui/icons-material/Home';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import SearchIcon from '@mui/icons-material/Search';
+import { useNavigate } from 'react-router-dom';
 
 const BottomNavbarWrapper = styled.div`
   width: 100%;
@@ -12,14 +13,21 @@ const BottomNavbarWrapper = styled.div`
 
 function BottomNavBar() {
   const [value, setValue] = useState(0);
-
+  const navigate = useNavigate();
+  const routingTable = {
+    0: '/',
+    1: '/categories',
+    2: '/search/all',
+  };
   return (
     <BottomNavbarWrapper>
       <BottomNavigation
         showLabels
         value={value}
-        onChange={(event, newValue) => {
+        onChange={(_, newValue) => {
+          if (newValue === value) return;
           setValue(newValue);
+          navigate(routingTable[newValue]);
         }}
       >
         <BottomNavigationAction label="홈" icon={<HomeIcon />} />
