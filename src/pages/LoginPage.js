@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
@@ -55,12 +57,21 @@ const LoginButton = styled(Button)`
   }
 `;
 
+const LoginWarningAlert = styled(Alert)`
+  font-size: 0.75rem;
+`;
+
 const helperText = {
   id: '아이디를 입력하세요',
   password: '비밀번호를 입력하세요',
 };
 
 function LoginPage() {
+  const [warningAlertInfo, setWarningAlertInfo] = useState({
+    visible: false,
+    message: '',
+  });
+
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -74,8 +85,24 @@ function LoginPage() {
           password: values.password,
         },
       });
-      // TODO 로그인 응답에 대한 처리
-      console.log(response);
+
+      const isError = Boolean(response?.response);
+      if (isError) {
+        if (response?.response?.status === 400) {
+          setWarningAlertInfo({
+            visible: true,
+            message: '아이디 또는 비밀번호를 잘못 입력했습니다',
+          });
+        } else {
+          setWarningAlertInfo({
+            visible: true,
+            message: '로그인 요청 중 오류가 발생했습니다',
+          });
+        }
+        return;
+      }
+
+      document.cookie = `token=${response.token}`;
     },
     validate: ({ id, password }) => {
       const newErrors = {};
@@ -85,8 +112,20 @@ function LoginPage() {
     },
   });
 
+  const handleClickAlert = useCallback(() => {
+    setWarningAlertInfo((prevWarningAlertInfo) => ({
+      ...prevWarningAlertInfo,
+      visible: false,
+    }));
+  }, []);
+
   return (
     <ContentWrapper>
+      <Collapse in={warningAlertInfo.visible}>
+        <LoginWarningAlert severity="warning" onClose={handleClickAlert}>
+          {warningAlertInfo.message}
+        </LoginWarningAlert>
+      </Collapse>
       <LoginHeader>Login</LoginHeader>
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
