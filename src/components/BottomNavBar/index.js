@@ -14,11 +14,7 @@ const BottomNavbarWrapper = styled.div`
 function BottomNavBar() {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
-<<<<<<< HEAD
-  const routeTable = {
-=======
   const routingTable = {
->>>>>>> 7c081fa85af2e788599e0badde376d19297c8257
     0: '/',
     1: '/categories',
     2: '/search/all',
@@ -31,11 +27,7 @@ function BottomNavBar() {
         onChange={(_, newValue) => {
           if (newValue === value) return;
           setValue(newValue);
-<<<<<<< HEAD
-          navigate(routeTable[newValue]);
-=======
           navigate(routingTable[newValue]);
->>>>>>> 7c081fa85af2e788599e0badde376d19297c8257
         }}
       >
         <BottomNavigationAction label="홈" icon={<HomeIcon />} />
