@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
+import { fetch } from '@utils/fetch';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -65,9 +66,16 @@ function LoginPage() {
       id: '',
       password: '',
     },
-    onSubmit: () => {
-      // TODO 로그인 요청
-      console.log(values);
+    onSubmit: async () => {
+      const response = await fetch('/login', {
+        method: 'POST',
+        data: {
+          email: values.id,
+          password: values.password,
+        },
+      });
+      // TODO 로그인 응답에 대한 처리
+      console.log(response);
     },
     validate: ({ id, password }) => {
       const newErrors = {};
@@ -107,6 +115,7 @@ function LoginPage() {
               type="submit"
               variant="outlined"
               className="login_button"
+              disabled={isLoading}
             >
               로그인
             </LoginButton>
