@@ -7,7 +7,7 @@ const InputTitle = styled.div`
   font-weight: 500;
 `;
 
-export default function PostInput({
+export default function TextInput({
   name,
   title,
   fieldSize,
@@ -21,7 +21,7 @@ export default function PostInput({
     <label htmlFor={name}>
       <InputTitle>{title}</InputTitle>
       <TextField
-        id="name"
+        id={name}
         size={fieldSize}
         onChange={onChange}
         error={error}
@@ -33,7 +33,7 @@ export default function PostInput({
   );
 }
 
-PostInput.propTypes = {
+TextInput.propTypes = {
   name: propTypes.string.isRequired,
   title: propTypes.string,
   fieldSize: propTypes.string,
@@ -43,7 +43,7 @@ PostInput.propTypes = {
   rows: propTypes.number,
 };
 
-PostInput.defaultProps = {
+TextInput.defaultProps = {
   title: '제목',
   fieldSize: 'normal',
   error: true,

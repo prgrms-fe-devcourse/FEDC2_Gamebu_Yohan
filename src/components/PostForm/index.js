@@ -1,4 +1,5 @@
-import PostInput from '@components/PostInput';
+import TextInput from '@components/TextInput';
+import SelectInput from '@components/SelectInput';
 import { Button, Stack } from '@mui/material';
 import { useState } from 'react';
 
@@ -41,7 +42,7 @@ export default function PostForm() {
 
   return (
     <Stack spacing={2}>
-      <PostInput
+      <TextInput
         name="form-input-title"
         title="제목"
         fieldSize="small"
@@ -49,13 +50,8 @@ export default function PostForm() {
         error={postTitle.length < 3}
         placeholder="3글자 이상"
       />
-      <PostInput
-        name="form-input-tag"
-        title="태그"
-        fieldSize="small"
-        onChange={handleTagChange}
-      />
-      <PostInput
+      <SelectInput />
+      <TextInput
         name="form-input-content"
         title="내용"
         fieldSize="small"
