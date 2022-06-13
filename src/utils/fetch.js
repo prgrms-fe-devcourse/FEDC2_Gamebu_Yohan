@@ -8,6 +8,7 @@ export const fetch = async (url, options) => {
     return result.data;
   } catch (error) {
     console.error(error);
+    return error;
   }
 };
 
@@ -22,5 +23,6 @@ export const authFetch = async (url, options) => {
     return result.data;
   } catch (error) {
     console.error(error);
+    return error;
   }
 };
