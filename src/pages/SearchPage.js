@@ -1,6 +1,16 @@
+import Card from '@components/Card';
+import Header from '@components/Header';
+import styled from '@emotion/styled';
 import useAsyncFn from '@hooks/useAsyncFn';
 import { searchAll } from '@utils/search';
 import React, { useEffect, useRef, useState } from 'react';
+
+const List = styled.ul`
+  margin: 8px 0;
+  & > li {
+    margin-top: 4px;
+  }
+`;
 
 function SearchPage() {
   const inputRef = useRef(null);
@@ -33,23 +43,31 @@ function SearchPage() {
       <div>
         <input ref={inputRef} onKeyDown={handleKeyDown} />
       </div>
-      <ul>
-        {userList.map(({ fullName, email, _id }) => (
-          <li key={_id}>
-            <div>{fullName}</div>
-            <div>{email}</div>
+      {userList.length !== 0 && (
+        <Header level={1} strong>
+          사용자
+        </Header>
+      )}
+      <List>
+        {userList.map((user) => (
+          <li key={user._id}>
+            <Card.User>{user}</Card.User>
           </li>
         ))}
-      </ul>
-      <ul>
-        {postList.map(({ title, createdAt, _id }) => (
-          <li key={_id}>
-            <div>{title}</div>
-            <div>{createdAt}</div>
+      </List>
+      {postList.length !== 0 && (
+        <Header level={1} strong>
+          포스트
+        </Header>
+      )}
+      <List>
+        {postList.map((post) => (
+          <li key={post._id}>
+            <Card.Post>{post}</Card.Post>
           </li>
         ))}
-      </ul>
-    </div>
+      </List>
+    </>
   );
 }
 
