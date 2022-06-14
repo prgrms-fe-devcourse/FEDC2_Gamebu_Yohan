@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
-import useAsyncFn from '@hooks/useAsyncFn';
-import { fetchUserById } from '@utils/search';
 import styled from '@emotion/styled';
 import Divider from '@components/Divider';
 import CommentIcon from '@mui/icons-material/Comment';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -33,30 +32,31 @@ const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
+  & .MuiSvgIcon-root {
+    fill: gray;
+    font-size: 1rem;
+  }
+`;
+const AccountIcon = styled(AccountBoxIcon)`
+  fill: gray;
+  font-size: 1.5rem;
+  cursor: pointer;
 `;
 function Post({ children }) {
-  const { title, createdAt, author, comments, likes } = children;
-  const [state, callback] = useAsyncFn(async () => {
-    return fetchUserById(author);
-  }, []);
-  useEffect(() => {
-    callback();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { title, createdAt, comments, likes } = children;
   return (
     <Container>
       <div>{title}</div>
       <InfoWrapper>
-        <div>{state.value && state.value.fullName}</div>
-        <Divider type="vertical" size={4} />
+        <AccountIcon />
         <div style={{ flexGrow: 1 }}>{createdAt.substring(0, 10)}</div>
         <IconWrapper>
-          <CommentIcon fontSize="1rem" sx={{ fill: 'gray' }} />
+          <CommentIcon />
           <div>{comments.length}</div>
         </IconWrapper>
         <Divider type="vertical" size={4} />
         <IconWrapper>
-          <ThumbUpIcon fontSize="1rem" sx={{ fill: 'gray' }} />
+          <ThumbUpIcon />
           <div>{likes.length}</div>
         </IconWrapper>
       </InfoWrapper>
