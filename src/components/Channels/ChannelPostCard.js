@@ -5,6 +5,9 @@ import { COLOR_MAIN } from '@utils/color';
 import { Card } from '@mui/material';
 import Divider from '@components/Divider';
 import Tag from '@components/Tag';
+import IconButton from '@mui/material/IconButton';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -21,10 +24,10 @@ const UserNameAndDate = styled.div`
 `;
 
 const TagAndHeart = styled.div`
-  margin-top: 0.3rem;
   display: flex;
-  justify-content: 'flex-start';
+  justify-content: flex-start;
   align-items: center;
+  margin-bottom: 1rem;
 `;
 
 const Title = styled.div`
@@ -60,6 +63,10 @@ const TagSpan = styled.span`
   margin-left: 0.5rem;
 `;
 
+const HeartIconButton = styled(IconButton)`
+  margin-left: 2rem;
+`;
+
 const TagDummy = [
   'AD',
   '솔로랭크',
@@ -73,6 +80,7 @@ const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
 function ChannelPostCard({ title, createdAt, fullName, _id }) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
     console.log(title);
   }, []);
@@ -85,6 +93,12 @@ function ChannelPostCard({ title, createdAt, fullName, _id }) {
 
   const postClick = () => {
     console.log('postClick!');
+  };
+
+  const heartClick = (e) => {
+    e.stopPropagation();
+    setIsLiked(!isLiked);
+    console.log('heartClick');
   };
   return (
     <CardContainer onClick={postClick}>
@@ -109,6 +123,14 @@ function ChannelPostCard({ title, createdAt, fullName, _id }) {
         {TagDummy.length > 4 ? (
           <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
         ) : null}
+        <HeartIconButton onClick={heartClick}>
+          {isLiked ? (
+            <FavoriteIcon color="error" />
+          ) : (
+            <FavoriteBorderIcon color="error" />
+          )}
+        </HeartIconButton>
+        {16}
       </TagAndHeart>
     </CardContainer>
   );
