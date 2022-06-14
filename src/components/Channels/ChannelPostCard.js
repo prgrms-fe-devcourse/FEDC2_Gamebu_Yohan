@@ -79,13 +79,32 @@ const TagDummy = [
 
 const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
-function ChannelPostCard({ title, createdAt, fullName, postId, likes }) {
+function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes.length);
+
+  // TODO: 사용자 id를 가져와야함
+  const userId = '629f07fa7e01ad1cb7250131';
+
   useEffect(() => {
     console.log(title);
-  }, []);
+    setLikeCount(likes.length);
+    const data = likes.find((item) => item.user === userId);
+
+    if (data) {
+      const id = data._id;
+      console.log('id: ', id);
+    }
+
+    // 새로고침했을 때  내가 좋아요 눌러놓은 페이지 인지 확인
+    const filteredLikes = likes.filter((item) => item.user === userId);
+    if (filteredLikes.length > 0) {
+      setIsLiked(true);
+    } else {
+      setIsLiked(false);
+    }
+  }, [likes, title]);
 
   const applicationButtonClick = (e) => {
     e.stopPropagation();
@@ -99,14 +118,21 @@ function ChannelPostCard({ title, createdAt, fullName, postId, likes }) {
 
   const fetchLike = async (boolean) => {
     if (boolean) {
-      await authFetch('/likes/delete', {
+      // array.find를 통해서 사용자가 누른 좋아요 객체를 반환받고 객체의 id 값을 delete api body에 담아서 보낸다
+      const data = likes.find((item) => item.user === userId);
+
+      if (!data) return;
+
+      const id = data._id;
+
+      await authFetch('likes/delete', {
         method: 'DELETE',
         body: {
-          id: postId,
+          id,
         },
       });
     } else {
-      await authFetch('/likes/create', {
+      await authFetch('likes/create', {
         method: 'POST',
         body: {
           postId,
@@ -142,7 +168,7 @@ function ChannelPostCard({ title, createdAt, fullName, postId, likes }) {
       <UserNameAndDate>
         {fullName}
         <Divider type="vertical" />
-        {createdAt.slice(0, 10)}
+        {updatedAt.slice(0, 10)}
       </UserNameAndDate>
       <TagAndHeart>
         {TagDummy.slice(0, 4).map((item, index) => (
@@ -167,7 +193,7 @@ function ChannelPostCard({ title, createdAt, fullName, postId, likes }) {
 ChannelPostCard.propTypes = {
   likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
-  createdAt: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   postId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };

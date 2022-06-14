@@ -4,7 +4,7 @@ import { PropTypes } from 'prop-types';
 
 const TagContainer = styled.div``;
 
-function Tag({ backgroundColor, width = '0.2rem', height, content }) {
+function Tag({ backgroundColor, width = '0.2rem', height, content, ...props }) {
   const tagStyles = {
     boxSizing: 'borderBox',
     borderRadius: '0.5rem',
@@ -20,7 +20,11 @@ function Tag({ backgroundColor, width = '0.2rem', height, content }) {
     marginLeft: '0.2rem',
     marginRight: 0,
   };
-  return <TagContainer style={tagStyles}>{content}</TagContainer>;
+  return (
+    <TagContainer style={{ ...tagStyles, ...props.style }}>
+      {content}
+    </TagContainer>
+  );
 }
 
 Tag.defaultProps = {
@@ -28,6 +32,7 @@ Tag.defaultProps = {
   width: 'auto',
   height: '1rem',
   content: '',
+  style: {},
 };
 
 Tag.propTypes = {
@@ -35,6 +40,7 @@ Tag.propTypes = {
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   content: PropTypes.string,
+  style: PropTypes.object,
 };
 
 export default Tag;

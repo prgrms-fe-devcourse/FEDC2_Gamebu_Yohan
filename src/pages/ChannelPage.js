@@ -6,6 +6,7 @@ import { COLOR_BG } from '@utils/color';
 import Divider from '@components/Divider';
 import ChannelImageContainer from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
+import channelImageObject from '@components/Channels/ChannelImages/ChannelImageFiles';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -28,9 +29,7 @@ const Text = styled.span`
 `;
 
 const LinkButtonContainer = styled.div`
-  background-color: ${COLOR_BG};
   width: 100%;
-  height: 2.2rem;
 `;
 
 const LinkButton = styled.button`
@@ -65,7 +64,7 @@ const CHANNEL_DUUMY_DATA = [
       fullName: 'Admin',
     },
     createdAt: '2022-06-07T08:40:53.565Z',
-    updatedAt: '2022-06-10T08:49:00.655Z',
+    updatedAt: '2022-06-12T08:49:00.655Z',
   },
   {
     likes: [
@@ -75,6 +74,14 @@ const CHANNEL_DUUMY_DATA = [
         post: '62a81e635517e27ffcab3d0c',
         createdAt: '2022-06-14T06:25:04.916Z',
         updatedAt: '2022-06-14T06:25:04.916Z',
+        __v: 0,
+      },
+      {
+        _id: '62a8496e70c0c925abdd5c06',
+        user: '629f07fa7e01ad1cb7250131',
+        post: '62a81e635517e27ffcab3d0c',
+        createdAt: '2022-06-14T08:40:14.061Z',
+        updatedAt: '2022-06-14T08:40:14.061Z',
         __v: 0,
       },
     ],
@@ -89,50 +96,50 @@ const CHANNEL_DUUMY_DATA = [
       fullName: 'sang2',
     },
     createdAt: '2022-06-12T08:49:00.655Z',
-    updatedAt: '2022-06-12T08:49:00.655Z',
+    updatedAt: '2022-06-10T08:49:00.655Z',
   },
 ];
 
 function ChannelPage() {
-  const [channelData, setChannelData] = useState([]);
+  // useState를 통한 리렌더링을 위해서 잠시 DUMMYDATA를 channelData 안에 넣어야함
+  // ++ 태그 파싱 문제 때문에 더미데이터 사용
+  const [channelData, setChannelData] = useState(CHANNEL_DUUMY_DATA);
   const [isNew, setIsNew] = useState(true);
   const [isPopular, setIsPopular] = useState(false);
   // const { channelId } = useParams('');
   const channelId = '62a817a85517e27ffcab3cce';
 
-  const channelImages = {
-    '62a817a85517e27ffcab3cce': './ChannelImages/leagueoflegends.jpeg',
-    2: '피파온라인url',
-    3: '메이플스토리url',
-    4: '서든어택url',
-  };
+  // const getChannelData = async () => {
+  //   const result = await fetch(`posts/channel/${channelId}`);
+  //   setChannelData(result);
+  // };
 
-  const getChannelData = async () => {
-    const result = await fetch(`/posts/channel/${channelId}`);
-    setChannelData(result);
-  };
-
-  useEffect(() => {
-    getChannelData();
-  }, [channelId]);
-
-  useEffect(() => {
-    console.log(channelData[0]);
-  });
+  // useEffect(() => {
+  //   getChannelData();
+  // }, [channelId]);
 
   const renderNewList = () => {
     setIsPopular(false);
     setIsNew(true);
+    const sortedChannelData = channelData.sort(
+      (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+    );
+    console.log('sorted: ', sortedChannelData);
+    setChannelData([...sortedChannelData]);
   };
   const renderPopularList = () => {
     setIsNew(false);
     setIsPopular(true);
+    const sortedChannelData = channelData.sort(
+      (a, b) => b.likes.length - a.likes.length
+    );
+    setChannelData([...sortedChannelData]);
   };
 
   return (
     <>
       <ChannelContainer>
-        <ChannelImageContainer url={channelImages[channelId]} />
+        <ChannelImageContainer url={channelImageObject[channelId]} />
         <SortBox>
           <Text onClick={renderNewList} isBold={isNew}>
             최신순
@@ -142,17 +149,18 @@ function ChannelPage() {
             인기글
           </Text>
         </SortBox>
-        {/* {channelData &&
+        {channelData &&
           channelData.map((item) => (
             <ChannelPostCard
               title={item.title}
               key={item._id}
-              createdAt={item.createdAt}
+              updatedAt={item.updatedAt}
               fullName={item.author.fullName}
-              _id={item.author._id}
+              postId={item._id}
+              likes={item.likes}
             />
-          ))} */}
-        {CHANNEL_DUUMY_DATA &&
+          ))}
+        {/* {CHANNEL_DUUMY_DATA &&
           CHANNEL_DUUMY_DATA.map((item) => (
             <ChannelPostCard
               title={item.title}
@@ -162,7 +170,7 @@ function ChannelPage() {
               postId={item._id}
               likes={item.likes}
             />
-          ))}
+          ))} */}
       </ChannelContainer>
       <LinkButtonContainer>
         <LinkButton type="button">
