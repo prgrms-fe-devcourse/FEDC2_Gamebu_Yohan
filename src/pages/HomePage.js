@@ -10,6 +10,7 @@ import useAsync from '@hooks/useAsync';
 import CHANNELS from '@utils/constant';
 import { useEffect, useState } from 'react';
 import Image from '@components/Image';
+import { Link } from 'react-router-dom';
 import maple from '../assets/img/maple.png';
 import lol from '../assets/img/lol.png';
 import lostark from '../assets/img/lostark.png';
@@ -101,9 +102,11 @@ function HomePage() {
           {channels &&
             channels.map((item, index) => {
               return (
-                <SliderItemWrapper key={item.id}>
-                  <Image src={images[index]} width={342} height={160} />
-                </SliderItemWrapper>
+                <Link to={`/channel/${item.id}`}>
+                  <SliderItemWrapper key={item.id}>
+                    <Image src={images[index]} width={342} height={160} />
+                  </SliderItemWrapper>
+                </Link>
               );
             })}
         </Slider>
