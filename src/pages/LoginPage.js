@@ -4,7 +4,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useNavigate, Link } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
@@ -61,6 +63,17 @@ const LoginButton = styled(Button)`
 
 const LoginWarningAlert = styled(Alert)`
   font-size: 0.75rem;
+`;
+
+const SignupLinkBox = styled(Box)`
+  margin-top: 1rem;
+  text-align: center;
+`;
+
+const SignupLink = styled(Link)`
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
 `;
 
 const helperText = {
@@ -172,6 +185,10 @@ function LoginPage() {
           </LoginButtonWrapper>
         </Form>
       </FormWrapper>
+      <SignupLinkBox>
+        아이디 없으신가요?&nbsp;
+        <SignupLink to="/signup">회원가입하기</SignupLink>
+      </SignupLinkBox>
     </ContentWrapper>
   );
 }
