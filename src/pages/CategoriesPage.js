@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
+import { CHANNELS } from '@utils/constants';
 import maple from '../assets/img/maple.png';
 import lol from '../assets/img/lol.png';
 import lostark from '../assets/img/lostark.png';
@@ -40,31 +42,25 @@ const GAME_TITLE = styled.div`
 `;
 
 function CategoriesPage() {
+  const [channels] = useState(CHANNELS);
+  const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+
   return (
     <>
       <Header strong>게임 카테고리</Header>
       <Divider />
       <CATEGORIES_CONTAINER>
-        <GAME_ITEM>
-          <STYLED_IMG src={maple} />
-          <GAME_TITLE>메이플스토리</GAME_TITLE>
-        </GAME_ITEM>
-        <GAME_ITEM>
-          <STYLED_IMG src={lol} />
-          <GAME_TITLE>리그오브레전드</GAME_TITLE>
-        </GAME_ITEM>
-        <GAME_ITEM>
-          <STYLED_IMG src={lostark} />
-          <GAME_TITLE>로스트아크</GAME_TITLE>
-        </GAME_ITEM>
-        <GAME_ITEM>
-          <STYLED_IMG src={overwatch} />
-          <GAME_TITLE>오버워치</GAME_TITLE>
-        </GAME_ITEM>
-        <GAME_ITEM>
-          <STYLED_IMG src={battleground} />
-          <GAME_TITLE>배틀그라운드</GAME_TITLE>
-        </GAME_ITEM>
+        {channels &&
+          channels.map((channel, index) => {
+            return (
+              <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
+                <GAME_ITEM>
+                  <STYLED_IMG src={images[index]} />
+                  <GAME_TITLE>{`${channel.name}`}</GAME_TITLE>
+                </GAME_ITEM>
+              </Link>
+            );
+          })}
       </CATEGORIES_CONTAINER>
       <Header strong>즐겨찾기 목록</Header>
       {/* TODO : 즐겨찾기 기능 작성 후 기능 추가 */}
