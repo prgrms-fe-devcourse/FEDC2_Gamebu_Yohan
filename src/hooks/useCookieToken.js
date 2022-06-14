@@ -9,7 +9,6 @@ const useCookieToken = () => {
         ?.split(';')
         ?.find((cookies) => cookies.includes(GAMEBU_TOKEN))
         ?.slice(13);
-      console.log(item);
       return item || null;
     } catch (error) {
       console.error(error);
