@@ -1,4 +1,4 @@
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 
 function Header({ children, level = 1, strong, underline, color, ...props }) {
   let Tag = `h${level}`;
