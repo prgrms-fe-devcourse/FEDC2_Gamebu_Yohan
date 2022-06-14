@@ -1,4 +1,4 @@
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';

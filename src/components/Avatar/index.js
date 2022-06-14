@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import ImageComponent from '@components/Image';
 import AvatarGroup from './AvatarGroup';
 
@@ -71,15 +71,15 @@ Avatar.defaultProps = {
 };
 
 Avatar.propTypes = {
-  lazy: propTypes.bool,
-  threshold: propTypes.number,
-  src: propTypes.string,
-  size: propTypes.oneOfType([propTypes.number, propTypes.string]),
-  shape: propTypes.oneOf(['circle', 'round', 'square']),
-  placeholder: propTypes.string,
-  alt: propTypes.string,
-  mode: propTypes.oneOf(['contain', 'cover', 'fill']),
-  __TYPE: propTypes.oneOf(['Avatar']),
+  lazy: PropTypes.bool,
+  threshold: PropTypes.number,
+  src: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  shape: PropTypes.oneOf(['circle', 'round', 'square']),
+  placeholder: PropTypes.string,
+  alt: PropTypes.string,
+  mode: PropTypes.oneOf(['contain', 'cover', 'fill']),
+  __TYPE: PropTypes.oneOf(['Avatar']),
 };
 
 Avatar.Group = AvatarGroup;
