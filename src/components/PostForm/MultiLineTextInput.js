@@ -9,6 +9,7 @@ export default function MultiLineTextInput({
   error,
   placeholder,
   rows,
+  helperText,
 }) {
   return (
     <TextField
@@ -20,6 +21,7 @@ export default function MultiLineTextInput({
       onChange={onChange}
       error={error}
       placeholder={placeholder}
+      helperText={error ? helperText : ''}
       minRows={rows}
     />
   );
@@ -32,6 +34,7 @@ MultiLineTextInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool,
   placeholder: PropTypes.string,
+  helperText: PropTypes.string,
   rows: PropTypes.number.isRequired,
 };
 
@@ -39,5 +42,6 @@ MultiLineTextInput.defaultProps = {
   label: '',
   value: '',
   error: false,
+  helperText: '',
   placeholder: '',
 };

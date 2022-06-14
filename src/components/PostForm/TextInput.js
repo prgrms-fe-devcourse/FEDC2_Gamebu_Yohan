@@ -8,6 +8,7 @@ export default function TextInput({
   onChange,
   error,
   placeholder,
+  helperText,
 }) {
   return (
     <TextField
@@ -18,6 +19,7 @@ export default function TextInput({
       onChange={onChange}
       error={error}
       placeholder={placeholder}
+      helperText={error ? helperText : ''}
     />
   );
 }
@@ -29,6 +31,7 @@ TextInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool,
   placeholder: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 TextInput.defaultProps = {
@@ -36,4 +39,5 @@ TextInput.defaultProps = {
   value: '',
   error: false,
   placeholder: '',
+  helperText: '',
 };

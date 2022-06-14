@@ -30,6 +30,10 @@ export default function PostForm() {
   const { formValue, handleInputChange } = usePostForm(initdata);
   const { title, tags, content } = formValue;
 
+  const submitForm = () => {
+    console.log(formValue);
+  };
+
   return (
     <Stack spacing={2}>
       <TextInput
@@ -39,6 +43,7 @@ export default function PostForm() {
         onChange={handleInputChange}
         error={title.length < 3}
         placeholder="3글자 이상"
+        helperText="3글자 이상을 입력해주세요!"
       />
       <SelectInput
         name="tags"
@@ -55,9 +60,16 @@ export default function PostForm() {
         onChange={handleInputChange}
         error={content.length < 10}
         placeholder="10글자 이상"
+        helperText="10글자 이상을 입력해주세요!"
         rows={5}
       />
-      <Button variant="contained" disableElevation>
+      <Button
+        variant="contained"
+        onClick={() => {
+          submitForm();
+        }}
+        disableElevation
+      >
         제출
       </Button>
     </Stack>
