@@ -1,8 +1,8 @@
-import PostInput from '@components/PostInput';
+import TextInput from '@components/TextInput';
 
 export default {
-  title: 'Component/PostInput',
-  component: PostInput,
+  title: 'Component/TextInput',
+  component: TextInput,
   argTypes: {
     title: { control: 'text', defaultValue: '제목' },
     fieldSize: { control: 'text', defaultValue: 'normal' },
@@ -10,5 +10,5 @@ export default {
 };
 
 export function Default(args) {
-  return <PostInput {...args} />;
+  return <TextInput {...args} />;
 }

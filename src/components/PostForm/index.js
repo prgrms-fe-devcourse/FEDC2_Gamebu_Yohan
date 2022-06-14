@@ -1,64 +1,58 @@
-import TextInput from '@components/TextInput';
-import SelectInput from '@components/SelectInput';
 import { Button, Stack } from '@mui/material';
-import { useState } from 'react';
+import usePostForm from '@hooks/usePostForm';
+import TextInput from './TextInput';
+import SelectInput from './SelectInput';
 
 const channelId = '채널명';
 
+const initdata = {
+  tt: '',
+  tg: [],
+  ct: '',
+};
+
+function submitForm(formValue) {
+  const { tt, tg, ct } = formValue;
+  if (tt.length < 3) {
+    alert('제목은 3글자 이상으로 지어주세요!');
+    return;
+  }
+  if (tg.length < 10) {
+    alert('내용은 10글자 이상으로 작성해주세요!');
+    return;
+  }
+  alert(`{
+  title: {
+    tt: ${tt},
+    tg: ${tg},
+    ct: ${ct},
+  }
+  image: null,
+  channelId: ${channelId},
+}`);
+}
+
 export default function PostForm() {
-  const [postTitle, setPostTitle] = useState('defaultTitle');
-  const [postTag, setPostTag] = useState('defaultTag');
-  const [postContent, setPostContent] = useState('defaultContent');
-
-  const handleTitleChange = (e) => {
-    setPostTitle(e.target.value);
-  };
-  const handleTagChange = (e) => {
-    setPostTag(e.target.value);
-  };
-  const handleContentChange = (e) => {
-    setPostContent(e.target.value);
-  };
-
-  const submitForm = () => {
-    if (postTitle.length < 3) {
-      alert('제목은 3글자 이상으로 지어주세요!');
-      return;
-    }
-    if (postContent.length < 10) {
-      alert('내용은 10글자 이상으로 작성해주세요!');
-      return;
-    }
-    alert(`{
-    title: {
-      tt: ${postTitle},
-      tg: ${postTag},
-      bd: ${postContent},
-    }
-    image: null,
-    channelId: ${channelId},
-  }`);
-  };
+  const { formValue, handleInputChange } = usePostForm(initdata);
 
   return (
     <Stack spacing={2}>
       <TextInput
-        name="form-input-title"
-        title="제목"
-        fieldSize="small"
-        onChange={handleTitleChange}
-        error={postTitle.length < 3}
+        name="tt"
+        label="제목"
+        value={formValue.tt}
+        onChange={handleInputChange}
+        error={formValue.tt.length < 3}
         placeholder="3글자 이상"
       />
       <SelectInput />
       <TextInput
-        name="form-input-content"
-        title="내용"
-        fieldSize="small"
-        onChange={handleContentChange}
-        error={postContent.length < 10}
+        name="ct"
+        label="내용"
+        value={formValue.ct}
+        onChange={handleInputChange}
+        error={formValue.ct.length < 10}
         placeholder="10글자 이상"
-        rows={3}
       />
       <Button variant="contained" onClick={submitForm} disableElevation>
         제출
