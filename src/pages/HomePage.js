@@ -7,6 +7,14 @@ import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
 import useAsync from '@hooks/useAsync';
+import CHANNELS from '@utils/constant';
+import { useEffect, useState } from 'react';
+import Image from '@components/Image';
+import maple from '../assets/img/maple.png';
+import lol from '../assets/img/lol.png';
+import lostark from '../assets/img/lostark.png';
+import overwatch from '../assets/img/overwatch.png';
+import battleground from '../assets/img/battleground.png';
 
 const HomePageContainer = styled.div`
   display: flex;
@@ -25,12 +33,7 @@ const SliderWrapper = styled.div`
 `;
 
 const SliderItemWrapper = styled.div`
-  width: 100%;
   height: 10rem;
-  background-color: #ffa;
-  border-radius: 0.4rem;
-  display: flex;
-  align-items: center;
 `;
 
 const RecentPostsWrapper = styled.div`
@@ -77,6 +80,11 @@ const settings = {
 };
 
 function HomePage() {
+  const [channels, setChannels] = useState([]);
+  const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+  useEffect(() => {
+    setChannels(CHANNELS);
+  }, []);
   const url = 'posts/channel/629f0c7c7e01ad1cb7250151';
 
   const getPosts = useAsync(async () => {
@@ -90,39 +98,19 @@ function HomePage() {
         <Header strong>게임 카테고리</Header>
         <Divider />
         <Slider {...settings}>
-          <SliderItemWrapper>
-            <Header level={2}>1 item</Header>
-          </SliderItemWrapper>
-          <SliderItemWrapper>
-            <Header level={2}>2 item</Header>
-          </SliderItemWrapper>
-          <SliderItemWrapper>
-            <Header level={2}>3 item</Header>
-          </SliderItemWrapper>
-          <SliderItemWrapper>
-            <Header level={2}>4 item</Header>
-          </SliderItemWrapper>
-          <SliderItemWrapper>
-            <Header level={2}>5 item</Header>
-          </SliderItemWrapper>
-          <SliderItemWrapper>
-            <Header level={2}>6 item</Header>
-          </SliderItemWrapper>
+          {channels &&
+            channels.map((item, index) => {
+              return (
+                <SliderItemWrapper key={item.id}>
+                  <Image src={images[index]} width={342} height={160} />
+                </SliderItemWrapper>
+              );
+            })}
         </Slider>
       </SliderWrapper>
       <RecentPostsContainer>
         <Header strong>최신 글</Header>
         <Divider />
-        <RecentPostsWrapper>
-          <PostCategory>Category</PostCategory>
-          <PostTitle>Too Long Title Here Recent Posts 1</PostTitle>
-          <PostComments>[2]</PostComments>
-        </RecentPostsWrapper>
-        <RecentPostsWrapper>
-          <PostCategory>Category</PostCategory>
-          <PostTitle>Too Long Title Here Recent Posts 2</PostTitle>
-          <PostComments>[2]</PostComments>
-        </RecentPostsWrapper>
         {getPosts.value &&
           getPosts.value.map((item) => {
             return (
