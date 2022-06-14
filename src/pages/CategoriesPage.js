@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { COLOR_SIGNATURE } from '@utils/color';
+import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
 import { CHANNELS } from '@utils/constants';
@@ -14,8 +14,10 @@ import battleground from '../assets/img/battleground.png';
 const GAME_ITEM = styled.div`
   width: 100%;
   height: 100px;
-  border: 1px solid black;
+  border: 1px solid ${COLOR_MAIN};
+  border-radius: 0.4rem;
   display: grid;
+  overflow: hidden;
   grid-template-rows: repeat(2, 1fr);
 `;
 
@@ -56,8 +58,8 @@ function CategoriesPage() {
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
                 <GAME_ITEM>
                   <STYLED_IMG src={images[index]} />
-                  <GAME_TITLE>{`${channel.name}`}</GAME_TITLE>
                 </GAME_ITEM>
+                <GAME_TITLE>{`${channel.name}`}</GAME_TITLE>
               </Link>
             );
           })}
