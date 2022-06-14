@@ -7,7 +7,7 @@ import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
 import useAsync from '@hooks/useAsync';
-import { CHANNELS, NOT_FOUND_IMAGE } from '@utils/constant';
+import { CHANNELS, NOT_FOUND_IMAGE } from '@utils/constants';
 import { useEffect, useState } from 'react';
 import Image from '@components/Image';
 import { Link } from 'react-router-dom';
