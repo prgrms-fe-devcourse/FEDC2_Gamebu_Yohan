@@ -1,45 +1,32 @@
-import { useState } from 'react';
 import Box from '@mui/material/Box';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import Chip from '@mui/material/Chip';
+import {
+  FormControl,
+  OutlinedInput,
+  InputLabel,
+  MenuItem,
+  Select,
+  Chip,
+} from '@mui/material';
+import PropTypes from 'prop-types';
 
-const Tags = [
-  '파티',
-  '경쟁',
-  '레이드',
-  'FPS',
-  '듀오',
-  'AOS',
-  'RPG',
-  '딜러',
-  '힐러',
-  '탱커',
-  '서폿',
-];
-
-export default function SelectInput() {
-  const [tagList, setTagList] = useState([]);
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    console.log(value);
-    setTagList(typeof value === 'string' ? value.split(',') : value);
-  };
-
+export default function SelectInput({
+  name,
+  label,
+  options,
+  value,
+  onChange,
+  error,
+}) {
   return (
-    <div>
-      <InputLabel id="name" />
+    <FormControl variant="outlined">
+      <InputLabel>{label}</InputLabel>
       <Select
-        labelId="name"
-        id="name"
+        name={name}
+        label={label}
+        value={value}
+        onChange={onChange}
+        error={error}
         multiple
-        value={tagList}
-        onChange={handleChange}
         input={<OutlinedInput id="select-multiple-chip" label="name" />}
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -49,12 +36,27 @@ export default function SelectInput() {
           </Box>
         )}
       >
-        {Tags.map((tag) => (
-          <MenuItem key={tag} value={tag}>
-            {tag}
+        {options.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
           </MenuItem>
         ))}
       </Select>
-    </div>
+    </FormControl>
   );
 }
+
+SelectInput.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  options: PropTypes.array.isRequired,
+  value: PropTypes.array,
+  onChange: PropTypes.func.isRequired,
+  error: PropTypes.bool,
+};
+
+SelectInput.defaultProps = {
+  label: '',
+  value: [],
+  error: false,
+};
