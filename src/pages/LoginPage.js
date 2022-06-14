@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -75,7 +75,7 @@ function LoginPage() {
   });
 
   const navigate = useNavigate();
-  const { setCookie } = useCookieToken();
+  const { isLogin, setCookie } = useCookieToken();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -123,6 +123,12 @@ function LoginPage() {
       visible: false,
     }));
   }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/');
+    }
+  }, [isLogin, navigate]);
 
   return (
     <ContentWrapper>
