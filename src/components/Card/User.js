@@ -1,3 +1,4 @@
+import Thumbnail from '@components/Thumbnail';
 import styled from '@emotion/styled';
 import propTypes from 'prop-types';
 import React from 'react';
@@ -23,41 +24,12 @@ const InfoWrapper = styled.div`
     text-overflow: ellipsis;
   }
 `;
-const Thumbnail = styled.div`
-  position: relative;
-  border-radius: 50%;
-  width: 3rem;
-  height: 3rem;
-  background-color: orange;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 2rem;
-  font-weight: bold;
-  flex-shrink: 0;
-`;
-const Badge = styled.div`
-  position: absolute;
-  box-sizing: border-box;
-  width: 1rem;
-  height: 1rem;
-  bottom: 0;
-  right: 0;
-  border: 2px solid white;
-  border-radius: 50%;
-  background-color: ${({ isOnline }) => (isOnline ? '#9ad756' : 'lightgray')};
-`;
 
 function User({ children, ...props }) {
   const { image, fullName, email, isOnline } = children;
   return (
     <Container {...props}>
-      <Thumbnail>
-        {image || fullName.substring(0, 1)}
-        <Badge isOnline={isOnline} />
-        {/* <Badge isOnline="true" /> */}
-      </Thumbnail>
+      <Thumbnail image={image} name={fullName} badge isOnline={isOnline} />
       <InfoWrapper>
         <div>{fullName}</div>
         <div>{email}</div>
