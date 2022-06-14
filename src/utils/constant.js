@@ -1,5 +1,5 @@
 // TODO: 추후 채널 카테고리 더 추가
-const CHANNELS = [
+export const CHANNELS = [
   {
     id: '62a7367f5517e27ffcab3bcb',
     name: '메이플스토리',
@@ -22,4 +22,5 @@ const CHANNELS = [
   },
 ];
 
-export default CHANNELS;
+export const NOT_FOUND_IMAGE =
+  'https://images.unsplash.com/flagged/photo-1580234748052-2c23d8b27a71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NjZ8fGdhbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60';
