@@ -8,6 +8,7 @@ import Tag from '@components/Tag';
 import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { authFetch } from '@utils/fetch';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -78,9 +79,10 @@ const TagDummy = [
 
 const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
-function ChannelPostCard({ title, createdAt, fullName, _id }) {
+function ChannelPostCard({ title, createdAt, fullName, postId, likes }) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(likes.length);
   useEffect(() => {
     console.log(title);
   }, []);
@@ -95,8 +97,34 @@ function ChannelPostCard({ title, createdAt, fullName, _id }) {
     console.log('postClick!');
   };
 
+  const fetchLike = async (boolean) => {
+    if (boolean) {
+      await authFetch('/likes/delete', {
+        method: 'DELETE',
+        body: {
+          id: postId,
+        },
+      });
+    } else {
+      await authFetch('/likes/create', {
+        method: 'POST',
+        body: {
+          postId,
+        },
+      });
+    }
+  };
+
   const heartClick = (e) => {
     e.stopPropagation();
+    if (isLiked) {
+      fetchLike(isLiked);
+      setLikeCount(likeCount - 1);
+    } else {
+      fetchLike(isLiked);
+      setLikeCount(likeCount + 1);
+    }
+    // isLiked 가 true 면 좋아요취소 api 후 낙관적업데이트 : 좋아요 후 낙관적 업데이트
     setIsLiked(!isLiked);
     console.log('heartClick');
   };
@@ -130,17 +158,18 @@ function ChannelPostCard({ title, createdAt, fullName, _id }) {
             <FavoriteBorderIcon color="error" />
           )}
         </HeartIconButton>
-        {16}
+        {likeCount}
       </TagAndHeart>
     </CardContainer>
   );
 }
 
 ChannelPostCard.propTypes = {
+  likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   createdAt: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired,
+  postId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default ChannelPostCard;
