@@ -4,9 +4,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
+import useCookieToken from '@hooks/useCookieToken';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -72,6 +74,8 @@ function LoginPage() {
     message: '',
   });
 
+  const navigate = useNavigate();
+  const { setCookie } = useCookieToken();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -102,7 +106,8 @@ function LoginPage() {
         return;
       }
 
-      document.cookie = `token=${response.token}`;
+      setCookie(response.token);
+      navigate('/');
     },
     validate: ({ id, password }) => {
       const newErrors = {};
