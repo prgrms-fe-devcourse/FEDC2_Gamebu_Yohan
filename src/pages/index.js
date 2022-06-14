@@ -6,21 +6,23 @@ import { Outlet } from 'react-router-dom';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
+  overflow-y: auto;
 `;
-
-function Home() {
+const Container = styled.div`
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 56px 1fr 56px;
+`;
+function Navbar() {
   return (
-    <>
+    <Container>
       <Topbar />
       <ContentWrapper>
-        {/* FIXME home 페이지 */}
-        <div style={{ height: '400px' }}>
-          <Outlet />
-        </div>
+        <Outlet />
       </ContentWrapper>
       <BottomNavBar />
-    </>
+    </Container>
   );
 }
 
-export default Home;
+export default Navbar;
