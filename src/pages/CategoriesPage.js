@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { COLOR_SIGNATURE } from '@utils/color';
+import Header from '@components/Header';
+import Divider from '@components/Divider';
 import maple from '../assets/img/maple.png';
 import lol from '../assets/img/lol.png';
 import lostark from '../assets/img/lostark.png';
@@ -40,7 +42,8 @@ const GAME_TITLE = styled.div`
 function CategoriesPage() {
   return (
     <>
-      <div>CategoriesPage</div>
+      <Header strong>게임 카테고리</Header>
+      <Divider />
       <CATEGORIES_CONTAINER>
         <GAME_ITEM>
           <STYLED_IMG src={maple} />
@@ -63,6 +66,9 @@ function CategoriesPage() {
           <GAME_TITLE>배틀그라운드</GAME_TITLE>
         </GAME_ITEM>
       </CATEGORIES_CONTAINER>
+      <Header strong>즐겨찾기 목록</Header>
+      {/* TODO : 즐겨찾기 기능 작성 후 기능 추가 */}
+      <Divider />
     </>
   );
 }
