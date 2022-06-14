@@ -2,59 +2,62 @@ import { Button, Stack } from '@mui/material';
 import usePostForm from '@hooks/usePostForm';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
+import MultiLineTextInput from './MultiLineTextInput';
 
 const channelId = '채널명';
 
 const initdata = {
-  tt: '',
-  tg: [],
-  ct: '',
+  title: '',
+  tags: [],
+  content: '',
 };
 
-function submitForm(formValue) {
-  const { tt, tg, ct } = formValue;
-  if (tt.length < 3) {
-    alert('제목은 3글자 이상으로 지어주세요!');
-    return;
-  }
-  if (tg.length < 10) {
-    alert('내용은 10글자 이상으로 작성해주세요!');
-    return;
-  }
-  alert(`{
-  title: {
-    tt: ${tt},
-    tg: ${tg},
-    ct: ${ct},
-  }
-  image: null,
-  channelId: ${channelId},
-}`);
-}
+const Tags = [
+  '파티',
+  '경쟁',
+  '레이드',
+  'FPS',
+  '듀오',
+  'AOS',
+  'RPG',
+  '딜러',
+  '힐러',
+  '탱커',
+  '서폿',
+];
 
 export default function PostForm() {
   const { formValue, handleInputChange } = usePostForm(initdata);
+  const { title, tags, content } = formValue;
 
   return (
     <Stack spacing={2}>
       <TextInput
-        name="tt"
+        name="title"
         label="제목"
-        value={formValue.tt}
+        value={title}
         onChange={handleInputChange}
-        error={formValue.tt.length < 3}
+        error={title.length < 3}
         placeholder="3글자 이상"
       />
-      <SelectInput />
-      <TextInput
-        name="ct"
-        label="내용"
-        value={formValue.ct}
+      <SelectInput
+        name="tags"
+        label="태그"
+        options={Tags}
+        value={tags}
         onChange={handleInputChange}
-        error={formValue.ct.length < 10}
-        placeholder="10글자 이상"
+        error={tags.length < 1}
       />
-      <Button variant="contained" onClick={submitForm} disableElevation>
+      <MultiLineTextInput
+        name="content"
+        label="내용"
+        value={content}
+        onChange={handleInputChange}
+        error={content.length < 10}
+        placeholder="10글자 이상"
+        rows={5}
+      />
+      <Button variant="contained" disableElevation>
         제출
       </Button>
     </Stack>
