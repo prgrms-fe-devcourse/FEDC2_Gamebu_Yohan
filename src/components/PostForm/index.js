@@ -1,12 +1,13 @@
 import { Button, Stack } from '@mui/material';
-import usePostForm from '@hooks/usePostForm';
+import { authFetch } from '@utils/fetch';
+import useForm from '@hooks/useForm';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import MultiLineTextInput from './MultiLineTextInput';
 
-const channelId = '채널명';
+const channelId = '629f0c7c7e01ad1cb7250151';
 
-const initdata = {
+const initialValue = {
   title: '',
   tags: [],
   content: '',
@@ -27,51 +28,80 @@ const Tags = [
 ];
 
 export default function PostForm() {
-  const { formValue, handleInputChange } = usePostForm(initdata);
-  const { title, tags, content } = formValue;
+  const { values, isLoading, handleChange, handleSubmit } = useForm(
+    initialValue,
+    async () => {
+      const { title, tags, content } = values;
+      const response = await authFetch('posts/create', {
+        method: 'POST',
+        data: {
+          title: JSON.stringify({
+            dt: title,
+            tg: tags,
+            dd: content,
+          }),
+          image: null,
+          channelId,
+        },
+      });
 
-  const submitForm = () => {
-    console.log(formValue);
-  };
+      const isError = Boolean(response?.response);
+      if (isError) {
+        if (response?.response?.status === 400) {
+          alert('데이터 입력이 잘못되었습니다.');
+        } else {
+          alert('알 수 없는 오류가 발생했습니다. ');
+        }
+      }
+    },
+    (formValues) => {
+      const { title, tags, content } = formValues;
+      const newErrors = {};
+      if (title.length < 3)
+        newErrors.title = '3글자 이상의 제목을 입력해주세요!';
+      if (tags.length < 1) newErrors.tags = '1개 이상의 태그를 설정해주세요!';
+      if (content.length < 10)
+        newErrors.content = '10글자 이상의 내용을 입력해주세요!';
+      return newErrors;
+    }
+  );
+
+  const { title, tags, content } = values;
 
   return (
-    <Stack spacing={2}>
-      <TextInput
-        name="title"
-        label="제목"
-        value={title}
-        onChange={handleInputChange}
-        error={title.length < 3}
-        placeholder="3글자 이상"
-        helperText="3글자 이상을 입력해주세요!"
-      />
-      <SelectInput
-        name="tags"
-        label="태그"
-        options={Tags}
-        value={tags}
-        onChange={handleInputChange}
-        error={tags.length < 1}
-      />
-      <MultiLineTextInput
-        name="content"
-        label="내용"
-        value={content}
-        onChange={handleInputChange}
-        error={content.length < 10}
-        placeholder="10글자 이상"
-        helperText="10글자 이상을 입력해주세요!"
-        rows={5}
-      />
-      <Button
-        variant="contained"
-        onClick={() => {
-          submitForm();
-        }}
-        disableElevation
-      >
-        제출
-      </Button>
-    </Stack>
+    <form onSubmit={handleSubmit}>
+      <Stack spacing={2}>
+        <TextInput
+          name="title"
+          label="제목"
+          value={title}
+          onChange={handleChange}
+          error={title.length < 3}
+          placeholder="3글자 이상"
+          helperText="3글자 이상을 입력해주세요!"
+        />
+        <SelectInput
+          name="tags"
+          label="태그"
+          options={Tags}
+          value={tags}
+          onChange={handleChange}
+          error={tags.length < 1}
+        />
+        <MultiLineTextInput
+          name="content"
+          label="내용"
+          value={content}
+          onChange={handleChange}
+          error={content.length < 10}
+          placeholder="10글자 이상"
+          helperText="10글자 이상을 입력해주세요!"
+          rows={5}
+        />
+        <Button type="submit" variant="contained" disableElevation>
+          제출
+        </Button>
+      </Stack>
+    </form>
   );
 }

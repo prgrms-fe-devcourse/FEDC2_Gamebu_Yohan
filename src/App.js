@@ -17,7 +17,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navbar />}>
-          <Route index element={<HomePage />} />
+          <Route index element={<PostWritePage />} />
           <Route path="/:user/alram" element={<AlramPage />} />
           <Route path="/search/all" element={<SearchPage />} />
           <Route path="/channel/:channelId" element={<ChannelPage />} />
