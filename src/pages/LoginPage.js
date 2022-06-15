@@ -4,11 +4,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import { useNavigate, Link } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
 import useCookieToken from '@hooks/useCookieToken';
+import useActionContext from '@hooks/useActionContext';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -63,6 +65,17 @@ const LoginWarningAlert = styled(Alert)`
   font-size: 0.75rem;
 `;
 
+const SignupLinkBox = styled(Box)`
+  margin-top: 1rem;
+  text-align: center;
+`;
+
+const SignupLink = styled(Link)`
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+`;
+
 const helperText = {
   id: '아이디를 입력하세요',
   password: '비밀번호를 입력하세요',
@@ -76,13 +89,14 @@ function LoginPage() {
 
   const navigate = useNavigate();
   const { isLogin, setCookie } = useCookieToken();
+  const { login } = useActionContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
       password: '',
     },
     onSubmit: async () => {
-      const response = await fetch('/login', {
+      const response = await fetch('login', {
         method: 'POST',
         data: {
           email: values.id,
@@ -107,7 +121,7 @@ function LoginPage() {
       }
 
       setCookie(response.token);
-      navigate('/');
+      login(response.user);
     },
     validate: ({ id, password }) => {
       const newErrors = {};
@@ -172,6 +186,10 @@ function LoginPage() {
           </LoginButtonWrapper>
         </Form>
       </FormWrapper>
+      <SignupLinkBox>
+        아이디 없으신가요?&nbsp;
+        <SignupLink to="/signup">회원가입하기</SignupLink>
+      </SignupLinkBox>
     </ContentWrapper>
   );
 }

@@ -7,7 +7,7 @@ import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
 import useAsync from '@hooks/useAsync';
-import { CHANNELS, NOT_FOUND_IMAGE } from '@utils/constants';
+import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
 import { useEffect, useState } from 'react';
 import Image from '@components/Image';
 import { Link } from 'react-router-dom';
@@ -48,6 +48,10 @@ const PostCategory = styled.div`
   font-size: 0.5rem;
   color: ${COLOR_MAIN};
   margin-right: 0.5rem;
+  width: 5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const PostTitle = styled.div`
@@ -81,16 +85,23 @@ const settings = {
 };
 
 function HomePage() {
+  const [posts, setPosts] = useState(null);
   const [channels, setChannels] = useState([]);
   const [images] = useState([maple, lol, battleground, lostark, overwatch]);
   useEffect(() => {
     setChannels(CHANNELS);
   }, []);
-  const url = 'posts/channel/629f0c7c7e01ad1cb7250151';
 
-  const getPosts = useAsync(async () => {
-    const result = await fetch(url);
-    return result;
+  const getPostsList = async () => {
+    const mapleResult = await fetch('posts/channel/62a7367f5517e27ffcab3bcb');
+    const lolResult = await fetch('posts/channel/62a736925517e27ffcab3bcf');
+    const postsResult = mapleResult.concat(lolResult);
+    postsResult.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    setPosts(postsResult);
+  };
+
+  useEffect(() => {
+    getPostsList();
   }, []);
 
   return (
@@ -119,13 +130,22 @@ function HomePage() {
       <RecentPostsContainer>
         <Header strong>최신 글</Header>
         <Divider />
-        {getPosts.value &&
-          getPosts.value.map((item) => {
+        {posts &&
+          posts.map((item) => {
+            let { title } = item;
+            if (title.startsWith('{')) {
+              title = JSON.parse(title).tt;
+            }
+            const categoriesId = item.channel._id;
+            const comments = item.comments.length;
+
             return (
               <RecentPostsWrapper key={item._id}>
-                <PostCategory>Category</PostCategory>
-                <PostTitle>{item.title}</PostTitle>
-                <PostComments>[{item.comments.length}]</PostComments>
+                <PostCategory>{CATEGORIES[categoriesId]}</PostCategory>
+                <Link to={`posts/details/${item._id}`}>
+                  <PostTitle>{title}</PostTitle>
+                </Link>
+                <PostComments>[{comments}]</PostComments>
               </RecentPostsWrapper>
             );
           })}
