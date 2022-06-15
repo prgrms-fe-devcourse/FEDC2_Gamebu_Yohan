@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { authFetch, fetch } from '@utils/fetch';
+import { Link } from 'react-router-dom';
+import { fetch } from '@utils/fetch';
 import styled from '@emotion/styled';
 import { COLOR_BG } from '@utils/color';
 import Divider from '@components/Divider';
@@ -62,18 +62,13 @@ function ChannelPage() {
     const result = await fetch(
       `posts/channel/${tagTestChanneld}?offset=${start}&limit=${limit}`
     );
-
     setChannelData([...channelData, ...result]);
     setStart(start + limit);
-    console.log(result);
-    console.log('res: ', JSON.parse(result[0].title).dd);
   };
 
   useEffect(() => {
     getChannelData();
-  }, [infiniteChannelId]);
-
-  useEffect(() => {});
+  }, []);
 
   const renderNewList = () => {
     setIsPopular(false);
