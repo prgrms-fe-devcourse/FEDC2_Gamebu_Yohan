@@ -11,6 +11,7 @@ import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
 import useCookieToken from '@hooks/useCookieToken';
+import useActionContext from '@hooks/useActionContext';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -89,6 +90,7 @@ function LoginPage() {
 
   const navigate = useNavigate();
   const { isLogin, setCookie } = useCookieToken();
+  const { login } = useActionContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -120,6 +122,7 @@ function LoginPage() {
       }
 
       setCookie(response.token);
+      login(response.user);
       navigate('/');
     },
     validate: ({ id, password }) => {
