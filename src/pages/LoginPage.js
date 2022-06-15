@@ -95,7 +95,7 @@ function LoginPage() {
       password: '',
     },
     onSubmit: async () => {
-      const response = await fetch('/login', {
+      const response = await fetch('login', {
         method: 'POST',
         data: {
           email: values.id,
