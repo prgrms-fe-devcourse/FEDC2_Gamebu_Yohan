@@ -7,12 +7,19 @@ export const actionContext = createContext();
 function ContextProvider({ children }) {
   const [state, setState] = useState({
     test: 100,
+    user: null,
   });
 
   const actions = useMemo(
     () => ({
       changeTest(newValue) {
         setState((prevState) => ({ ...prevState, test: newValue }));
+      },
+      login(user) {
+        setState((prevState) => ({
+          ...prevState,
+          user,
+        }));
       },
     }),
     []
