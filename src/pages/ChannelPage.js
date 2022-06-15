@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { authFetch, fetch } from '@utils/fetch';
 import styled from '@emotion/styled';
@@ -7,6 +7,8 @@ import Divider from '@components/Divider';
 import ChannelImageContainer from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
 import channelImageObject from '@components/Channels/ChannelImages/ChannelImageFiles';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import CHANNEL_DUUMY_DATA from '@components/Channels/channelDummy';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -23,6 +25,8 @@ const SortBox = styled.div`
 `;
 
 const Text = styled.span`
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   font-weight: ${(props) => (props.isBold ? 'bold' : 'normal')};
@@ -41,82 +45,36 @@ const LinkButton = styled.button`
   background-color: ${COLOR_BG};
 `;
 
-const CHANNEL_DUUMY_DATA = [
-  {
-    likes: [
-      {
-        _id: '62a829c05517e27ffcab3dec',
-        user: '629e29cc7e80a91c96fdf2d5',
-        post: '62a81e635517e27ffcab3d0c',
-        createdAt: '2022-06-14T06:25:04.916Z',
-        updatedAt: '2022-06-14T06:25:04.916Z',
-        __v: 0,
-      },
-    ],
-    comments: [],
-    _id: 1,
-    // "image": Optional<String>,
-    // "imagePublicId": Optional<String>,
-    title: '듀오 구합니다',
-    // channel: Channel,
-    author: {
-      _id: '629e29cc7e80a91c96fdf2d5',
-      fullName: 'Admin',
-    },
-    createdAt: '2022-06-07T08:40:53.565Z',
-    updatedAt: '2022-06-12T08:49:00.655Z',
-  },
-  {
-    likes: [
-      {
-        _id: '62a829c05517e27ffcab3dec',
-        user: '629e29cc7e80a91c96fdf2d5',
-        post: '62a81e635517e27ffcab3d0c',
-        createdAt: '2022-06-14T06:25:04.916Z',
-        updatedAt: '2022-06-14T06:25:04.916Z',
-        __v: 0,
-      },
-      {
-        _id: '62a8496e70c0c925abdd5c06',
-        user: '629f07fa7e01ad1cb7250131',
-        post: '62a81e635517e27ffcab3d0c',
-        createdAt: '2022-06-14T08:40:14.061Z',
-        updatedAt: '2022-06-14T08:40:14.061Z',
-        __v: 0,
-      },
-    ],
-    comments: [],
-    _id: 2,
-    // "image": Optional<String>,
-    // "imagePublicId": Optional<String>,
-    title: '자랭 할 사람 라스트1명',
-    // channel: Channel,
-    author: {
-      _id: '629f20f37e01ad1cb72501c5',
-      fullName: 'sang2',
-    },
-    createdAt: '2022-06-12T08:49:00.655Z',
-    updatedAt: '2022-06-10T08:49:00.655Z',
-  },
-];
-
 function ChannelPage() {
-  // useState를 통한 리렌더링을 위해서 잠시 DUMMYDATA를 channelData 안에 넣어야함
-  // ++ 태그 파싱 문제 때문에 더미데이터 사용
-  const [channelData, setChannelData] = useState(CHANNEL_DUUMY_DATA);
+  const ref = useRef(null);
+  const [start, setStart] = useState(0);
+  const [channelData, setChannelData] = useState([]);
   const [isNew, setIsNew] = useState(true);
   const [isPopular, setIsPopular] = useState(false);
+
   // const { channelId } = useParams('');
   const channelId = '62a817a85517e27ffcab3cce';
+  const infiniteChannelId = '62a97c1c6c77714531010109';
 
-  // const getChannelData = async () => {
-  //   const result = await fetch(`posts/channel/${channelId}`);
-  //   setChannelData(result);
-  // };
+  const limit = 8;
 
-  // useEffect(() => {
-  //   getChannelData();
-  // }, [channelId]);
+  const getChannelData = async () => {
+    const result = await fetch(
+      `posts/channel/${infiniteChannelId}?offset=${start}&limit=${limit}`
+    );
+    console.log(result);
+    setChannelData([...channelData, ...result]);
+    // setChannelData(result);
+    setStart(start + limit);
+  };
+
+  useEffect(() => {
+    getChannelData();
+  }, [infiniteChannelId]);
+
+  useEffect(() => {});
+
+  console.log('channelData:', channelData.length);
 
   const renderNewList = () => {
     setIsPopular(false);
@@ -149,28 +107,26 @@ function ChannelPage() {
             인기글
           </Text>
         </SortBox>
-        {channelData &&
-          channelData.map((item) => (
-            <ChannelPostCard
-              title={item.title}
-              key={item._id}
-              updatedAt={item.updatedAt}
-              fullName={item.author.fullName}
-              postId={item._id}
-              likes={item.likes}
-            />
-          ))}
-        {/* {CHANNEL_DUUMY_DATA &&
-          CHANNEL_DUUMY_DATA.map((item) => (
-            <ChannelPostCard
-              title={item.title}
-              key={item._id}
-              createdAt={item.createdAt}
-              fullName={item.author.fullName}
-              postId={item._id}
-              likes={item.likes}
-            />
-          ))} */}
+        <InfiniteScroll
+          scrollableTarget="scrollableDiv"
+          scrollThreshold={0.01}
+          dataLength={channelData.length}
+          hasMore
+          next={getChannelData}
+        >
+          {channelData &&
+            channelData.map((item) => (
+              <ChannelPostCard
+                title={JSON.parse(item.title).tt}
+                key={item._id}
+                updatedAt={item.updatedAt}
+                fullName={item.author.username}
+                postId={item._id}
+                likes={item.likes}
+              />
+            ))}
+          <div id="scrollableDiv" style={{ width: '100px', height: '1px' }} />
+        </InfiniteScroll>
       </ChannelContainer>
       <LinkButtonContainer>
         <LinkButton type="button">

@@ -172,7 +172,23 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
       </UserNameAndDate>
       <TagAndHeart>
         {TagDummy.slice(0, 4).map((item, index) => (
-          <Tag backgroundColor={TagColor[index]} content={item} key={item} />
+          <Tag
+            backgroundColor={TagColor[index]}
+            content={item}
+            key={item}
+            style={{
+              boxSizing: 'borderBox',
+              borderRadius: '0.5rem',
+              padding: '0.1rem 0.25rem',
+              fontSize: '0.75rem',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: '#eee',
+              marginLeft: '0.2rem',
+              marginRight: 0,
+            }}
+          />
         ))}
         {TagDummy.length > 4 ? (
           <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>

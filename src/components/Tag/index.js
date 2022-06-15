@@ -6,19 +6,9 @@ const TagContainer = styled.div``;
 
 function Tag({ backgroundColor, width = '0.2rem', height, content, ...props }) {
   const tagStyles = {
-    boxSizing: 'borderBox',
-    borderRadius: '0.5rem',
     backgroundColor,
     width,
     height,
-    padding: '0.1rem 0.25rem',
-    fontSize: '0.75rem',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: '#eee',
-    marginLeft: '0.2rem',
-    marginRight: 0,
   };
   return (
     <TagContainer style={{ ...tagStyles, ...props.style }}>
