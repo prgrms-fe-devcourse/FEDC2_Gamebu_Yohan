@@ -11,6 +11,7 @@ import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
 import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
+import useValueContext from '@hooks/useValueContext';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -88,15 +89,16 @@ function LoginPage() {
   });
 
   const navigate = useNavigate();
-  const { isLogin, setCookie } = useCookieToken();
+  const { setCookie } = useCookieToken();
   const { login } = useActionContext();
+  const { isLogin } = useValueContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
       password: '',
     },
     onSubmit: async () => {
-      const response = await fetch('login', {
+      const { response, token, user } = await fetch('login', {
         method: 'POST',
         data: {
           email: values.id,
@@ -104,9 +106,9 @@ function LoginPage() {
         },
       });
 
-      const isError = Boolean(response?.response);
+      const isError = Boolean(response);
       if (isError) {
-        if (response?.response?.status === 400) {
+        if (response?.status === 400) {
           setWarningAlertInfo({
             visible: true,
             message: '아이디 또는 비밀번호를 잘못 입력했습니다',
@@ -120,8 +122,8 @@ function LoginPage() {
         return;
       }
 
-      setCookie(response.token);
-      login(response.user);
+      setCookie(token);
+      login(user);
     },
     validate: ({ id, password }) => {
       const newErrors = {};
