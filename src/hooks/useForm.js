@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (initialValues, onSubmit, validate) => {
+const useForm = ({ initialValues, onSubmit, validate }) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);

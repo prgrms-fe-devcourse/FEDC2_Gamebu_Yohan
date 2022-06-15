@@ -1,5 +1,5 @@
 import { Button, Stack } from '@mui/material';
-import { authFetch } from '@utils/fetch';
+import { authFetch, fetch } from '@utils/fetch';
 import useForm from '@hooks/useForm';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
@@ -7,7 +7,7 @@ import MultiLineTextInput from './MultiLineTextInput';
 
 const channelId = '629f0c7c7e01ad1cb7250151';
 
-const initialValue = {
+const initialValues = {
   title: '',
   tags: [],
   content: '',
@@ -28,9 +28,9 @@ const Tags = [
 ];
 
 export default function PostForm() {
-  const { values, isLoading, handleChange, handleSubmit } = useForm(
-    initialValue,
-    async () => {
+  const { values, isLoading, handleChange, handleSubmit } = useForm({
+    initialValues,
+    onSubmit: async () => {
       const { title, tags, content } = values;
       const response = await authFetch('posts/create', {
         method: 'POST',
@@ -54,7 +54,7 @@ export default function PostForm() {
         }
       }
     },
-    (formValues) => {
+    validate: (formValues) => {
       const { title, tags, content } = formValues;
       const newErrors = {};
       if (title.length < 3)
@@ -63,8 +63,8 @@ export default function PostForm() {
       if (content.length < 10)
         newErrors.content = '10글자 이상의 내용을 입력해주세요!';
       return newErrors;
-    }
-  );
+    },
+  });
 
   const { title, tags, content } = values;
 
@@ -100,6 +100,16 @@ export default function PostForm() {
         />
         <Button type="submit" variant="contained" disableElevation>
           제출
+        </Button>
+
+        <Button
+          onClick={async () => {
+            await fetch('channels', {
+              method: 'GET',
+            });
+          }}
+        >
+          겟 포스트
         </Button>
       </Stack>
     </form>
