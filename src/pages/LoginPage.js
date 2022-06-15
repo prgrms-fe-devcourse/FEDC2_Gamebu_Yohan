@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { useNavigate, Link } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
@@ -123,7 +122,6 @@ function LoginPage() {
 
       setCookie(response.token);
       login(response.user);
-      navigate('/');
     },
     validate: ({ id, password }) => {
       const newErrors = {};
