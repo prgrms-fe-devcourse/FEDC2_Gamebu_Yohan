@@ -142,7 +142,9 @@ function HomePage() {
             return (
               <RecentPostsWrapper key={item._id}>
                 <PostCategory>{CATEGORIES[categoriesId]}</PostCategory>
-                <PostTitle>{title}</PostTitle>
+                <Link to={`posts/details/${item._id}`}>
+                  <PostTitle>{title}</PostTitle>
+                </Link>
                 <PostComments>[{comments}]</PostComments>
               </RecentPostsWrapper>
             );
