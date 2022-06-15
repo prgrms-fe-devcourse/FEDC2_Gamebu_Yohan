@@ -6,6 +6,7 @@ import { Button, IconButton, TextField } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { searchAll } from '@utils/search';
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const List = styled.ul`
   overflow-y: auto;
@@ -34,28 +35,50 @@ const PageWrapper = styled.div`
 `;
 function SearchPage() {
   const inputRef = useRef(null);
-  const [inputError, setInputError] = useState(false);
+  const navigate = useNavigate();
+  const [searchParam, setSearchParam] = useSearchParams();
+  const [inputError, setInputError] = useState({
+    error: false,
+    helperText: '',
+  });
   const [userList, setUserList] = useState([]);
   const [postList, setPostList] = useState([]);
-
-  const inputErrorAttr = {
-    error: inputError,
-    helperText: inputError ? '3글자 이상 입력해주세요.' : '',
-  };
-  const [searchResult, asyncSearchAll] = useAsyncFn(
-    async (keyword) => {
-      return searchAll(keyword);
-    },
+  const [searchResult, searchWithKeword] = useAsyncFn(
+    async (keyword) => searchAll(keyword),
     [inputRef]
   );
+  const isValidKeyword = (keyword) => {
+    const searchKeyword = keyword.trim();
+    if (!searchKeyword) {
+      setInputError({ error: true, helperText: '검색어를 입력하세요' });
+      return false;
+    }
+    if (searchKeyword.length < 3) {
+      setInputError({ error: true, helperText: '3글자 이상 입력하세요' });
+      return false;
+    }
+    setInputError({ error: false, helperText: '' });
+    return true;
+  };
+
+  useEffect(() => {
+    const keyword = searchParam.get('k');
+    if (keyword === null) return;
+    inputRef.current.value = keyword;
+    isValidKeyword(keyword) && searchWithKeword(keyword);
+  }, [searchParam, searchWithKeword]);
 
   const handleKeyDown = ({ key }) => {
-    if (key !== 'Enter' || !inputRef.current.value) return;
+    if (key !== 'Enter') return;
     inputRef.current.value = inputRef.current.value.trim();
-    if (inputRef.current.value.length > 2) {
-      setInputError(false);
-      asyncSearchAll(inputRef.current.value);
-    } else setInputError(true);
+    isValidKeyword(inputRef.current.value) &&
+      setSearchParam({ k: inputRef.current.value });
+  };
+
+  const handleSearchClick = () => {
+    inputRef.current.value = inputRef.current.value.trim();
+    isValidKeyword(inputRef.current.value) &&
+      setSearchParam({ k: inputRef.current.value });
   };
 
   const classifyFetchData = (datas) => {
@@ -81,7 +104,7 @@ function SearchPage() {
         fullWidth
         InputProps={{
           endAdornment: (
-            <IconButton>
+            <IconButton onClick={handleSearchClick}>
               <SearchRoundedIcon fontSize="large" aria-label="search" />
             </IconButton>
           ),
@@ -89,14 +112,20 @@ function SearchPage() {
         }}
         inputRef={inputRef}
         onKeyDown={handleKeyDown}
-        {...inputErrorAttr}
+        {...inputError}
       />
       <ListWrapper>
         <HeaderWrapper>
           <Header level={1} strong>
             사용자
           </Header>
-          <Button variant="text" color="primary">
+          <Button
+            onClick={() => {
+              navigate(`/search/user?k=${searchParam.get('k')}`);
+            }}
+            variant="text"
+            color="primary"
+          >
             모두 보기
           </Button>
         </HeaderWrapper>
@@ -120,7 +149,13 @@ function SearchPage() {
           <Header level={1} strong>
             포스트
           </Header>
-          <Button variant="text" color="primary">
+          <Button
+            onClick={() => {
+              navigate(`/search/post?k=${searchParam.get('k')}`);
+            }}
+            variant="text"
+            color="primary"
+          >
             모두 보기
           </Button>
         </HeaderWrapper>
