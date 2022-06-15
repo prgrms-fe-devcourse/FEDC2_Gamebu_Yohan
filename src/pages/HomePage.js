@@ -48,6 +48,10 @@ const PostCategory = styled.div`
   font-size: 0.5rem;
   color: ${COLOR_MAIN};
   margin-right: 0.5rem;
+  width: 5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const PostTitle = styled.div`
