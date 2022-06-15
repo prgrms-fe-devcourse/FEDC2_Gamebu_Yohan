@@ -55,16 +55,18 @@ function ChannelPage() {
   // const { channelId } = useParams('');
   const channelId = '62a817a85517e27ffcab3cce';
   const infiniteChannelId = '62a97c1c6c77714531010109';
-
+  const tagTestChanneld = '62aa146171f64a5582899ae9';
   const limit = 7;
 
   const getChannelData = async () => {
     const result = await fetch(
-      `posts/channel/${infiniteChannelId}?offset=${start}&limit=${limit}`
+      `posts/channel/${tagTestChanneld}?offset=${start}&limit=${limit}`
     );
 
     setChannelData([...channelData, ...result]);
     setStart(start + limit);
+    console.log(result);
+    console.log('res: ', JSON.parse(result[0].title).dd);
   };
 
   useEffect(() => {
@@ -76,6 +78,7 @@ function ChannelPage() {
   const renderNewList = () => {
     setIsPopular(false);
     setIsNew(true);
+
     const sortedChannelData = channelData.sort(
       (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
     );
@@ -84,6 +87,7 @@ function ChannelPage() {
   const renderPopularList = () => {
     setIsNew(false);
     setIsPopular(true);
+
     const sortedChannelData = channelData.sort(
       (a, b) => b.likes.length - a.likes.length
     );
@@ -113,13 +117,16 @@ function ChannelPage() {
           {channelData &&
             channelData.map((item) => (
               <ChannelPostCard
-                title={JSON.parse(item.title).tt}
+                title={JSON.parse(item.title).dt}
                 key={item._id}
                 updatedAt={item.updatedAt}
                 fullName={item.author.username}
-                postId={item._id}
                 likes={item.likes}
                 tag={JSON.parse(item.title).tg}
+                comments={item.comments}
+                postId={item._id}
+                channelId={item.channel._id}
+                content={JSON.parse(item.title).dd}
               />
             ))}
           <div id="scrollableDiv" style={{ width: '100%', height: '2rem' }} />

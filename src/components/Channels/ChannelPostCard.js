@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { authFetch } from '@utils/fetch';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -58,6 +59,7 @@ const CardContainer = styled(Card)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 `;
 
 const TagSpan = styled.span`
@@ -79,21 +81,27 @@ const TagDummy = [
 
 const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
-function ChannelPostCard({ title, updatedAt, fullName, postId, likes, tag }) {
+function ChannelPostCard({
+  title,
+  updatedAt,
+  fullName,
+  postId,
+  likes,
+  tag,
+  channelId,
+  comments,
+  content,
+}) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes.length);
+  const navigate = useNavigate();
 
   // TODO: 사용자 id를 가져와야함
   const userId = '629f07fa7e01ad1cb7250131';
-
+  // const parsingTag = JSON.parse(tag);
   useEffect(() => {
     setLikeCount(likes.length);
-    const data = likes.find((item) => item.user === userId);
-
-    if (data) {
-      const id = data._id;
-    }
 
     // 새로고침했을 때  내가 좋아요 눌러놓은 페이지 인지 확인
     const filteredLikes = likes.filter((item) => item.user === userId);
@@ -110,15 +118,29 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes, tag }) {
     setButtonIsClicked(!buttonIsClicked);
   };
 
+  const toDetailInfo = {
+    tag,
+    title,
+    fullName,
+    comments,
+    content,
+    isLiked,
+    postId,
+    channelId,
+  };
+
   const postClick = () => {
     console.log(postId);
+    navigate('/posts/details', {
+      replace: true,
+      state: toDetailInfo,
+    });
   };
 
   const fetchLike = async (boolean) => {
     if (boolean) {
       // array.find를 통해서 사용자가 누른 좋아요 객체를 반환받고 객체의 id 값을 delete api body에 담아서 보낸다
       const data = likes.find((item) => item.user === userId);
-      console.log('data:', data);
 
       if (!data) return;
 
@@ -126,18 +148,17 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes, tag }) {
 
       await authFetch('likes/delete', {
         method: 'DELETE',
-        body: {
+        data: {
           id,
         },
       });
     } else {
-      const res = await authFetch('likes/create', {
+      await authFetch('likes/create', {
         method: 'POST',
-        body: {
+        data: {
           postId,
         },
       });
-      console.log(res);
     }
   };
 
@@ -171,7 +192,7 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes, tag }) {
         {updatedAt.slice(0, 10)}
       </UserNameAndDate>
       <TagAndHeart>
-        {TagDummy.slice(0, 4).map((item, index) => (
+        {tag.slice(0, 4).map((item, index) => (
           <Tag
             backgroundColor={TagColor[index]}
             content={item}
@@ -190,7 +211,7 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes, tag }) {
             }}
           />
         ))}
-        {TagDummy.length > 4 ? (
+        {tag.length > 4 ? (
           <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
         ) : null}
         <HeartIconButton onClick={heartClick}>
@@ -209,10 +230,14 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes, tag }) {
 ChannelPostCard.propTypes = {
   likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
-  tag: PropTypes.string.isRequired,
+  tag: PropTypes.array.isRequired,
   updatedAt: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   postId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  channelId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  comments: PropTypes.array.isRequired,
 };
 
 export default ChannelPostCard;
