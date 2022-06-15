@@ -7,7 +7,7 @@ import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
 import useAsync from '@hooks/useAsync';
-import { CHANNELS, NOT_FOUND_IMAGE } from '@utils/constants';
+import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
 import { useEffect, useState } from 'react';
 import Image from '@components/Image';
 import { Link } from 'react-router-dom';
@@ -123,7 +123,7 @@ function HomePage() {
           getPosts.value.map((item) => {
             return (
               <RecentPostsWrapper key={item._id}>
-                <PostCategory>Category</PostCategory>
+                <PostCategory>{CATEGORIES[item.channel._id]}</PostCategory>
                 <PostTitle>{item.title}</PostTitle>
                 <PostComments>[{item.comments.length}]</PostComments>
               </RecentPostsWrapper>
