@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { authFetch, fetch } from '@utils/fetch';
 import styled from '@emotion/styled';
@@ -8,12 +8,11 @@ import ChannelImageContainer from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
 import channelImageObject from '@components/Channels/ChannelImages/ChannelImageFiles';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import CHANNEL_DUUMY_DATA from '@components/Channels/channelDummy';
 
 const ChannelContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${COLOR_BG};
+  background-color: white;
   height: 42rem;
 `;
 
@@ -37,16 +36,17 @@ const LinkButtonContainer = styled.div`
 `;
 
 const LinkButton = styled.button`
+  width: 4rem;
+  height: 1.5rem;
   position: fixed;
   bottom: 4rem;
-  left: 44%;
+  left: 42%;
   border-radius: 0.5rem;
   border: 0.1rem solid black;
   background-color: ${COLOR_BG};
 `;
 
 function ChannelPage() {
-  const ref = useRef(null);
   const [start, setStart] = useState(0);
   const [channelData, setChannelData] = useState([]);
   const [isNew, setIsNew] = useState(true);
@@ -56,15 +56,14 @@ function ChannelPage() {
   const channelId = '62a817a85517e27ffcab3cce';
   const infiniteChannelId = '62a97c1c6c77714531010109';
 
-  const limit = 8;
+  const limit = 7;
 
   const getChannelData = async () => {
     const result = await fetch(
       `posts/channel/${infiniteChannelId}?offset=${start}&limit=${limit}`
     );
-    console.log(result);
+
     setChannelData([...channelData, ...result]);
-    // setChannelData(result);
     setStart(start + limit);
   };
 
@@ -74,15 +73,12 @@ function ChannelPage() {
 
   useEffect(() => {});
 
-  console.log('channelData:', channelData.length);
-
   const renderNewList = () => {
     setIsPopular(false);
     setIsNew(true);
     const sortedChannelData = channelData.sort(
       (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
     );
-    console.log('sorted: ', sortedChannelData);
     setChannelData([...sortedChannelData]);
   };
   const renderPopularList = () => {
@@ -109,10 +105,10 @@ function ChannelPage() {
         </SortBox>
         <InfiniteScroll
           scrollableTarget="scrollableDiv"
-          scrollThreshold={0.01}
           dataLength={channelData.length}
           hasMore
           next={getChannelData}
+          height={600}
         >
           {channelData &&
             channelData.map((item) => (
@@ -123,14 +119,18 @@ function ChannelPage() {
                 fullName={item.author.username}
                 postId={item._id}
                 likes={item.likes}
+                tag={JSON.parse(item.title).tg}
               />
             ))}
-          <div id="scrollableDiv" style={{ width: '100px', height: '1px' }} />
+          <div id="scrollableDiv" style={{ width: '100%', height: '2rem' }} />
         </InfiniteScroll>
       </ChannelContainer>
       <LinkButtonContainer>
         <LinkButton type="button">
-          <Link to="/posts" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link
+            to="/posts/write"
+            style={{ textDecoration: 'none', color: 'black' }}
+          >
             글쓰기
           </Link>
         </LinkButton>

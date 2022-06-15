@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import styled from '@emotion/styled';
 import HomeIcon from '@mui/icons-material/Home';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import SearchIcon from '@mui/icons-material/Search';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const BottomNavbarWrapper = styled.div`
   width: 100%;
@@ -14,6 +14,7 @@ const BottomNavbarWrapper = styled.div`
 function BottomNavBar() {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
+
   const routingTable = {
     0: '/',
     1: '/channel/categories',
