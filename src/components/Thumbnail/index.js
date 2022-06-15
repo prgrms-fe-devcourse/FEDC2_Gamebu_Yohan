@@ -1,5 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 const ThumbnailWrapper = styled.div`
@@ -37,10 +37,10 @@ function Thumbnail({ image, name, badge, isOnline }) {
   );
 }
 Thumbnail.propTypes = {
-  image: propTypes.string,
-  name: propTypes.string.isRequired,
-  badge: propTypes.bool,
-  isOnline: propTypes.bool,
+  image: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  badge: PropTypes.bool,
+  isOnline: PropTypes.bool,
 };
 
 Thumbnail.defaultProps = {

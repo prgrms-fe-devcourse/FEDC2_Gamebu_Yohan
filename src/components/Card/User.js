@@ -1,6 +1,6 @@
 import Thumbnail from '@components/Thumbnail';
 import styled from '@emotion/styled';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const Container = styled.div`
@@ -39,11 +39,11 @@ function User({ children, ...props }) {
 }
 
 User.propTypes = {
-  children: propTypes.shape({
-    isOnline: propTypes.bool.isRequired,
-    fullName: propTypes.string.isRequired,
-    email: propTypes.string.isRequired,
-    image: propTypes.string,
+  children: PropTypes.shape({
+    isOnline: PropTypes.bool.isRequired,
+    fullName: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    image: PropTypes.string,
   }).isRequired,
 };
 

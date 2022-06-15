@@ -1,5 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Divider from '@components/Divider';
 import CommentIcon from '@mui/icons-material/Comment';
@@ -65,11 +65,11 @@ function Post({ children }) {
 }
 
 Post.propTypes = {
-  children: propTypes.shape({
-    title: propTypes.string.isRequired,
-    createdAt: propTypes.string.isRequired,
-    comments: propTypes.array.isRequired,
-    likes: propTypes.array.isRequired,
+  children: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    comments: PropTypes.array.isRequired,
+    likes: PropTypes.array.isRequired,
   }).isRequired,
 };
 
