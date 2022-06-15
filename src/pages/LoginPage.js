@@ -25,13 +25,16 @@ const LoginHeader = styled.h1`
 const FormWrapper = styled.div`
   background-color: ${COLOR_BG};
   color: ${COLOR_MAIN};
+
   & p {
     margin-left: 0;
     margin-top: 0.5rem;
   }
+
   & .MuiOutlinedInput-root {
     background-color: white;
   }
+
   & .MuiOutlinedInput-root.Mui-focused fieldset {
     border-color: ${COLOR_MAIN};
   }
@@ -51,6 +54,7 @@ const LoginButton = styled(Button)`
   color: black;
   background-color: white;
   border-color: ${COLOR_MAIN};
+
   &:hover {
     background-color: white;
     border-color: ${COLOR_MAIN};
