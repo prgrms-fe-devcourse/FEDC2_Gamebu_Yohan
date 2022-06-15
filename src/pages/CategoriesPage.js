@@ -5,11 +5,11 @@ import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
 import { CHANNELS } from '@utils/constants';
-import maple from '../assets/img/maple.png';
-import lol from '../assets/img/lol.png';
-import lostark from '../assets/img/lostark.png';
-import overwatch from '../assets/img/overwatch.png';
-import battleground from '../assets/img/battleground.png';
+import maple from '@assets/img/maple.png';
+import lol from '@assets/img/lol.png';
+import lostark from '@assets/img/lostark.png';
+import overwatch from '@assets/img/overwatch.png';
+import battleground from '@assets/img/battleground.png';
 
 const GAME_ITEM = styled.div`
   width: 100%;
