@@ -113,8 +113,8 @@ function HomePage() {
           {channels &&
             channels.map((item, index) => {
               return (
-                <Link to={`/channel/${item.id}`}>
-                  <SliderItemWrapper key={item.id}>
+                <Link to={`/channel/${item.id}`} key={item.id}>
+                  <SliderItemWrapper>
                     <Image
                       src={images[index] || NOT_FOUND_IMAGE}
                       width={342}
