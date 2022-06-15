@@ -68,7 +68,6 @@ Post.propTypes = {
   children: propTypes.shape({
     title: propTypes.string.isRequired,
     createdAt: propTypes.string.isRequired,
-    author: propTypes.string.isRequired,
     comments: propTypes.array.isRequired,
     likes: propTypes.array.isRequired,
   }).isRequired,
