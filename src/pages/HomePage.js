@@ -92,9 +92,7 @@ function HomePage() {
     const mapleResult = await fetch('posts/channel/62a7367f5517e27ffcab3bcb');
     const lolResult = await fetch('posts/channel/62a736925517e27ffcab3bcf');
     const postsResult = mapleResult.concat(lolResult);
-    postsResult.sort((a, b) => {
-      return b.updatedAt - a.updatedAt;
-    });
+    postsResult.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     setPosts(postsResult);
   };
 
