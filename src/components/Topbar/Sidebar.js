@@ -11,6 +11,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { Link } from 'react-router-dom';
 
 const DrawerHeader = styled.div`
   display: 'flex';
@@ -28,6 +29,11 @@ function Sidebar({ open, onClose }) {
       </DrawerHeader>
       <Divider />
       <List>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemText primary={<Link to="/login">로그인</Link>} />
+          </ListItemButton>
+        </ListItem>
         {['채널1 RPG', '채널2 FPS', '채널3 자유', '채널4 홍보'].map(
           (text, index) => (
             <ListItem key={text} disablePadding>
