@@ -14,22 +14,29 @@ export const fetch = async (url, options) => {
 
 export const authFetch = async (url, options) => {
   try {
-    const token = document.cookie
-      ?.split(';')
-      ?.find((cookies) => cookies.includes('GAMEBU_TOKEN'))
-      ?.slice(13);
+    // const token = document.cookie
+    //   ?.split(';')
+    //   ?.find((cookies) => cookies.includes('GAMEBU_TOKEN'))
+    //   ?.slice(13);
 
-    if (token) {
-      const result = await axios(`${API_END_POINT}${url}`, {
-        ...options,
-        headers: {
-          Authorization: `bearer ${token}`,
-        },
-      });
-      return result.data;
-    }
+    // if (token) {
+    //   const result = await axios(`${API_END_POINT}${url}`, {
+    //     ...options,
+    //     headers: {
+    //       Authorization: `bearer ${token}`,
+    //     },
+    //   });
+    //   return result.data;
+    // }
+    const result = await axios(`${API_END_POINT}${url}`, {
+      ...options,
+      headers: {
+        Authorization: `bearer ${DONG_TOKEN}`,
+      },
+    });
+    return result.data;
 
-    throw new Error('token is not found in cookie');
+    // throw new Error('token is not found in cookie');
   } catch (error) {
     console.error(error);
     return error;
