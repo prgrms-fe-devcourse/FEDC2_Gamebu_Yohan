@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // 컴포넌트가 생성될 때 재생성을 방지하기 위해서 전역적으로 생성
 let observer = null;
@@ -69,27 +69,27 @@ function Image({
 }
 
 Image.propTypes = {
-  src: propTypes.string.isRequired,
-  alt: propTypes.string,
-  width: propTypes.oneOfType([propTypes.number, propTypes.string]),
-  height: propTypes.oneOfType([propTypes.number, propTypes.string]),
-  mode: propTypes.oneOf(['contain', 'cover', 'fill']),
-  block: propTypes.bool,
-  lazy: propTypes.bool,
-  threshold: propTypes.number,
-  placeholder: propTypes.string,
-  style: propTypes.object,
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  mode: PropTypes.oneOf(['contain', 'cover', 'fill']),
+  block: PropTypes.bool,
+  lazy: PropTypes.bool,
+  threshold: PropTypes.number,
+  placeholder: PropTypes.string,
+  style: PropTypes.object,
 };
 
 Image.defaultProps = {
   alt: '',
   width: 100,
   height: 80,
-  mode: propTypes.string,
-  block: propTypes.bool,
-  lazy: propTypes.bool,
+  mode: PropTypes.string,
+  block: PropTypes.bool,
+  lazy: PropTypes.bool,
   threshold: 0,
-  placeholder: propTypes.string,
+  placeholder: PropTypes.string,
   style: {},
 };
 

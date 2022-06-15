@@ -16,7 +16,7 @@ function BottomNavBar() {
   const navigate = useNavigate();
   const routingTable = {
     0: '/',
-    1: '/categories',
+    1: '/channel/categories',
     2: '/search/all',
   };
   return (
