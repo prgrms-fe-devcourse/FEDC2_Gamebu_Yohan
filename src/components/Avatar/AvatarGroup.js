@@ -1,5 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 function AvatarGroup({ children, shape, size, ...props }) {
   const avatars = React.Children.toArray(children)
@@ -29,10 +29,10 @@ function AvatarGroup({ children, shape, size, ...props }) {
 }
 
 AvatarGroup.propTypes = {
-  children: propTypes.node.isRequired,
-  shape: propTypes.oneOf(['circle', 'round', 'square']),
-  size: propTypes.oneOfType([propTypes.number, propTypes.string]),
-  props: propTypes.object,
+  children: PropTypes.node.isRequired,
+  shape: PropTypes.oneOf(['circle', 'round', 'square']),
+  size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  props: PropTypes.object,
 };
 
 AvatarGroup.defaultProps = {
