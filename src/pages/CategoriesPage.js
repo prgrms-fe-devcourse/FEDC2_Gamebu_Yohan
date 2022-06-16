@@ -101,6 +101,23 @@ function CategoriesPage() {
     favorites(res);
   };
 
+  const deleteFavorites = async (e, id) => {
+    e.preventDefault();
+
+    alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제하시겠습니까?`);
+    const newFavorites = userFavorites.filter((item) => item !== id);
+
+    setUserFavorites(newFavorites);
+    const res = await authFetch('settings/update-user', {
+      method: 'PUT',
+      data: {
+        fullName: user.fullName,
+        username: JSON.stringify(newFavorites),
+      },
+    });
+    favorites(res);
+  };
+
   return (
     <>
       <ContextProvider>
@@ -113,7 +130,7 @@ function CategoriesPage() {
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GAME_ITEM>
                     <STYLED_IMG src={images[item]} />
-                    <ICON_WRAPPER>
+                    <ICON_WRAPPER onClick={(e) => deleteFavorites(e, item)}>
                       <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
                     </ICON_WRAPPER>
                   </GAME_ITEM>
