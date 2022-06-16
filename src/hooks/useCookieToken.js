@@ -26,7 +26,6 @@ const useCookieToken = () => {
   }, []);
 
   return {
-    isLogin: Boolean(storedCookie),
     token: storedCookie,
     setCookie,
   };

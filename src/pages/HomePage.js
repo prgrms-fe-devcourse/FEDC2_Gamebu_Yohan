@@ -11,11 +11,11 @@ import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
 import { useEffect, useState } from 'react';
 import Image from '@components/Image';
 import { Link } from 'react-router-dom';
-import maple from '../assets/img/maple.png';
-import lol from '../assets/img/lol.png';
-import lostark from '../assets/img/lostark.png';
-import overwatch from '../assets/img/overwatch.png';
-import battleground from '../assets/img/battleground.png';
+import maple from '@assets/img/maple.png';
+import lol from '@assets/img/lol.png';
+import lostark from '@assets/img/lostark.png';
+import overwatch from '@assets/img/overwatch.png';
+import battleground from '@assets/img/battleground.png';
 
 const HomePageContainer = styled.div`
   display: flex;
@@ -113,8 +113,8 @@ function HomePage() {
           {channels &&
             channels.map((item, index) => {
               return (
-                <Link to={`/channel/${item.id}`}>
-                  <SliderItemWrapper key={item.id}>
+                <Link to={`/channel/${item.id}`} key={item.id}>
+                  <SliderItemWrapper>
                     <Image
                       src={images[index] || NOT_FOUND_IMAGE}
                       width={342}

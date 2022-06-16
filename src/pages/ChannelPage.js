@@ -130,7 +130,10 @@ function ChannelPage() {
       </ChannelContainer>
       <LinkButtonContainer>
         <LinkButton type="button">
-          <Link to="/posts" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link
+            to="/posts/write"
+            style={{ textDecoration: 'none', color: 'black' }}
+          >
             글쓰기
           </Link>
         </LinkButton>
