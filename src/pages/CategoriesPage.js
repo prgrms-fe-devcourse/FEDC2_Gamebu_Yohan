@@ -60,13 +60,13 @@ const GAME_TITLE = styled.div`
 function CategoriesPage() {
   const { user } = useValueContext();
   const { favorites } = useActionContext();
-  const [userLikes, setUserLikes] = useState([]);
+  const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
   const [images] = useState([maple, lol, battleground, lostark, overwatch]);
 
   useEffect(() => {
     if (user && user.username) {
-      setUserLikes(JSON.parse(user.username));
+      setUserFavorites(JSON.parse(user.username));
     }
   }, [user]);
 
@@ -80,7 +80,7 @@ function CategoriesPage() {
 
     likes.push(id);
     likes.sort();
-    setUserLikes([...userLikes, likes]);
+    setUserFavorites([...userFavorites, likes]);
 
     alert(`즐겨찾기에 ${name} 채널을 추가하시겠습니까?`);
 
@@ -100,8 +100,8 @@ function CategoriesPage() {
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
         <CATEGORIES_CONTAINER>
-          {userLikes &&
-            userLikes.map((item, index) => {
+          {userFavorites &&
+            userFavorites.map((item, index) => {
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GAME_ITEM>
