@@ -103,22 +103,24 @@ function CategoriesPage() {
     [userFavorites, favorites, user]
   );
 
-  const deleteFavorites = async (e, id) => {
-    e.preventDefault();
+  const deleteFavorites = useCallback(
+    async (e, id) => {
+      e.preventDefault();
 
-    alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제하시겠습니까?`);
-    const newFavorites = userFavorites.filter((item) => item !== id);
+      alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제`);
+      const newFavorites = userFavorites.filter((item) => item !== id);
 
-    setUserFavorites(newFavorites);
-    const res = await authFetch('settings/update-user', {
-      method: 'PUT',
-      data: {
-        fullName: user.fullName,
-        username: JSON.stringify(newFavorites),
-      },
-    });
-    favorites(res);
-  };
+      setUserFavorites(newFavorites);
+      const res = await authFetch('settings/update-user', {
+        method: 'PUT',
+        data: {
+          username: JSON.stringify(newFavorites),
+        },
+      });
+      favorites(res);
+    },
+    [userFavorites, favorites]
+  );
 
   return (
     <>
