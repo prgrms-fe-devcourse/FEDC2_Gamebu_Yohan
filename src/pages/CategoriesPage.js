@@ -85,6 +85,12 @@ function CategoriesPage() {
         likes = JSON.parse(user.username);
       }
 
+      if (likes.includes(id)) {
+        alert('이미 추가된 채널입니다.');
+        // TODO : Toast 또는 다른 UI로직
+        return;
+      }
+
       likes.push(id);
       likes.sort();
       setUserFavorites([...userFavorites, likes]);
