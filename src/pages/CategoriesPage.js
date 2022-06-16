@@ -85,15 +85,24 @@ function CategoriesPage() {
   return (
     <>
       <ContextProvider>
-        {/* <div>ContextProvider : {user && user.username}</div> */}
-        {/* <div>
-          ContextProvider :{' '}
-          {stars &&
-            stars.map((item) => {
-              return CATEGORIES[item];
+        <Header strong>즐겨찾기 목록</Header>
+        <Divider />
+        <CATEGORIES_CONTAINER>
+          {user &&
+            JSON.parse(user.username).map((item) => {
+              return (
+                <Link to={`/channel/${item}`} key={`${item}`}>
+                  <GAME_ITEM>
+                    <STYLED_IMG src={images[0]} />
+                    <ICON_WRAPPER>
+                      <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
+                    </ICON_WRAPPER>
+                  </GAME_ITEM>
+                  <GAME_TITLE>{`${CATEGORIES[item]}`}</GAME_TITLE>
+                </Link>
+              );
             })}
-        </div> */}
-        {console.log(user)}
+        </CATEGORIES_CONTAINER>
       </ContextProvider>
       <Header strong>게임 카테고리</Header>
       <Divider />
