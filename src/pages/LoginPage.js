@@ -72,6 +72,7 @@ const LoginButton = styled(Button)`
 
 const LoginWarningAlert = styled(Alert)`
   font-size: 0.75rem;
+  margin-top: 1rem;
 `;
 
 const SignupLinkBox = styled(Box)`

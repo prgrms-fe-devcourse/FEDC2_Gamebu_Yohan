@@ -68,6 +68,7 @@ const SignupButton = styled(Button)`
 
 const SignupWarningAlert = styled(Alert)`
   font-size: 0.75rem;
+  margin-top: 1rem;
 `;
 
 const helperText = {
