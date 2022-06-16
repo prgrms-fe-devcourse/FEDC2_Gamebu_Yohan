@@ -8,12 +8,12 @@ import Box from '@mui/material/Box';
 import { useNavigate, Link } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
-import { fetch } from '@utils/fetch';
 import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
 import GoBack from '@components/GoBack';
 import { GAMEBU_TOKEN, regexId } from '@utils/constants';
+import { loginAPI } from '@utils/user';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -108,7 +108,7 @@ function LoginPage() {
       password: '',
     },
     onSubmit: async () => {
-      const { response, token, user } = await fetch('login', {
+      const { response, token, user } = await loginAPI({
         method: 'POST',
         data: {
           email: values.id,

@@ -6,10 +6,10 @@ import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
-import { fetch } from '@utils/fetch';
 import GoBack from '@components/GoBack';
 import { regexId, regexName } from '@utils/constants';
 import { useNavigate } from 'react-router-dom';
+import { signupAPI } from '@utils/user';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -94,7 +94,7 @@ function SignupPage() {
       passwordConfirm: '',
     },
     onSubmit: async () => {
-      const { response } = await fetch('signup', {
+      const { response } = await signupAPI({
         method: 'POST',
         data: {
           email: values.id,
