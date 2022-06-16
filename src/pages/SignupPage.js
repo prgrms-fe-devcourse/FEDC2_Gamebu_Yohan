@@ -8,8 +8,8 @@ import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
 import GoBack from '@components/GoBack';
-import SignupSuccessModal from '@components/SignupSuccessModal';
 import { regexId, regexName } from '@utils/constants';
+import { useNavigate } from 'react-router-dom';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -84,8 +84,8 @@ function SignupPage() {
     visible: false,
     message: '',
   });
-  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
+  const navigate = useNavigate();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -118,7 +118,8 @@ function SignupPage() {
         }
         return;
       }
-      setSuccessModalVisible(true);
+
+      navigate('/login');
     },
     validate: ({ id, name, password, passwordConfirm }) => {
       const newErrors = {};
@@ -211,7 +212,6 @@ function SignupPage() {
         </Form>
       </FormWrapper>
       <FlexGrowBox grow={2} />
-      <SignupSuccessModal visible={successModalVisible} />
     </ContentWrapper>
   );
 }
