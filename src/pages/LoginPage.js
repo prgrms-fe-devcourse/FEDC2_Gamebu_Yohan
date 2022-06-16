@@ -16,6 +16,13 @@ import GoBack from '@components/GoBack';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 3rem);
+`;
+
+const FlexGrowBox = styled.div`
+  flex-grow: ${({ grow }) => grow};
 `;
 
 const LoginHeader = styled.h1`
@@ -155,6 +162,7 @@ function LoginPage() {
           {warningAlertInfo.message}
         </LoginWarningAlert>
       </Collapse>
+      <FlexGrowBox grow={1} />
       <LoginHeader>Login</LoginHeader>
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
@@ -194,6 +202,7 @@ function LoginPage() {
         아이디 없으신가요?&nbsp;
         <SignupLink to="/signup">회원가입하기</SignupLink>
       </SignupLinkBox>
+      <FlexGrowBox grow={2} />
     </ContentWrapper>
   );
 }
