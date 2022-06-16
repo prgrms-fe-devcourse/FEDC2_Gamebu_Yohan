@@ -29,7 +29,11 @@ function ClickAwayPopper({
     (item) => React.isValidElement(item)
   );
   return (
-    <ClickAwayListener onClickAway={handlePopperClickAway}>
+    <ClickAwayListener
+      mouseEvent="onMouseDown"
+      touchEvent="onTouchStart"
+      onClickAway={handlePopperClickAway}
+    >
       <div>
         {React.cloneElement(trigger, {
           ref: popperRef,
