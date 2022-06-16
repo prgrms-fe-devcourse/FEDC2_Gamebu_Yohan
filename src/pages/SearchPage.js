@@ -106,7 +106,7 @@ function SearchPage() {
         onKeyDown={handleKeyDown}
         {...inputError}
       />
-      {searchParam.get('k') ? (
+      {!searchResult.isLoading && searchParam.get('k') && (
         <>
           <HeaderBox>
             <HeaderWrapper>
@@ -153,9 +153,11 @@ function SearchPage() {
             </ListWrapper>
           </HeaderBox>
         </>
-      ) : (
+      )}
+      {!searchParam.get('k') && (
         <Header margin="10% 0">검색어를 입력해 파티를 찾아보세요!</Header>
       )}
+      {searchResult.isLoading && <Header margin="10% 0">로딩중!</Header>}
     </Container>
   );
 }
