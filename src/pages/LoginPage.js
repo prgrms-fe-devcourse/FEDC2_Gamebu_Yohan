@@ -13,7 +13,7 @@ import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
 import GoBack from '@components/GoBack';
-import { regexId } from '@utils/constants';
+import { GAMEBU_TOKEN, regexId } from '@utils/constants';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -99,7 +99,7 @@ function LoginPage() {
   });
 
   const navigate = useNavigate();
-  const { setCookie } = useCookieToken();
+  const [, setToken] = useCookieToken(GAMEBU_TOKEN);
   const { login } = useActionContext();
   const { isLogin } = useValueContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
@@ -132,7 +132,7 @@ function LoginPage() {
         return;
       }
 
-      setCookie(token);
+      setToken(token);
       login(user);
     },
     validate: ({ id, password }) => {

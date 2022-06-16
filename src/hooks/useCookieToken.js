@@ -1,33 +1,32 @@
 import { useState, useCallback } from 'react';
-import { GAMEBU_TOKEN } from '@utils/constants';
 
-const useCookieToken = () => {
+const useCookieToken = (key, defaultValue = null) => {
   const [storedCookie, setStoredCookie] = useState(() => {
     try {
       const item = document.cookie
-        ?.split(';')
-        ?.find((cookies) => cookies.includes(GAMEBU_TOKEN))
-        ?.slice(13);
-      return item || null;
+        ?.split('; ')
+        ?.find((cookies) => cookies.includes(key))
+        ?.slice(key.length + 1);
+      return item || defaultValue;
     } catch (error) {
       console.error(error);
-      return null;
+      return defaultValue;
     }
   });
 
-  const setCookie = useCallback((value) => {
-    try {
-      setStoredCookie(value);
-      document.cookie = `${GAMEBU_TOKEN}=${value}`;
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const setCookie = useCallback(
+    (value) => {
+      try {
+        setStoredCookie(value);
+        document.cookie = `${key}=${value}`;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [key]
+  );
 
-  return {
-    token: storedCookie,
-    setCookie,
-  };
+  return [storedCookie, setCookie];
 };
 
 export default useCookieToken;

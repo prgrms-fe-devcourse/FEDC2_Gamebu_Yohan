@@ -8,12 +8,13 @@ import {
 import PropTypes from 'prop-types';
 import useCookieToken from '@hooks/useCookieToken';
 import { authFetch } from '@utils/fetch';
+import { GAMEBU_TOKEN } from '@utils/constants';
 
 export const valueContext = createContext();
 export const actionContext = createContext();
 
 function ContextProvider({ children }) {
-  const { token } = useCookieToken();
+  const [token] = useCookieToken(GAMEBU_TOKEN);
   const [state, setState] = useState({
     test: 100,
     user: null,
