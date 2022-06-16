@@ -94,9 +94,21 @@ function HomePage() {
 
   const getPostsList = async () => {
     const mapleResult = await fetch('posts/channel/62a7367f5517e27ffcab3bcb');
-    const lolResult = await fetch('posts/channel/62a736925517e27ffcab3bcf');
-    const postsResult = mapleResult.concat(lolResult);
+    const allPosts = await fetch('search/all/tt');
+    const filteredPosts = allPosts
+      .filter(
+        (post) =>
+          post.channel === '62a7367f5517e27ffcab3bcb' ||
+          post.channel === '62a736925517e27ffcab3bcf' ||
+          post.channel === '62a736a15517e27ffcab3bd5' ||
+          post.channel === '62a818db5517e27ffcab3ce2' ||
+          post.channel === '62a818e85517e27ffcab3ce6'
+      )
+      .reverse();
+
+    const postsResult = mapleResult.concat(filteredPosts);
     postsResult.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
     setPosts(postsResult);
   };
 
@@ -141,7 +153,9 @@ function HomePage() {
 
             return (
               <RecentPostsWrapper key={item._id}>
-                <PostCategory>{CATEGORIES[categoriesId]}</PostCategory>
+                <PostCategory>
+                  {CATEGORIES[categoriesId] || CATEGORIES[item.channel]}
+                </PostCategory>
                 <Link to={`posts/details/${item._id}`}>
                   <PostTitle>{title}</PostTitle>
                 </Link>
