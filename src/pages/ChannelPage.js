@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetch, authFetch } from '@utils/fetch';
 import styled from '@emotion/styled';
@@ -63,6 +63,8 @@ const LinkButton = styled.button`
   background-color: ${COLOR_BG};
 `;
 
+const userId = '629f07fa7e01ad1cb7250131'; // 전역스토어에서 가져옴
+
 function ChannelPage() {
   const navigate = useNavigate();
   const [start, setStart] = useState(0);
@@ -82,8 +84,10 @@ function ChannelPage() {
     const result = await fetch(
       `posts/channel/${tagTestChanneld}?offset=${start}&limit=${limit}`
     );
-    setChannelData([...channelData, ...result]);
-    setStart(start + limit);
+    if (result.length > 0) {
+      setChannelData([...channelData, ...result]);
+      setStart(start + limit);
+    }
   };
 
   const getUserInfoAndParse = async () => {
@@ -105,9 +109,10 @@ function ChannelPage() {
     getChannelData(); // 채널의 포스트 목록 조회 함수
     findChannel(); // 채널을 즐겨찾기 했는지 확인하는 함수
   }, []);
+
   // 사용자 정보 수정 api
   const modifyUserInfo = async (channelIdInfo) => {
-    const res = await authFetch('settings/update-user', {
+    await authFetch('settings/update-user', {
       method: 'PUT',
       data: {
         fullName: 'EonDongKim',
@@ -115,6 +120,8 @@ function ChannelPage() {
       },
     });
   };
+
+  console.log(channelData);
 
   const favoriteClick = async (boolean) => {
     setIsFavorite(!isFavorite);
@@ -153,6 +160,39 @@ function ChannelPage() {
       (a, b) => b.likes.length - a.likes.length
     );
     setChannelData([...sortedChannelData]);
+  };
+
+  const changeLikeCount = (bool, postId, likeId) => {
+    // 좋아요가 바뀌었을때 인기순을 바꿔주는 함수
+    if (bool) {
+      console.log('likeId:', likeId);
+      setChannelData([
+        ...channelData.map((item) => {
+          if (item._id === postId) {
+            return {
+              ...item,
+              likes: [
+                ...item.likes,
+                { _id: likeId, post: postId, user: userId },
+              ],
+            };
+          }
+          return item;
+        }),
+      ]);
+    } else {
+      setChannelData([
+        ...channelData.map((item) => {
+          if (item._id === postId) {
+            return {
+              ...item,
+              likes: [...item.likes.filter((i) => i.user !== userId)],
+            };
+          }
+          return item;
+        }),
+      ]);
+    }
   };
 
   const goToWrite = () => {
@@ -206,6 +246,9 @@ function ChannelPage() {
                 channelId={item.channel._id}
                 content={JSON.parse(item.title).dd}
                 authorId={item.author._id}
+                changeLikeCount={(bool, id, likeId) =>
+                  changeLikeCount(bool, id, likeId)
+                }
               />
             ))}
           <div id="scrollableDiv" style={{ width: '100%', height: '2rem' }} />

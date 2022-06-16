@@ -92,6 +92,7 @@ function ChannelPostCard({
   comments,
   content,
   authorId,
+  changeLikeCount,
 }) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -145,22 +146,26 @@ function ChannelPostCard({
       const data = likes.find((item) => item.user === userId);
 
       if (!data) return;
-
+      console.log('data: ', data);
       const id = data._id;
-
-      await authFetch('likes/delete', {
+      console.log('id', id);
+      const res = await authFetch('likes/delete', {
         method: 'DELETE',
         data: {
           id,
         },
       });
+      console.log('res: ', res);
+      changeLikeCount(false, postId);
     } else {
-      await authFetch('likes/create', {
+      const res = await authFetch('likes/create', {
         method: 'POST',
         data: {
           postId,
         },
       });
+      console.log('resId', res._id);
+      changeLikeCount(true, postId, res._id);
     }
   };
 
@@ -169,6 +174,7 @@ function ChannelPostCard({
     if (isLiked) {
       fetchLike(isLiked);
       setLikeCount(likeCount - 1);
+      // 불린값을 통해 좋아요 취소인지 좋아요 추가인지 구분
     } else {
       fetchLike(isLiked);
       setLikeCount(likeCount + 1);
@@ -216,7 +222,7 @@ function ChannelPostCard({
         {tag.length > 4 ? (
           <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
         ) : null}
-        <HeartIconButton onClick={heartClick}>
+        <HeartIconButton onClick={(e) => heartClick(e)}>
           {isLiked ? (
             <FavoriteIcon color="error" />
           ) : (
@@ -242,6 +248,7 @@ ChannelPostCard.propTypes = {
   channelId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     .isRequired,
   comments: PropTypes.array.isRequired,
+  changeLikeCount: PropTypes.func.isRequired,
 };
 
 export default ChannelPostCard;
