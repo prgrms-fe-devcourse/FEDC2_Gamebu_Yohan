@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ContextProvider from '@contexts/ContextProvider';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
-import { CHANNELS } from '@utils/constants';
+import { CATEGORIES, CHANNELS } from '@utils/constants';
 import maple from '@assets/img/maple.png';
 import lol from '@assets/img/lol.png';
 import lostark from '@assets/img/lostark.png';
 import overwatch from '@assets/img/overwatch.png';
 import battleground from '@assets/img/battleground.png';
 import useValueContext from '@hooks/useValueContext';
+import useAsync from '@hooks/useAsync';
+import { authFetch } from '@utils/fetch';
 
 const GAME_ITEM = styled.div`
   position: relative;
@@ -56,14 +57,42 @@ const GAME_TITLE = styled.div`
 `;
 
 function CategoriesPage() {
-  const { isLogin, user } = useValueContext();
+  let { user } = useValueContext();
   const [channels] = useState(CHANNELS);
   const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+
+  const test = async (e, id, name) => {
+    e.preventDefault();
+    let likes = [];
+    if (user.username) {
+      likes = JSON.parse(user.username);
+    }
+
+    likes.push(id);
+
+    alert(`즐겨찾기에 ${name} 채널을 추가하시겠습니까?`);
+
+    const res = await authFetch('settings/update-user', {
+      method: 'PUT',
+      data: {
+        fullName: user.fullName,
+        username: JSON.stringify(likes),
+      },
+    });
+    user = res;
+  };
 
   return (
     <>
       <ContextProvider>
-        <div>ContextProvider : {user && user.username}</div>
+        {/* <div>ContextProvider : {user && user.username}</div> */}
+        {/* <div>
+          ContextProvider :{' '}
+          {stars &&
+            stars.map((item) => {
+              return CATEGORIES[item];
+            })}
+        </div> */}
         {console.log(user)}
       </ContextProvider>
       <Header strong>게임 카테고리</Header>
@@ -75,7 +104,9 @@ function CategoriesPage() {
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
                 <GAME_ITEM>
                   <STYLED_IMG src={images[index]} />
-                  <ICON_WRAPPER>
+                  <ICON_WRAPPER
+                    onClick={(e) => test(e, channel.id, channel.name)}
+                  >
                     <StarBorderIcon fontSize="small" sx={{ color: 'red' }} />
                   </ICON_WRAPPER>
                 </GAME_ITEM>
