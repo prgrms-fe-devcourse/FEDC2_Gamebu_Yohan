@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 function PostDetailPage() {
   const location = useLocation();
-  console.log(location);
+  console.log(location.state);
   return <div>PostDetailPage</div>;
 }
 

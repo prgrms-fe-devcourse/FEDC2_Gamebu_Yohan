@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { fetch } from '@utils/fetch';
 import styled from '@emotion/styled';
 import { COLOR_BG } from '@utils/color';
@@ -47,6 +47,7 @@ const LinkButton = styled.button`
 `;
 
 function ChannelPage() {
+  const navigate = useNavigate();
   const [start, setStart] = useState(0);
   const [channelData, setChannelData] = useState([]);
   const [isNew, setIsNew] = useState(true);
@@ -64,6 +65,7 @@ function ChannelPage() {
     );
     setChannelData([...channelData, ...result]);
     setStart(start + limit);
+    console.log(result);
   };
 
   useEffect(() => {
@@ -87,6 +89,11 @@ function ChannelPage() {
       (a, b) => b.likes.length - a.likes.length
     );
     setChannelData([...sortedChannelData]);
+  };
+
+  const goToWrite = () => {
+    //
+    navigate('/posts/write', { state: { channelId } });
   };
 
   return (
@@ -122,19 +129,15 @@ function ChannelPage() {
                 postId={item._id}
                 channelId={item.channel._id}
                 content={JSON.parse(item.title).dd}
+                authorId={item.author._id}
               />
             ))}
           <div id="scrollableDiv" style={{ width: '100%', height: '2rem' }} />
         </InfiniteScroll>
       </ChannelContainer>
       <LinkButtonContainer>
-        <LinkButton type="button">
-          <Link
-            to="/posts/write"
-            style={{ textDecoration: 'none', color: 'black' }}
-          >
-            글쓰기
-          </Link>
+        <LinkButton type="button" onClick={goToWrite}>
+          글쓰기
         </LinkButton>
       </LinkButtonContainer>
     </>

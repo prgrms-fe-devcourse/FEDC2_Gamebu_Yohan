@@ -91,6 +91,7 @@ function ChannelPostCard({
   channelId,
   comments,
   content,
+  authorId,
 }) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -127,6 +128,7 @@ function ChannelPostCard({
     isLiked,
     postId,
     channelId,
+    authorId,
   };
 
   const postClick = () => {
@@ -235,6 +237,8 @@ ChannelPostCard.propTypes = {
   content: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   postId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  authorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
   channelId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     .isRequired,
   comments: PropTypes.array.isRequired,
