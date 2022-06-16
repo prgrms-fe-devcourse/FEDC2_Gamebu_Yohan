@@ -6,7 +6,7 @@ import { COLOR_BG } from '@utils/color';
 import Divider from '@components/Divider';
 import ChannelImageContainer from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
-import channelImageObject from '@components/Channels/ChannelImages/ChannelImageFiles';
+import channelImageObject from '@assets/ChannelImages/ChannelImageFiles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const ChannelContainer = styled.div`
@@ -65,7 +65,6 @@ function ChannelPage() {
     );
     setChannelData([...channelData, ...result]);
     setStart(start + limit);
-    console.log(result);
   };
 
   useEffect(() => {

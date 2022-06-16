@@ -134,7 +134,7 @@ function ChannelPostCard({
   const postClick = () => {
     console.log(postId);
     navigate('/posts/details', {
-      replace: true,
+      replace: false,
       state: toDetailInfo,
     });
   };

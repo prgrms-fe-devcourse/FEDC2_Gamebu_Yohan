@@ -12,7 +12,7 @@ function ChannelImageContainer({ url }) {
     <Image
       width="100%"
       height="7.5rem"
-      src={require(`${url}`)}
+      src={url}
       mode="cover"
       block={false}
       lazy={false}
