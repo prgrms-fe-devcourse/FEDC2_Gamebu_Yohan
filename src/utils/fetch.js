@@ -29,7 +29,7 @@ export const authFetch = async (url, options) => {
       return result.data;
     }
 
-    // throw new Error('token is not found in cookie');
+    throw new Error('token is not found in cookie');
   } catch (error) {
     console.error(error);
     return error;
