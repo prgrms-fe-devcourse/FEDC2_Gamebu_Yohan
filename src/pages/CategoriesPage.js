@@ -70,7 +70,7 @@ function CategoriesPage() {
     }
   }, [user]);
 
-  const test = async (e, id, name) => {
+  const updateFavorites = async (e, id, name) => {
     e.preventDefault();
     let likes = [];
     if (user.username) {
@@ -126,7 +126,9 @@ function CategoriesPage() {
                 <GAME_ITEM>
                   <STYLED_IMG src={images[index]} />
                   <ICON_WRAPPER
-                    onClick={(e) => test(e, channel.id, channel.name)}
+                    onClick={(e) =>
+                      updateFavorites(e, channel.id, channel.name)
+                    }
                   >
                     <StarBorderIcon fontSize="small" sx={{ color: 'red' }} />
                   </ICON_WRAPPER>
