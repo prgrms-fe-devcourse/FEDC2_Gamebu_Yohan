@@ -69,6 +69,7 @@ function CategoriesPage() {
     }
 
     likes.push(id);
+    likes.sort();
 
     alert(`즐겨찾기에 ${name} 채널을 추가하시겠습니까?`);
 
@@ -89,11 +90,11 @@ function CategoriesPage() {
         <Divider />
         <CATEGORIES_CONTAINER>
           {user &&
-            JSON.parse(user.username).map((item) => {
+            JSON.parse(user.username).map((item, index) => {
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GAME_ITEM>
-                    <STYLED_IMG src={images[0]} />
+                    <STYLED_IMG src={images[index]} />
                     <ICON_WRAPPER>
                       <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
                     </ICON_WRAPPER>
