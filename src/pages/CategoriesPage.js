@@ -15,6 +15,7 @@ import battleground from '@assets/img/battleground.png';
 import useValueContext from '@hooks/useValueContext';
 import useAsync from '@hooks/useAsync';
 import { authFetch } from '@utils/fetch';
+import useActionContext from '@hooks/useActionContext';
 
 const GAME_ITEM = styled.div`
   position: relative;
@@ -57,9 +58,17 @@ const GAME_TITLE = styled.div`
 `;
 
 function CategoriesPage() {
-  let { user } = useValueContext();
+  const { user } = useValueContext();
+  const { favorites } = useActionContext();
+  const [userLikes, setUserLikes] = useState([]);
   const [channels] = useState(CHANNELS);
   const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+
+  useEffect(() => {
+    if (user && user.username) {
+      setUserLikes(JSON.parse(user.username));
+    }
+  }, [user]);
 
   const test = async (e, id, name) => {
     e.preventDefault();
@@ -67,9 +76,11 @@ function CategoriesPage() {
     if (user.username) {
       likes = JSON.parse(user.username);
     }
+    console.log(likes);
 
     likes.push(id);
     likes.sort();
+    setUserLikes([...userLikes, likes]);
 
     alert(`즐겨찾기에 ${name} 채널을 추가하시겠습니까?`);
 
@@ -80,7 +91,7 @@ function CategoriesPage() {
         username: JSON.stringify(likes),
       },
     });
-    user = res;
+    favorites(res);
   };
 
   return (
@@ -89,8 +100,8 @@ function CategoriesPage() {
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
         <CATEGORIES_CONTAINER>
-          {user &&
-            JSON.parse(user.username).map((item, index) => {
+          {userLikes &&
+            userLikes.map((item, index) => {
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GAME_ITEM>
