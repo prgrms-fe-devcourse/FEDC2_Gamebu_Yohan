@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetch } from '@utils/fetch';
+import { fetch, authFetch } from '@utils/fetch';
 import styled from '@emotion/styled';
 import { COLOR_BG } from '@utils/color';
 import Divider from '@components/Divider';
@@ -8,12 +8,29 @@ import ChannelImageContainer from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
 import channelImageObject from '@assets/ChannelImages/ChannelImageFiles';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import StarIcon from '@mui/icons-material/Star';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
 const ChannelContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
   height: 42rem;
+`;
+
+const FavoriteIcon = styled(StarIcon)`
+  color: #cddc39;
+  font-size: 32px;
+  position: absolute;
+  right: 2rem;
+  top: 6rem;
+`;
+const NotFavoriteIcon = styled(StarOutlineIcon)`
+  font-size: 32px;
+  position: absolute;
+  right: 2rem;
+  top: 6rem;
+  color: #cddc39;
 `;
 
 const SortBox = styled.div`
@@ -52,7 +69,9 @@ function ChannelPage() {
   const [channelData, setChannelData] = useState([]);
   const [isNew, setIsNew] = useState(true);
   const [isPopular, setIsPopular] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
+  const DONG_EON_ID = '629f07fa7e01ad1cb7250131';
   // const { channelId } = useParams('');
   const channelId = '62a817a85517e27ffcab3cce';
   const infiniteChannelId = '62a97c1c6c77714531010109';
@@ -67,9 +86,54 @@ function ChannelPage() {
     setStart(start + limit);
   };
 
+  const getUserInfoAndParse = async () => {
+    // 사용자 정보가져오는 api 즐겨찾기 가져옴 전역스토어사용?
+    const userInfo = await fetch(`users/${DONG_EON_ID}`);
+    return JSON.parse(userInfo.username);
+  };
+
+  // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
+  const findChannel = async () => {
+    const parsedChannelIdArray = await getUserInfoAndParse();
+    const found = parsedChannelIdArray.find((id) => tagTestChanneld === id);
+    if (!found) return null;
+
+    setIsFavorite(true);
+  };
+
   useEffect(() => {
-    getChannelData();
+    getChannelData(); // 채널의 포스트 목록 조회 함수
+    findChannel(); // 채널을 즐겨찾기 했는지 확인하는 함수
   }, []);
+  // 사용자 정보 수정 api
+  const modifyUserInfo = async (channelIdInfo) => {
+    const res = await authFetch('settings/update-user', {
+      method: 'PUT',
+      data: {
+        fullName: 'EonDongKim',
+        username: JSON.stringify(channelIdInfo),
+      },
+    });
+  };
+
+  const favoriteClick = async (boolean) => {
+    setIsFavorite(!isFavorite);
+    if (boolean) {
+      // 구독 취소 액션
+      // 사용자 정보 수정 api로 channelId 를 지운다
+      const parsedChannelIdArray = await getUserInfoAndParse();
+      const modifiedChannelArray = parsedChannelIdArray.filter(
+        (id) => tagTestChanneld !== id // 채널이 있다면 지우기
+      );
+      modifyUserInfo(modifiedChannelArray); // 사용자 정보 수정 api 즐겨찾기 배열수정
+    } else {
+      // 구독 액션
+      // 사용자 정보 수정 api 로 channelId 추가
+      const parsedChannelIdArray = await getUserInfoAndParse();
+      const addedChannelIdArray = [...parsedChannelIdArray, tagTestChanneld];
+      modifyUserInfo(addedChannelIdArray);
+    }
+  };
 
   const renderNewList = () => {
     setIsPopular(false);
@@ -80,6 +144,7 @@ function ChannelPage() {
     );
     setChannelData([...sortedChannelData]);
   };
+
   const renderPopularList = () => {
     setIsNew(false);
     setIsPopular(true);
@@ -91,14 +156,26 @@ function ChannelPage() {
   };
 
   const goToWrite = () => {
-    //
     navigate('/posts/write', { state: { channelId } });
   };
 
   return (
     <>
       <ChannelContainer>
-        <ChannelImageContainer url={channelImageObject[channelId]} />
+        <ChannelImageContainer src={channelImageObject[channelId]} />
+        {isFavorite ? (
+          <FavoriteIcon
+            fontSize="inherit"
+            color="inherit"
+            onClick={() => favoriteClick(isFavorite)}
+          />
+        ) : (
+          <NotFavoriteIcon
+            fontSize="inherit"
+            color="inherit"
+            onClick={() => favoriteClick(isFavorite)}
+          />
+        )}
         <SortBox>
           <Text onClick={renderNewList} isBold={isNew}>
             최신순
@@ -121,7 +198,7 @@ function ChannelPage() {
                 title={JSON.parse(item.title).dt}
                 key={item._id}
                 updatedAt={item.updatedAt}
-                fullName={item.author.username}
+                fullName={item.author.fullName}
                 likes={item.likes}
                 tag={JSON.parse(item.title).tg}
                 comments={item.comments}

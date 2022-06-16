@@ -7,12 +7,12 @@ import Image from '@components/Image';
 import { authFetch, fetch } from '@utils/fetch';
 import axios from 'axios';
 
-function ChannelImageContainer({ url }) {
+function ChannelImageContainer({ src }) {
   return (
     <Image
       width="100%"
       height="7.5rem"
-      src={url}
+      src={src}
       mode="cover"
       block={false}
       lazy={false}
@@ -23,7 +23,7 @@ function ChannelImageContainer({ url }) {
 }
 
 ChannelImageContainer.propTypes = {
-  url: PropTypes.string.isRequired,
+  src: PropTypes.string.isRequired,
 };
 
 export default ChannelImageContainer;
