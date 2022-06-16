@@ -62,7 +62,14 @@ function CategoriesPage() {
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
-  const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+  // const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+  const [images] = useState({
+    '62a7367f5517e27ffcab3bcb': maple,
+    '62a736925517e27ffcab3bcf': lol,
+    '62a736a15517e27ffcab3bd5': battleground,
+    '62a818db5517e27ffcab3ce2': lostark,
+    '62a818e85517e27ffcab3ce6': overwatch,
+  });
 
   useEffect(() => {
     if (user && user.username) {
@@ -101,11 +108,11 @@ function CategoriesPage() {
         <Divider />
         <CATEGORIES_CONTAINER>
           {userFavorites &&
-            userFavorites.map((item, index) => {
+            userFavorites.map((item) => {
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GAME_ITEM>
-                    <STYLED_IMG src={images[index]} />
+                    <STYLED_IMG src={images[item]} />
                     <ICON_WRAPPER>
                       <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
                     </ICON_WRAPPER>
@@ -120,11 +127,11 @@ function CategoriesPage() {
       <Divider />
       <CATEGORIES_CONTAINER>
         {channels &&
-          channels.map((channel, index) => {
+          channels.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
                 <GAME_ITEM>
-                  <STYLED_IMG src={images[index]} />
+                  <STYLED_IMG src={images[channel.id]} />
                   <ICON_WRAPPER
                     onClick={(e) =>
                       updateFavorites(e, channel.id, channel.name)
