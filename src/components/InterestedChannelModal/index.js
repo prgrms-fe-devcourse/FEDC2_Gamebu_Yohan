@@ -75,7 +75,7 @@ function InterestedChannelModal() {
         <ButtonContainer>
           <div>
             <input id="checkbox" ref={ref} type="checkbox" />
-            <Label for="checkbox">다시 보지 않기</Label>
+            <Label htmlFor="checkbox">다시 보지 않기</Label>
           </div>
           <ColorButton
             variant="outlined"
