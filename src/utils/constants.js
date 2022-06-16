@@ -33,3 +33,5 @@ export const CATEGORIES = {
 
 export const NOT_FOUND_IMAGE =
   'https://images.unsplash.com/flagged/photo-1580234748052-2c23d8b27a71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NjZ8fGdhbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60';
+
+export const GAMEBU_TOKEN = 'GAMEBU_TOKEN';

@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const GAMEBU_TOKEN = 'GAMEBU_TOKEN';
+import { GAMEBU_TOKEN } from '@utils/constants';
 
 const useCookieToken = () => {
   const [storedCookie, setStoredCookie] = useState(() => {
