@@ -137,6 +137,10 @@ function LoginPage() {
     validate: ({ id, password }) => {
       const newErrors = {};
       if (!id) newErrors.id = '아이디를 입력하지 않았습니다';
+      const regexId = /[^0-9a-zA-Z]/g;
+      const filteredId = id.replace(regexId, '');
+      if (id !== filteredId)
+        newErrors.id = '사용할 수 없는 문자가 포함되어 있습니다';
       if (!password) newErrors.password = '비밀번호를 입력하지 않았습니다';
       return newErrors;
     },

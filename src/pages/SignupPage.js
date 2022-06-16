@@ -122,7 +122,15 @@ function SignupPage() {
     validate: ({ id, name, password, passwordConfirm }) => {
       const newErrors = {};
       if (!id) newErrors.id = '아이디를 입력하지 않았습니다';
+      const regexId = /[^0-9a-zA-Z]/g;
+      const filteredId = id.replace(regexId, '');
+      if (id !== filteredId)
+        newErrors.id = '아이디에 사용할 수 없는 문자가 포함되어 있습니다';
       if (!name) newErrors.name = '이름을 입력하지 않았습니다';
+      const regexName = /[^0-9a-zA-Zㄱ-ㅎ가-힣]/g;
+      const filteredName = name.replace(regexName, '');
+      if (name !== filteredName)
+        newErrors.name = '이름에 사용할 수 없는 문자가 포함되어 있습니다';
       if (!password) newErrors.password = '비밀번호를 입력하지 않았습니다';
       if (!passwordConfirm)
         newErrors.passwordConfirm = '비밀번호를 한번 더 입력하지 않았습니다';
