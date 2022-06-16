@@ -12,6 +12,7 @@ import { fetch } from '@utils/fetch';
 import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
+import GoBack from '@components/GoBack';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -148,6 +149,7 @@ function LoginPage() {
 
   return (
     <ContentWrapper>
+      <GoBack />
       <Collapse in={warningAlertInfo.visible}>
         <LoginWarningAlert severity="warning" onClose={handleClickAlert}>
           {warningAlertInfo.message}
