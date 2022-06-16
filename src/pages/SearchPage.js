@@ -41,8 +41,6 @@ function SearchPage() {
     error: false,
     helperText: '',
   });
-  const [userList, setUserList] = useState([]);
-  const [postList, setPostList] = useState([]);
   const [searchResult, searchWithKeword] = useAsyncFn(
     async (keyword) => searchAll(keyword),
     [inputRef]
@@ -80,24 +78,16 @@ function SearchPage() {
     isValidKeyword(inputRef.current.value) &&
       setSearchParam({ k: inputRef.current.value });
   };
-
-  const classifyFetchData = (datas) => {
-    if (!datas) return;
-    setUserList(datas.filter((data) => data.fullName));
-    setPostList(
-      datas
-        .filter((data) => data.title)
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    );
+  const filterUser = () => {
+    if (!Array.isArray(searchResult.value)) return [];
+    return searchResult.value.filter((data) => data.fullName);
   };
-
-  useEffect(() => {
-    const { isLoading, value } = searchResult;
-    if (!isLoading) {
-      classifyFetchData(value);
-    }
-  }, [searchResult]);
-
+  const filterPost = () => {
+    if (!Array.isArray(searchResult.value)) return [];
+    return searchResult.value
+      .filter((data) => data.title)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  };
   const InputProps = {
     endAdornment: (
       <IconButton onClick={handleSearchClick}>
@@ -131,7 +121,7 @@ function SearchPage() {
             </HeaderWrapper>
             <ListWrapper>
               <List
-                items={userList}
+                items={filterUser()}
                 keyName="_id"
                 alt="키워드에 해당하는 결과가 없습니다"
                 limit={3}
@@ -153,7 +143,7 @@ function SearchPage() {
             </HeaderWrapper>
             <ListWrapper>
               <List
-                items={postList}
+                items={filterPost()}
                 keyName="_id"
                 alt="키워드에 해당하는 결과가 없습니다"
                 limit={3}
