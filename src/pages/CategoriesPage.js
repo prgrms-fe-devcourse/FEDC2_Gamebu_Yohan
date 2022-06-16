@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ContextProvider from '@contexts/ContextProvider';
@@ -77,29 +77,31 @@ function CategoriesPage() {
     }
   }, [user]);
 
-  const updateFavorites = async (e, id, name) => {
-    e.preventDefault();
-    let likes = [];
-    if (user.username) {
-      likes = JSON.parse(user.username);
-    }
-    console.log(likes);
+  const updateFavorites = useCallback(
+    async (e, id, name) => {
+      e.preventDefault();
+      let likes = [];
+      if (user.username) {
+        likes = JSON.parse(user.username);
+      }
 
-    likes.push(id);
-    likes.sort();
-    setUserFavorites([...userFavorites, likes]);
+      likes.push(id);
+      likes.sort();
+      setUserFavorites([...userFavorites, likes]);
 
-    alert(`즐겨찾기에 ${name} 채널을 추가하시겠습니까?`);
+      alert(`즐겨찾기에 ${name} 채널을 추가`);
 
-    const res = await authFetch('settings/update-user', {
-      method: 'PUT',
-      data: {
-        fullName: user.fullName,
-        username: JSON.stringify(likes),
-      },
-    });
-    favorites(res);
-  };
+      const res = await authFetch('settings/update-user', {
+        method: 'PUT',
+        data: {
+          fullName: user.fullName,
+          username: JSON.stringify(likes),
+        },
+      });
+      favorites(res);
+    },
+    [userFavorites, favorites, user]
+  );
 
   const deleteFavorites = async (e, id) => {
     e.preventDefault();
