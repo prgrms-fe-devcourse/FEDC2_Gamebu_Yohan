@@ -8,6 +8,7 @@ import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
 import { fetch } from '@utils/fetch';
 import GoBack from '@components/GoBack';
+import SignupSuccessModal from '@components/SignupSuccessModal';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -81,6 +82,7 @@ function SignupPage() {
     visible: false,
     message: '',
   });
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
@@ -90,7 +92,7 @@ function SignupPage() {
       passwordConfirm: '',
     },
     onSubmit: async () => {
-      const data = await fetch('signup', {
+      const { response } = await fetch('signup', {
         method: 'POST',
         data: {
           email: values.id,
@@ -98,8 +100,6 @@ function SignupPage() {
           password: values.password,
         },
       });
-      const { response } = data;
-      console.log(data);
 
       const isError = Boolean(response);
       if (isError) {
@@ -116,7 +116,7 @@ function SignupPage() {
         }
         return;
       }
-      console.log('회원가입 성공');
+      setSuccessModalVisible(true);
     },
     validate: ({ id, name, password, passwordConfirm }) => {
       const newErrors = {};
@@ -203,6 +203,7 @@ function SignupPage() {
         </Form>
       </FormWrapper>
       <FlexGrowBox grow={2} />
+      <SignupSuccessModal visible={successModalVisible} />
     </ContentWrapper>
   );
 }
