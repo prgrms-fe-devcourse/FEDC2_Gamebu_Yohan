@@ -7,14 +7,10 @@ import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
-import maple from '@assets/img/maple.png';
-import lol from '@assets/img/lol.png';
-import lostark from '@assets/img/lostark.png';
-import overwatch from '@assets/img/overwatch.png';
-import battleground from '@assets/img/battleground.png';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
+import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
 import {
   GameIcon,
   GameImage,
