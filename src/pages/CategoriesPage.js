@@ -69,7 +69,6 @@ function CategoriesPage() {
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
-  // const [images] = useState([maple, lol, battleground, lostark, overwatch]);
   const [images] = useState({
     '62a7367f5517e27ffcab3bcb': maple,
     '62a736925517e27ffcab3bcf': lol,
@@ -184,9 +183,6 @@ function CategoriesPage() {
             );
           })}
       </CATEGORIES_CONTAINER>
-      <Header strong>즐겨찾기 목록</Header>
-      {/* TODO : 즐겨찾기 기능 작성 후 기능 추가 */}
-      <Divider />
     </>
   );
 }
