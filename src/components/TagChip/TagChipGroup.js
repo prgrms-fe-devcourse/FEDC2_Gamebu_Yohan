@@ -1,16 +1,12 @@
-import { ListItem, Box } from '@mui/material';
+import { Box } from '@mui/material';
+import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TagChip from '.';
 
 const defaultListStyle = {
-  display: 'inline-flex',
-  flexDirection: 'row',
-};
-
-const defaultItemStyle = {
+  display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  disablePadding: true,
+  flexDirection: 'row',
 };
 
 export default function TagChipGroup({
@@ -18,6 +14,8 @@ export default function TagChipGroup({
   simple,
   onDelete,
   wrap,
+  itemsx,
+  chipsx,
   ...props
 }) {
   const ListStyle = {
@@ -25,23 +23,31 @@ export default function TagChipGroup({
     ...props.sx,
     flexWrap: wrap === 'wrap' ? 'wrap' : 'nowrap',
   };
-
-  const ItemStyle = {
-    ...defaultItemStyle,
-    ...props.tagsx,
-  };
+  const [tagsLength, setTagsLength] = useState(0);
+  const [skipIndex, setSkipIndex] = useState(-1);
+  const ref = useRef();
 
   return (
-    <Box direction="row" spacing={0} sx={ListStyle} {...props}>
-      {list.map((name) => (
-        <ListItem key={name}>
-          <TagChip
-            label={name}
-            sx={ItemStyle}
-            simple={simple}
-            onDelete={onDelete ? onDelete : false}
-          />
-        </ListItem>
+    <Box
+      ref={ref}
+      sx={ListStyle}
+      onClick={() => {
+        console.log(
+          `ListLength: ${ref.current.offsetWidth} TagsLength: ${tagsLength}`
+        );
+      }}
+    >
+      {list.map((name, index) => (
+        <TagChip
+          label={name}
+          key={index}
+          index={index}
+          simple={simple}
+          onDelete={onDelete}
+          itemsx={props.itemsx}
+          chipsx={props.chipsx}
+          display={skipIndex !== -1 && skipIndex <= index ? 'none' : 'block'}
+        />
       ))}
     </Box>
   );
@@ -52,10 +58,16 @@ TagChipGroup.propTypes = {
   simple: PropTypes.bool,
   onDelete: PropTypes.func,
   wrap: PropTypes.oneOf(['wrap', 'skip']),
+  sx: PropTypes.object,
+  itemsx: PropTypes.object,
+  chipsx: PropTypes.object,
 };
 
 TagChipGroup.defaultProps = {
   simple: false,
   onDelete: false,
   wrap: 'wrap',
+  sx: {},
+  itemsx: {},
+  chipsx: {},
 };
