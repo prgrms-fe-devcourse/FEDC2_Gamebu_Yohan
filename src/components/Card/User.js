@@ -44,7 +44,11 @@ User.propTypes = {
     fullName: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     image: PropTypes.string,
-  }).isRequired,
+  }),
+};
+
+User.defaultProps = {
+  children: null,
 };
 
 export default User;
