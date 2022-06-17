@@ -6,11 +6,11 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
-import { CATEGORIES, CHANNELS } from '@utils/constants';
+import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
-import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
+
 import {
   GameIcon,
   GameImage,
@@ -54,13 +54,7 @@ function CategoriesPage() {
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
-  const [images] = useState({
-    '62a7367f5517e27ffcab3bcb': maple,
-    '62a736925517e27ffcab3bcf': lol,
-    '62a736a15517e27ffcab3bd5': battleground,
-    '62a818db5517e27ffcab3ce2': lostark,
-    '62a818e85517e27ffcab3ce6': overwatch,
-  });
+  const [images] = useState(IMAGES);
   const [toastState, setToastState] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
