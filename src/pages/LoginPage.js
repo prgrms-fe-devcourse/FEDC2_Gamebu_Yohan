@@ -8,13 +8,22 @@ import Box from '@mui/material/Box';
 import { useNavigate, Link } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useForm from '@hooks/useForm';
-import { fetch } from '@utils/fetch';
 import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
+import GoBack from '@components/GoBack';
+import { GAMEBU_TOKEN, regexId } from '@utils/constants';
+import { loginAPI } from '@utils/user';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 3rem);
+`;
+
+const FlexGrowBox = styled.div`
+  flex-grow: ${({ grow }) => grow};
 `;
 
 const LoginHeader = styled.h1`
@@ -64,6 +73,7 @@ const LoginButton = styled(Button)`
 
 const LoginWarningAlert = styled(Alert)`
   font-size: 0.75rem;
+  margin-top: 1rem;
 `;
 
 const SignupLinkBox = styled(Box)`
@@ -89,7 +99,7 @@ function LoginPage() {
   });
 
   const navigate = useNavigate();
-  const { setCookie } = useCookieToken();
+  const [, setToken] = useCookieToken(GAMEBU_TOKEN);
   const { login } = useActionContext();
   const { isLogin } = useValueContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
@@ -98,7 +108,7 @@ function LoginPage() {
       password: '',
     },
     onSubmit: async () => {
-      const { response, token, user } = await fetch('login', {
+      const { response, token, user } = await loginAPI({
         method: 'POST',
         data: {
           email: values.id,
@@ -122,12 +132,15 @@ function LoginPage() {
         return;
       }
 
-      setCookie(token);
+      setToken(token);
       login(user);
     },
     validate: ({ id, password }) => {
       const newErrors = {};
       if (!id) newErrors.id = '아이디를 입력하지 않았습니다';
+      const filteredId = id.replace(regexId, '');
+      if (id !== filteredId)
+        newErrors.id = '사용할 수 없는 문자가 포함되어 있습니다';
       if (!password) newErrors.password = '비밀번호를 입력하지 않았습니다';
       return newErrors;
     },
@@ -148,11 +161,13 @@ function LoginPage() {
 
   return (
     <ContentWrapper>
+      <GoBack />
       <Collapse in={warningAlertInfo.visible}>
         <LoginWarningAlert severity="warning" onClose={handleClickAlert}>
           {warningAlertInfo.message}
         </LoginWarningAlert>
       </Collapse>
+      <FlexGrowBox grow={1} />
       <LoginHeader>Login</LoginHeader>
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
@@ -192,6 +207,7 @@ function LoginPage() {
         아이디 없으신가요?&nbsp;
         <SignupLink to="/signup">회원가입하기</SignupLink>
       </SignupLinkBox>
+      <FlexGrowBox grow={2} />
     </ContentWrapper>
   );
 }

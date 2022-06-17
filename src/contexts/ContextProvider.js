@@ -7,13 +7,14 @@ import {
 } from 'react';
 import PropTypes from 'prop-types';
 import useCookieToken from '@hooks/useCookieToken';
-import { authFetch } from '@utils/fetch';
+import { GAMEBU_TOKEN } from '@utils/constants';
+import { authUserAPI } from '../utils/user/index';
 
 export const valueContext = createContext();
 export const actionContext = createContext();
 
 function ContextProvider({ children }) {
-  const { token } = useCookieToken();
+  const [token] = useCookieToken(GAMEBU_TOKEN);
   const [state, setState] = useState({
     test: 100,
     user: null,
@@ -32,12 +33,18 @@ function ContextProvider({ children }) {
           user,
         }));
       },
+      favorites(user) {
+        setState((prevState) => ({
+          ...prevState,
+          user,
+        }));
+      },
     }),
     []
   );
 
   const getAuthUser = useCallback(async () => {
-    return authFetch('auth-user').then((result) => actions.login(result));
+    authUserAPI().then((result) => actions.login(result));
   }, [actions]);
 
   useEffect(() => {

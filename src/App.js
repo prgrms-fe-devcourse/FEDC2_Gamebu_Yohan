@@ -14,10 +14,12 @@ import SearchUserPage from '@pages/SearchUserPage';
 import SignupPage from '@pages/SignupPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ContextProvider from '@contexts/ContextProvider';
+import InterestedChannelModal from '@components/InterestedChannelModal';
 
 function App() {
   return (
     <ContextProvider>
+      <InterestedChannelModal />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navbar />}>
