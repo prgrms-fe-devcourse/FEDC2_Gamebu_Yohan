@@ -61,7 +61,7 @@ function CategoriesPage() {
   const handleToastState = useCallback((message) => {
     setToastMessage(message);
     setToastState(true);
-  });
+  }, []);
 
   useEffect(() => {
     if (toastState) {
