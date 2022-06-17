@@ -15,8 +15,10 @@ export default function TagChip({ label, size, simple, onDelete }) {
     <Chip
       sx={chipStyle}
       avatar={simple ? false : <Avatar alt={label} src={image} />}
-      label={label}
+      name={label}
+      label={simple ? `#${label}` : label}
       size={simple ? 'small' : size}
+      onDelete={onDelete}
       variant="outlined"
     />
   );
@@ -26,7 +28,7 @@ TagChip.propTypes = {
   label: PropTypes.string.isRequired,
   size: PropTypes.string,
   simple: PropTypes.bool,
-  onDelete: PropTypes.func,
+  onDelete: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
 };
 
 TagChip.defaultProps = {

@@ -1,28 +1,51 @@
+import { ListItem, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
-import { ListItem } from '@mui/material';
 import TagChip from '.';
 
-export default function TagChipGroup({ tagList, size, simple, onDelete }) {
-  const [chipList, setChipList] = useState(tagList);
-  useEffect(() => {}, [chipList]);
+const ItemStyle = {
+  display: 'inline-flex',
+  justifyContent: 'center',
+};
+
+export default function TagChipGroup({
+  list,
+  tagSize,
+  simple,
+  onDelete,
+  wrap,
+  ...props
+}) {
+  const adjustedStyle = {
+    ...props.sx,
+    flexWrap: wrap === 'wrap' ? 'wrap' : 'nowrap',
+  };
   return (
-    <Box>
-      {tagList.map((name) => (
-        <ListItem key={name}>
-          <TagChip size={size} simple={simple} onDelete={} />
+    <Stack direction="row" spacing={0} {...props}>
+      {list.map((name) => (
+        <ListItem key={name} sx={ItemStyle} alignItems="center" disablePadding>
+          <TagChip
+            label={name}
+            size={tagSize}
+            simple={simple}
+            onDelete={onDelete ? onDelete : false}
+          />
         </ListItem>
       ))}
-    </Box>
+    </Stack>
   );
 }
 
 TagChipGroup.propTypes = {
-  tagList: PropTypes.string.isRequired,
-  size: PropTypes.string,
+  list: PropTypes.arrayOf(PropTypes.string).isRequired,
+  tagSize: PropTypes.string,
   simple: PropTypes.bool,
+  onDelete: PropTypes.func,
+  wrap: PropTypes.oneOf(['wrap', 'skip', 'overlap']),
 };
 
 TagChipGroup.defaultProps = {
-  size: 'medium',
+  tagSize: 'normal',
   simple: false,
+  onDelete: false,
+  wrap: 'wrap',
 };
