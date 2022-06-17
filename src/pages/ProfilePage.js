@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from '@emotion/styled';
 import GoBack from '@components/GoBack';
 import Thumbnail from '@components/Thumbnail';
@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { COLOR_MAIN } from '@utils/color';
+import EditFullNameModal from '@components/EditFullNameModal';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -76,6 +77,15 @@ const UserMenu = styled.div`
 
 function ProfilePage() {
   const { user } = useValueContext();
+  const [visible, setVisible] = useState(false);
+
+  const handleClickEditIcon = useCallback(() => {
+    setVisible(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setVisible(false);
+  }, []);
 
   return (
     <ContentWrapper>
@@ -100,7 +110,11 @@ function ProfilePage() {
       <ProfileMenuWrapper>
         <UserFullNameWrapper>
           <Span>{user?.fullName}</Span>
-          <EditIconRight />
+          <EditIconRight onClick={handleClickEditIcon} />
+          <EditFullNameModal
+            visible={visible}
+            handleCloseModal={handleCloseModal}
+          />
         </UserFullNameWrapper>
         <hr />
         <UserMenuWrapper>
