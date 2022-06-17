@@ -16,6 +16,9 @@ import useValueContext from '@hooks/useValueContext';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
 import GameImage from '@components/Categories/GameImage';
+import GameIcon from '@components/Categories/GameIcon';
+import GameTitle from '@components/Categories/GameTtitle';
+import MessageTitle from '@components/Categories/MessageTitle';
 
 const GameItem = styled.div`
   position: relative;
@@ -34,21 +37,6 @@ const CategoriesContainer = styled.div`
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-`;
-
-const IconWrapper = styled.div`
-  position: absolute;
-  z-index: 1000;
-  top: 0;
-  right: 0;
-`;
-
-const GameTitle = styled.div`
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: ${COLOR_SIGNATURE};
-  margin-top: 0.1rem;
 `;
 
 const MessageContainer = styled.div`
@@ -140,18 +128,23 @@ function CategoriesPage() {
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GameItem>
                     <GameImage src={images[item]} />
-                    <IconWrapper onClick={(e) => deleteFavorites(e, item)}>
+                    <GameIcon onClick={(e) => deleteFavorites(e, item)}>
                       <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
-                    </IconWrapper>
+                    </GameIcon>
                   </GameItem>
-                  <GameTitle>{`${CATEGORIES[item]}`}</GameTitle>
+                  <GameTitle
+                    color={COLOR_SIGNATURE}
+                    weight={700}
+                  >{`${CATEGORIES[item]}`}</GameTitle>
                 </Link>
               );
             })}
           </CategoriesContainer>
         ) : (
           <MessageContainer>
-            <Header color={COLOR_MAIN}>즐겨찾기를 등록해보세요.</Header>
+            <MessageTitle color={COLOR_MAIN} weight={400}>
+              즐겨찾기를 등록해보세요.
+            </MessageTitle>
           </MessageContainer>
         )}
       </ContextProvider>
@@ -164,15 +157,18 @@ function CategoriesPage() {
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
                 <GameItem>
                   <GameImage src={images[channel.id]} />
-                  <IconWrapper
+                  <GameIcon
                     onClick={(e) =>
                       updateFavorites(e, channel.id, channel.name)
                     }
                   >
                     <StarBorderIcon fontSize="small" sx={{ color: 'red' }} />
-                  </IconWrapper>
+                  </GameIcon>
                 </GameItem>
-                <GameTitle>{`${channel.name}`}</GameTitle>
+                <GameTitle
+                  color={COLOR_SIGNATURE}
+                  weight={700}
+                >{`${channel.name}`}</GameTitle>
               </Link>
             );
           })}
