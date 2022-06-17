@@ -5,16 +5,14 @@ export default {
   component: TagChipGroup,
   argTypes: {
     list: { defaultValue: ['딜러', '힐러', 'RPG', '경쟁'], control: 'object' },
-    size: { defaultValue: 'medium', control: 'text' },
     simple: { defaultValue: false, control: 'boolean' },
     onDelete: { defaultvalue: false, control: 'boolean' },
-    wrap: { control: 'inline-radio', options: ['wrap', 'skip', 'overlap'] },
+    wrap: { control: 'inline-radio', options: ['wrap', 'skip'] },
     sx: {
       defaultValue: {
         width: 300,
         height: 100,
         border: '1px solid blue',
-        borderRadius: 10,
       },
     },
   },
