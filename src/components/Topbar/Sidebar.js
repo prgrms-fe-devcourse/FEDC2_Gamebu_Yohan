@@ -11,8 +11,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import GamesIcon from '@mui/icons-material/Games';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { Link } from 'react-router-dom';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
 import { useState, useEffect } from 'react';
@@ -40,7 +38,7 @@ function Sidebar({ open, onClose }) {
       setUserFavorites(JSON.parse(user.username));
     }
   }, [user]);
-  console.log(user, userFavorites);
+
   return (
     <Drawer variant="temporary" open={open} onClose={onClose}>
       <DrawerHeader>
