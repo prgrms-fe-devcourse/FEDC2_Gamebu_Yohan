@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import PropTypes from 'prop-types';
 import useForm from '@hooks/useForm';
 import useValueContext from '@hooks/useValueContext';
+import useActionContext from '@hooks/useActionContext';
 import { COLOR_MAIN } from '@utils/color';
 import { changeMyInfoAPI } from '@utils/user';
 import { regexName } from '@utils/constants';
@@ -49,19 +50,30 @@ const helperText = '변경할 이름을 입력해주세요';
 
 function EditFullNameModal({ visible, handleCloseModal }) {
   const { user } = useValueContext();
+  const { login } = useActionContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       fullName: '',
     },
     onSubmit: async () => {
-      const response = await changeMyInfoAPI({
+      const data = await changeMyInfoAPI({
         method: 'PUT',
         data: {
           fullName: values.fullName,
-          username: JSON.stringify(user?.username || []),
+          username: user?.username
+            ? JSON.stringify(JSON.parse(user.username))
+            : [],
         },
       });
-      console.log(response);
+      console.log(data);
+      const { response } = data;
+
+      const isError = Boolean(response);
+      if (isError) {
+        console.warn('에러');
+        return;
+      }
+      login(data);
       handleCloseModal();
     },
     validate: ({ fullName }) => {
