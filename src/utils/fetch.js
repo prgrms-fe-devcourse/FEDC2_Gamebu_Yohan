@@ -15,7 +15,7 @@ export const fetch = async (url, options) => {
 export const authFetch = async (url, options) => {
   try {
     const token = document.cookie
-      ?.split(';')
+      ?.split('; ')
       ?.find((cookies) => cookies.includes('GAMEBU_TOKEN'))
       ?.slice(13);
 
