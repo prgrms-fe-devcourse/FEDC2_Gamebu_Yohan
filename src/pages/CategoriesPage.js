@@ -78,6 +78,11 @@ function CategoriesPage() {
   const updateFavorites = useCallback(
     async (e, id, name) => {
       e.preventDefault();
+      if (!user) {
+        handleToastState('로그인 후 즐겨찾기를 할 수 있습니다.');
+        return;
+      }
+
       const likes = user.username ? JSON.parse(user.username) : [];
 
       if (likes.includes(id)) {
