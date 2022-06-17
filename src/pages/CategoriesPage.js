@@ -104,13 +104,19 @@ function CategoriesPage() {
       e.preventDefault();
 
       alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제`);
-      const newFavorites = userFavorites.filter((item) => item !== id);
+      const newFavorites = userFavorites.filter(
+        (item) => item !== id && item !== ''
+      );
+      const favoritesData =
+        newFavorites.length < 1
+          ? JSON.stringify([''])
+          : JSON.stringify(newFavorites);
 
       setUserFavorites(newFavorites);
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
-          username: JSON.stringify(newFavorites),
+          username: favoritesData,
         },
       });
       favorites(res);
@@ -123,9 +129,16 @@ function CategoriesPage() {
       <ContextProvider>
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
-        {userFavorites.length > 0 ? (
+        {userFavorites.length === 1 && userFavorites[0] === '' ? (
+          <MessageContainer>
+            <MessageTitle color={COLOR_MAIN} weight={400}>
+              즐겨찾기를 등록해보세요.
+            </MessageTitle>
+          </MessageContainer>
+        ) : (
           <CategoriesContainer>
             {userFavorites.map((item) => {
+              if (item === '') return;
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GameItem>
@@ -142,12 +155,6 @@ function CategoriesPage() {
               );
             })}
           </CategoriesContainer>
-        ) : (
-          <MessageContainer>
-            <MessageTitle color={COLOR_MAIN} weight={400}>
-              즐겨찾기를 등록해보세요.
-            </MessageTitle>
-          </MessageContainer>
         )}
       </ContextProvider>
       <Header strong>게임 카테고리</Header>
