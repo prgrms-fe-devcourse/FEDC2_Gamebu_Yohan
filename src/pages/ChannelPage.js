@@ -100,17 +100,15 @@ function ChannelPage() {
 
   // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
   const findChannel = async () => {
-    console.log(user);
-    // const parsedChannelIdArray = await getUserInfoAndParse();
-    // const found = parsedChannelIdArray.find((id) => tagTestChanneld === id);
-    // if (!found) return null;
-    // setIsFavorite(true);
+    const found = JSON.parse(user.username).find((id) => userId === id);
+    if (!found) return null;
+    setIsFavorite(true);
   };
 
   useEffect(() => {
     getChannelData(); // 채널의 포스트 목록 조회 함수
-    user && findChannel(); // 채널을 즐겨찾기 했는지 확인하는 함수
-  }, []);
+    user && findChannel();
+  }, [user]);
 
   // 사용자 정보 수정 api
   const modifyUserInfo = async (channelIdInfo) => {
@@ -118,13 +116,14 @@ function ChannelPage() {
       method: 'PUT',
       data: {
         fullName: 'EonDongKim',
-        username: JSON.stringify(channelIdInfo),
+        username: JSON.stringify(['629f07fa7e01ad1cb7250131']),
       },
     });
   };
 
   const favoriteClick = async (boolean) => {
     setIsFavorite(!isFavorite);
+
     if (boolean) {
       // 구독 취소 액션
       // 사용자 정보 수정 api로 channelId 를 지운다
