@@ -5,9 +5,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Chip,
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import TagChip from '@components/TagChip';
 
 export default function SelectInput({
   name,
@@ -31,7 +31,7 @@ export default function SelectInput({
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {selected.map((value) => (
-              <Chip key={value} label={value} />
+              <TagChip key={value} label={value} />
             ))}
           </Box>
         )}
