@@ -15,10 +15,12 @@ import battleground from '@assets/img/battleground.png';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
-import GameImage from '@components/Categories/GameImage';
-import GameIcon from '@components/Categories/GameIcon';
-import GameTitle from '@components/Categories/GameTtitle';
-import MessageTitle from '@components/Categories/MessageTitle';
+import {
+  GameIcon,
+  GameImage,
+  GameTitle,
+  MessageTitle,
+} from '@components/Categories';
 
 const GameItem = styled.div`
   position: relative;
