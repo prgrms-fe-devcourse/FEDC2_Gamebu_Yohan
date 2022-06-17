@@ -50,12 +50,21 @@ function ContextProvider({ children }) {
   useEffect(() => {
     const { isLogin } = state;
     if (isLogin) {
+      console.log('정상 로그인');
       return;
     }
     if (token) {
+      console.log('새로고침');
       getAuthUser();
+      return;
     }
+    console.log('로그인 X');
   }, [state, token, getAuthUser]);
+
+  useEffect(() => {
+    console.log('state');
+    console.log(state);
+  }, [state]);
 
   return (
     <actionContext.Provider value={actions}>

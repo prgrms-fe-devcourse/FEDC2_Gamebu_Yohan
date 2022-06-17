@@ -91,15 +91,9 @@ function ChannelPage() {
     }
   };
 
-  const getUserInfoAndParse = async () => {
-    // 사용자 정보가져오는 api 즐겨찾기 가져옴 전역스토어사용?
-    // const userInfo = await fetch(`users/${DONG_EON_ID}`);
-    // return JSON.parse(userInfo.username);
-    if (user) return user.username;
-  };
-
   // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
   const findChannel = async () => {
+    console.log('is run', user);
     const found = JSON.parse(user.username).find((id) => userId === id);
     if (!found) return null;
     setIsFavorite(true);
@@ -107,7 +101,8 @@ function ChannelPage() {
 
   useEffect(() => {
     getChannelData(); // 채널의 포스트 목록 조회 함수
-    user && findChannel();
+    user && findChannel(); // 채널 즐겨찾기 확인 함수
+    console.log(user);
   }, [user]);
 
   // 사용자 정보 수정 api
@@ -116,28 +111,36 @@ function ChannelPage() {
       method: 'PUT',
       data: {
         fullName: 'EonDongKim',
-        username: JSON.stringify(['629f07fa7e01ad1cb7250131']),
+        username: JSON.stringify(['62aa146171f64a5582899ae9']),
       },
     });
   };
 
   const favoriteClick = async (boolean) => {
+    modifyUserInfo();
+    if (!user) {
+      alert('로그인을 해야 사용할수 있는 기능입니다.');
+      return;
+    }
     setIsFavorite(!isFavorite);
 
     if (boolean) {
       // 구독 취소 액션
       // 사용자 정보 수정 api로 channelId 를 지운다
-      const parsedChannelIdArray = await getUserInfoAndParse();
+      const parsedChannelIdArray = JSON.parse(user.username);
       const modifiedChannelArray = parsedChannelIdArray.filter(
         (id) => tagTestChanneld !== id // 채널이 있다면 지우기
       );
-      modifyUserInfo(modifiedChannelArray); // 사용자 정보 수정 api 즐겨찾기 배열수정
+      console.log('cancel:', modifiedChannelArray);
+      // modifyUserInfo(modifiedChannelArray); // 사용자 정보 수정 api 즐겨찾기 배열수정
     } else {
       // 구독 액션
       // 사용자 정보 수정 api 로 channelId 추가
-      const parsedChannelIdArray = await getUserInfoAndParse();
+      const parsedChannelIdArray = JSON.parse(user.username);
       const addedChannelIdArray = [...parsedChannelIdArray, tagTestChanneld];
-      modifyUserInfo(addedChannelIdArray);
+      addedChannelIdArray.sort();
+      // modifyUserInfo(addedChannelIdArray);
+      console.log('add:', addedChannelIdArray);
     }
   };
 
@@ -201,7 +204,7 @@ function ChannelPage() {
   return (
     <>
       <ChannelContainer>
-        <ChannelImageContainer src={channelImageObject[channelId]} />
+        {/* <ChannelImageContainer src={channelImageObject[channelId]} /> */}
         {isFavorite ? (
           <FavoriteIcon
             fontSize="inherit"
