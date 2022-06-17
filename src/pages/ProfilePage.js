@@ -4,6 +4,9 @@ import GoBack from '@components/GoBack';
 import Thumbnail from '@components/Thumbnail';
 import useValueContext from '@hooks/useValueContext';
 import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+import { COLOR_MAIN } from '@utils/color';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -12,6 +15,23 @@ const ContentWrapper = styled.div`
 const ProfileTopbar = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const NoneDecorationLink = styled(Link)`
+  text-decoration: none;
+  color: black;
+`;
+
+const LinkButton = styled(Button)`
+  width: 8rem;
+  color: black;
+  background-color: white;
+  border-color: ${COLOR_MAIN};
+
+  &:hover {
+    background-color: white;
+    border-color: ${COLOR_MAIN};
+  }
 `;
 
 const ThumbnailCover = styled.div`
@@ -52,7 +72,11 @@ function ProfilePage() {
     <ContentWrapper>
       <ProfileTopbar>
         <GoBack />
-        <div>즐겨찾기 수정</div>
+        <LinkButton variant="outlined" size="small">
+          <NoneDecorationLink to="/channel/categories">
+            즐겨찾기 수정
+          </NoneDecorationLink>
+        </LinkButton>
       </ProfileTopbar>
       {user && (
         <ThumbnailCover>
