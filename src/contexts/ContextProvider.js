@@ -34,6 +34,7 @@ function ContextProvider({ children }) {
         }));
       },
       favorites(user) {
+        console.log('favorite is run');
         setState((prevState) => ({
           ...prevState,
           user,

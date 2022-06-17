@@ -24,7 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navbar />}>
             <Route index element={<HomePage />} />
-            <Route path="alram/:user" element={<AlramPage />} />
+            <Route path="alram" element={<AlramPage />} />
             <Route path="search/all" element={<SearchPage />} />
             <Route path="search/user" element={<SearchUserPage />} />
             <Route path="search/post" element={<SearchPostPage />} />
@@ -32,8 +32,8 @@ function App() {
             <Route path="channel/categories" element={<CategoriesPage />} />
             <Route path="posts/write" element={<PostWritePage />} />
             <Route path="posts/edit/:postId" element={<PostEditPage />} />
+            <Route path="posts/details" element={<PostDetailPage />} />
           </Route>
-          <Route path="posts/details" element={<PostDetailPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
           <Route path="profile" element={<ProfilePage />} />

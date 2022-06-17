@@ -70,16 +70,7 @@ const HeartIconButton = styled(IconButton)`
   margin-left: 2rem;
 `;
 
-const TagDummy = [
-  'AD',
-  '솔로랭크',
-  '자유랭크',
-  '파티모집',
-  '레이드함께',
-  '추가태그칸',
-];
-
-const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
+export const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
 function ChannelPostCard({
   title,

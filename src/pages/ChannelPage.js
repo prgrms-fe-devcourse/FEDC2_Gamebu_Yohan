@@ -11,6 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import useValueContext from '@hooks/useValueContext';
+import useActionContext from '@hooks/useActionContext';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -67,12 +68,14 @@ const LinkButton = styled.button`
 function ChannelPage() {
   const { user } = useValueContext();
   const userId = user && user._id; // 전역스토어에서 가져옴
+  const { favorites } = useActionContext();
   const navigate = useNavigate();
   const [start, setStart] = useState(0);
   const [channelData, setChannelData] = useState([]);
   const [isNew, setIsNew] = useState(true);
   const [isPopular, setIsPopular] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [parsedUsername, setParsedUsername] = useState([]);
 
   const DONG_EON_ID = '629f07fa7e01ad1cb7250131';
   // const { channelId } = useParams('');
@@ -94,15 +97,18 @@ function ChannelPage() {
   // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
   const findChannel = async () => {
     console.log('is run', user);
-    const found = JSON.parse(user.username).find((id) => userId === id);
+    const parsing = JSON.parse(user.username);
+    console.log('parsing:', parsing);
+    const found = parsing.find((id) => tagTestChanneld === id);
+    console.log(user.fullName);
     if (!found) return null;
     setIsFavorite(true);
   };
 
   useEffect(() => {
     getChannelData(); // 채널의 포스트 목록 조회 함수
+    user && setParsedUsername(JSON.parse(user.username));
     user && findChannel(); // 채널 즐겨찾기 확인 함수
-    console.log(user);
   }, [user]);
 
   // 사용자 정보 수정 api
@@ -117,7 +123,7 @@ function ChannelPage() {
   };
 
   const favoriteClick = async (boolean) => {
-    modifyUserInfo();
+    // modifyUserInfo();
     if (!user) {
       alert('로그인을 해야 사용할수 있는 기능입니다.');
       return;
@@ -127,20 +133,40 @@ function ChannelPage() {
     if (boolean) {
       // 구독 취소 액션
       // 사용자 정보 수정 api로 channelId 를 지운다
-      const parsedChannelIdArray = JSON.parse(user.username);
-      const modifiedChannelArray = parsedChannelIdArray.filter(
+      const modifiedChannelArray = JSON.parse(user.username).filter(
         (id) => tagTestChanneld !== id // 채널이 있다면 지우기
       );
       console.log('cancel:', modifiedChannelArray);
-      // modifyUserInfo(modifiedChannelArray); // 사용자 정보 수정 api 즐겨찾기 배열수정
+      console.log(modifiedChannelArray);
+      // modifyUserInfo();
+      if (modifiedChannelArray.length === 0) return;
+      const res = await authFetch('settings/update-user', {
+        method: 'PUT',
+        data: {
+          fullName: user.fullName,
+          username: JSON.stringify(modifiedChannelArray),
+        },
+      });
+      console.log(res);
+      // favorites(res);
     } else {
       // 구독 액션
       // 사용자 정보 수정 api 로 channelId 추가
-      const parsedChannelIdArray = JSON.parse(user.username);
-      const addedChannelIdArray = [...parsedChannelIdArray, tagTestChanneld];
+
+      const addedChannelIdArray = [
+        ...JSON.parse(user.username),
+        tagTestChanneld,
+      ];
       addedChannelIdArray.sort();
-      // modifyUserInfo(addedChannelIdArray);
       console.log('add:', addedChannelIdArray);
+      const res = await authFetch('settings/update-user', {
+        method: 'PUT',
+        data: {
+          fullName: user.fullName,
+          username: JSON.stringify(addedChannelIdArray),
+        },
+      });
+      favorites(res);
     }
   };
 
@@ -167,7 +193,6 @@ function ChannelPage() {
   const changeLikeCount = (bool, postId, likeId) => {
     // 좋아요가 바뀌었을때 인기순을 바꿔주는 함수
     if (bool) {
-      console.log('likeId:', likeId);
       setChannelData([
         ...channelData.map((item) => {
           if (item._id === postId) {
@@ -204,7 +229,7 @@ function ChannelPage() {
   return (
     <>
       <ChannelContainer>
-        {/* <ChannelImageContainer src={channelImageObject[channelId]} /> */}
+        <ChannelImageContainer src={channelImageObject[channelId]} />
         {isFavorite ? (
           <FavoriteIcon
             fontSize="inherit"
