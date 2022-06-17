@@ -44,9 +44,18 @@ const ThumbnailCover = styled.div`
   }
 `;
 
+const ProfileMenuWrapper = styled.div`
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+`;
+
 const UserFullNameWrapper = styled.div`
   text-align: center;
   position: relative;
+`;
+
+const Span = styled.span`
+  font-size: 1.5rem;
 `;
 
 const EditIconRight = styled(EditIcon)`
@@ -55,12 +64,12 @@ const EditIconRight = styled(EditIcon)`
   bottom: 0;
 `;
 
-const ProfileMenuWrapper = styled.div`
+const UserMenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const ProfileMenu = styled.div`
+const UserMenu = styled.div`
   flex-grow: 1;
   text-align: center;
 `;
@@ -88,14 +97,16 @@ function ProfilePage() {
           />
         </ThumbnailCover>
       )}
-      <UserFullNameWrapper>
-        {user?.fullName}
-        <EditIconRight />
-      </UserFullNameWrapper>
-      <hr />
       <ProfileMenuWrapper>
-        <ProfileMenu>팔로잉&nbsp;{user?.following?.length || 0}</ProfileMenu>
-        <ProfileMenu>팔로우&nbsp;{user?.followers?.length || 0}</ProfileMenu>
+        <UserFullNameWrapper>
+          <Span>{user?.fullName}</Span>
+          <EditIconRight />
+        </UserFullNameWrapper>
+        <hr />
+        <UserMenuWrapper>
+          <UserMenu>팔로잉&nbsp;{user?.following?.length || 0}</UserMenu>
+          <UserMenu>팔로우&nbsp;{user?.followers?.length || 0}</UserMenu>
+        </UserMenuWrapper>
       </ProfileMenuWrapper>
     </ContentWrapper>
   );
