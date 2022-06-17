@@ -1,50 +1,60 @@
-import { ListItem, Stack } from '@mui/material';
+import { ListItem, Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import TagChip from '.';
 
-const ItemStyle = {
+const defaultListStyle = {
   display: 'inline-flex',
+  flexDirection: 'row',
+};
+
+const defaultItemStyle = {
+  alignItems: 'center',
   justifyContent: 'center',
+  disablePadding: true,
 };
 
 export default function TagChipGroup({
   list,
-  tagSize,
   simple,
   onDelete,
   wrap,
   ...props
 }) {
-  const adjustedStyle = {
+  const ListStyle = {
+    ...defaultListStyle,
     ...props.sx,
     flexWrap: wrap === 'wrap' ? 'wrap' : 'nowrap',
   };
+
+  const ItemStyle = {
+    ...defaultItemStyle,
+    ...props.tagsx,
+  };
+
   return (
-    <Stack direction="row" spacing={0} {...props}>
+    <Box direction="row" spacing={0} sx={ListStyle} {...props}>
       {list.map((name) => (
-        <ListItem key={name} sx={ItemStyle} alignItems="center" disablePadding>
+        <ListItem key={name}>
           <TagChip
             label={name}
-            size={tagSize}
+            sx={ItemStyle}
             simple={simple}
             onDelete={onDelete ? onDelete : false}
           />
         </ListItem>
       ))}
-    </Stack>
+    </Box>
   );
 }
 
 TagChipGroup.propTypes = {
   list: PropTypes.arrayOf(PropTypes.string).isRequired,
-  tagSize: PropTypes.string,
   simple: PropTypes.bool,
   onDelete: PropTypes.func,
-  wrap: PropTypes.oneOf(['wrap', 'skip', 'overlap']),
+  wrap: PropTypes.oneOf(['wrap', 'skip']),
 };
 
 TagChipGroup.defaultProps = {
-  tagSize: 'normal',
   simple: false,
   onDelete: false,
   wrap: 'wrap',

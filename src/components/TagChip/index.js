@@ -1,6 +1,7 @@
 import { Chip, Avatar } from '@mui/material';
 import PropTypes from 'prop-types';
 import { blue } from '@mui/material/colors';
+import { useRef } from 'react';
 import tagdata from './tagdata';
 
 const chipStyle = {
@@ -11,9 +12,11 @@ const chipStyle = {
 
 export default function TagChip({ label, size, simple, onDelete }) {
   const image = tagdata[label] ? tagdata[label].image : '';
+  const me = useRef();
   return (
     <Chip
       sx={chipStyle}
+      ref={me}
       avatar={simple ? false : <Avatar alt={label} src={image} />}
       name={label}
       label={simple ? `#${label}` : label}
