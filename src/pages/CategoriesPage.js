@@ -118,7 +118,7 @@ function CategoriesPage() {
       );
       const favoritesData =
         newFavorites.length < 1
-          ? JSON.stringify([''])
+          ? JSON.stringify([])
           : JSON.stringify(newFavorites);
 
       setUserFavorites(newFavorites);
