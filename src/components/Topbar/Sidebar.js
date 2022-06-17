@@ -64,12 +64,14 @@ function Sidebar({ open, onClose }) {
 
             return (
               <ListItem key={item} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <StarRateIcon sx={{ color: '#f2f20d' }} />
-                  </ListItemIcon>
-                  <ListItemText primary={CATEGORIES[item]} />
-                </ListItemButton>
+                <Link to={`channel/${item}`}>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <StarRateIcon sx={{ color: '#f2f20d' }} />
+                    </ListItemIcon>
+                    <ListItemText primary={CATEGORIES[item]} />
+                  </ListItemButton>
+                </Link>
               </ListItem>
             );
           })}
@@ -79,12 +81,14 @@ function Sidebar({ open, onClose }) {
         </HeaderWrapper>
         {channels.map((item) => (
           <ListItem key={item.id} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <GamesIcon />
-              </ListItemIcon>
-              <ListItemText primary={item.name} />
-            </ListItemButton>
+            <Link to={`channel/${item.id}`}>
+              <ListItemButton>
+                <ListItemIcon>
+                  <GamesIcon />
+                </ListItemIcon>
+                <ListItemText primary={item.name} />
+              </ListItemButton>
+            </Link>
           </ListItem>
         ))}
       </List>
