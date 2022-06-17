@@ -5,6 +5,8 @@ import Thumbnail from '@components/Thumbnail';
 import useValueContext from '@hooks/useValueContext';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
 import { Link } from 'react-router-dom';
 import { COLOR_MAIN } from '@utils/color';
 import EditFullNameModal from '@components/EditFullNameModal';
@@ -16,6 +18,12 @@ const ContentWrapper = styled.div`
 const ProfileTopbar = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const ProfileWarningAlert = styled(Alert)`
+  font-size: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const NoneDecorationLink = styled(Link)`
@@ -77,14 +85,42 @@ const UserMenu = styled.div`
 
 function ProfilePage() {
   const { user } = useValueContext();
-  const [visible, setVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [alertInfo, setAlertInfo] = useState({
+    visible: false,
+    success: false,
+    message: '',
+  });
+
+  const handleClickAlert = useCallback(() => {
+    setAlertInfo((prevAlertInfo) => ({
+      ...prevAlertInfo,
+      visible: false,
+    }));
+  }, []);
+
+  const handleSuccessProfile = useCallback(() => {
+    setAlertInfo({
+      visible: true,
+      success: true,
+      message: '이름 변경을 완료했습니다',
+    });
+  }, []);
+
+  const handleErrorProfile = useCallback(() => {
+    setAlertInfo({
+      visible: true,
+      success: false,
+      message: '이름 변경 중 오류가 발생했습니다',
+    });
+  }, []);
 
   const handleClickEditIcon = useCallback(() => {
-    setVisible(true);
+    setModalVisible(true);
   }, []);
 
   const handleCloseModal = useCallback(() => {
-    setVisible(false);
+    setModalVisible(false);
   }, []);
 
   return (
@@ -97,6 +133,14 @@ function ProfilePage() {
           </NoneDecorationLink>
         </LinkButton>
       </ProfileTopbar>
+      <Collapse in={alertInfo.visible}>
+        <ProfileWarningAlert
+          severity={alertInfo.success ? 'success' : 'warning'}
+          onClose={handleClickAlert}
+        >
+          {alertInfo.message}
+        </ProfileWarningAlert>
+      </Collapse>
       {user && (
         <ThumbnailCover>
           <Thumbnail
@@ -112,8 +156,10 @@ function ProfilePage() {
           <Span>{user?.fullName}</Span>
           <EditIconRight onClick={handleClickEditIcon} />
           <EditFullNameModal
-            visible={visible}
+            visible={modalVisible}
             handleCloseModal={handleCloseModal}
+            onSuccess={handleSuccessProfile}
+            onError={handleErrorProfile}
           />
         </UserFullNameWrapper>
         <hr />

@@ -32,6 +32,7 @@ const ModalContentWrapper = styled(Box)`
 `;
 
 const ButtonContainer = styled.div`
+  padding-top: 1rem;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -48,7 +49,7 @@ const ColorButton = styled(Button)`
 
 const helperText = '변경할 이름을 입력해주세요';
 
-function EditFullNameModal({ visible, handleCloseModal }) {
+function EditFullNameModal({ visible, handleCloseModal, onSuccess, onError }) {
   const { user } = useValueContext();
   const { login } = useActionContext();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
@@ -65,15 +66,13 @@ function EditFullNameModal({ visible, handleCloseModal }) {
             : [],
         },
       });
-      console.log(data);
-      const { response } = data;
-
-      const isError = Boolean(response);
+      const isError = Boolean(data?.response);
       if (isError) {
-        console.warn('에러');
-        return;
+        onError();
+      } else {
+        login(data);
+        onSuccess();
       }
-      login(data);
       handleCloseModal();
     },
     validate: ({ fullName }) => {
@@ -81,7 +80,7 @@ function EditFullNameModal({ visible, handleCloseModal }) {
       if (!fullName) newErrors.fullName = '변경할 이름을 입력하지 않았습니다';
       const filteredName = fullName.replace(regexName, '');
       if (fullName !== filteredName)
-        newErrors.id = '사용할 수 없는 문자가 포함되어 있습니다';
+        newErrors.fullName = '사용할 수 없는 문자가 포함되어 있습니다';
       return newErrors;
     },
   });
@@ -130,10 +129,14 @@ function EditFullNameModal({ visible, handleCloseModal }) {
 EditFullNameModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   handleCloseModal: PropTypes.func,
+  onSuccess: PropTypes.func,
+  onError: PropTypes.func,
 };
 
 EditFullNameModal.defaultProps = {
   handleCloseModal: () => {},
+  onSuccess: () => {},
+  onError: () => {},
 };
 
 export default EditFullNameModal;
