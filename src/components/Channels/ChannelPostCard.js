@@ -103,7 +103,7 @@ function ChannelPostCard({
     } else {
       setIsLiked(false);
     }
-  }, [likes, title]);
+  }, [likes]);
 
   const applicationButtonClick = (e) => {
     e.stopPropagation();
@@ -137,16 +137,14 @@ function ChannelPostCard({
       const data = likes.find((item) => item.user === userId);
 
       if (!data) return;
-      console.log('data: ', data);
       const id = data._id;
-      console.log('id', id);
-      const res = await authFetch('likes/delete', {
+      await authFetch('likes/delete', {
         method: 'DELETE',
         data: {
           id,
         },
       });
-      console.log('res: ', res);
+
       changeLikeCount(false, postId);
     } else {
       const res = await authFetch('likes/create', {
@@ -155,7 +153,6 @@ function ChannelPostCard({
           postId,
         },
       });
-      console.log('resId', res._id);
       changeLikeCount(true, postId, res._id);
     }
   };

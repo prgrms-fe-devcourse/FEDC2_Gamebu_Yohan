@@ -75,7 +75,6 @@ function ChannelPage() {
   const [isNew, setIsNew] = useState(true);
   const [isPopular, setIsPopular] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [parsedUsername, setParsedUsername] = useState([]);
 
   const DONG_EON_ID = '629f07fa7e01ad1cb7250131';
   // const { channelId } = useParams('');
@@ -96,18 +95,14 @@ function ChannelPage() {
 
   // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
   const findChannel = async () => {
-    console.log('is run', user);
     const parsing = JSON.parse(user.username);
-    console.log('parsing:', parsing);
     const found = parsing.find((id) => tagTestChanneld === id);
-    console.log(user.fullName);
     if (!found) return null;
     setIsFavorite(true);
   };
 
   useEffect(() => {
     getChannelData(); // 채널의 포스트 목록 조회 함수
-    user && setParsedUsername(JSON.parse(user.username));
     user && findChannel(); // 채널 즐겨찾기 확인 함수
   }, [user]);
 
@@ -123,7 +118,6 @@ function ChannelPage() {
   };
 
   const favoriteClick = async (boolean) => {
-    // modifyUserInfo();
     if (!user) {
       alert('로그인을 해야 사용할수 있는 기능입니다.');
       return;
@@ -136,10 +130,6 @@ function ChannelPage() {
       const modifiedChannelArray = JSON.parse(user.username).filter(
         (id) => tagTestChanneld !== id // 채널이 있다면 지우기
       );
-      console.log('cancel:', modifiedChannelArray);
-      console.log(modifiedChannelArray);
-      // modifyUserInfo();
-      if (modifiedChannelArray.length === 0) return;
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
@@ -147,23 +137,15 @@ function ChannelPage() {
           username: JSON.stringify(modifiedChannelArray),
         },
       });
-      console.log(res);
-      // favorites(res);
+      favorites(res);
     } else {
-      // 구독 액션
-      // 사용자 정보 수정 api 로 channelId 추가
-
-      const addedChannelIdArray = [
-        ...JSON.parse(user.username),
-        tagTestChanneld,
-      ];
-      addedChannelIdArray.sort();
-      console.log('add:', addedChannelIdArray);
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
           fullName: user.fullName,
-          username: JSON.stringify(addedChannelIdArray),
+          username: JSON.stringify(
+            [...JSON.parse(user.username), tagTestChanneld].sort()
+          ),
         },
       });
       favorites(res);
