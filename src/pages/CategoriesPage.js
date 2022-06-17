@@ -13,9 +13,9 @@ import lostark from '@assets/img/lostark.png';
 import overwatch from '@assets/img/overwatch.png';
 import battleground from '@assets/img/battleground.png';
 import useValueContext from '@hooks/useValueContext';
-import useAsync from '@hooks/useAsync';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
+import GameImage from '@components/Categories/GameImage';
 
 const GameItem = styled.div`
   position: relative;
@@ -34,12 +34,6 @@ const CategoriesContainer = styled.div`
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-`;
-
-const GameImage = styled.img`
-  min-width: 100%;
-  max-width: 100%;
-  height: 100px;
 `;
 
 const IconWrapper = styled.div`
