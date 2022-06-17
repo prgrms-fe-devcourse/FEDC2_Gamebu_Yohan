@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GAMEBU_TOKEN } from './constants';
 
 const API_END_POINT = process.env.REACT_APP_API_END_POINT;
 
@@ -15,8 +16,8 @@ export const fetch = async (url, options) => {
 export const authFetch = async (url, options) => {
   try {
     const token = document.cookie
-      ?.split(';')
-      ?.find((cookies) => cookies.includes('GAMEBU_TOKEN'))
+      ?.split('; ')
+      ?.find((cookies) => cookies.includes(GAMEBU_TOKEN))
       ?.slice(13);
 
     if (token) {

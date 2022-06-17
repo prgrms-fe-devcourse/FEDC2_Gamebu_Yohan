@@ -21,6 +21,7 @@ import NotFoundPage from '@pages/NotFoundPage';
 function App() {
   return (
     <ContextProvider>
+      <InterestedChannelModal />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navbar />}>
