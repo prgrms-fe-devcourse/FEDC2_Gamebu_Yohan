@@ -28,6 +28,13 @@ const HeaderWrapper = styled.div`
   margin-bottom: 0.5rem;
 `;
 
+const ContentWrapper = styled.div`
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.5rem;
+  text-align: center;
+`;
+
 function Sidebar({ open, onClose }) {
   const { user } = useValueContext();
   const [userFavorites, setUserFavorites] = useState([]);
@@ -58,7 +65,7 @@ function Sidebar({ open, onClose }) {
         <HeaderWrapper>
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
-        {user &&
+        {user && userFavorites.length > 1 ? (
           userFavorites.map((item) => {
             if (item === '') return;
 
@@ -74,7 +81,10 @@ function Sidebar({ open, onClose }) {
                 </Link>
               </ListItem>
             );
-          })}
+          })
+        ) : (
+          <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
+        )}
         <Divider />
         <HeaderWrapper>
           <Header>채널 카테고리</Header>
