@@ -46,6 +46,8 @@ function Sidebar({ open, onClose }) {
     }
   }, [user]);
 
+  console.log(user, userFavorites);
+
   return (
     <Drawer variant="temporary" open={open} onClose={onClose}>
       <DrawerHeader>
@@ -65,7 +67,9 @@ function Sidebar({ open, onClose }) {
         <HeaderWrapper>
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
-        {user && userFavorites.length > 1 ? (
+        {user && userFavorites.length === 1 && userFavorites[0] === '' ? (
+          <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
+        ) : (
           userFavorites.map((item) => {
             if (item === '') return;
 
@@ -82,8 +86,6 @@ function Sidebar({ open, onClose }) {
               </ListItem>
             );
           })
-        ) : (
-          <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
         )}
         <Divider />
         <HeaderWrapper>
