@@ -33,6 +33,12 @@ function ContextProvider({ children }) {
           user,
         }));
       },
+      favorites(user) {
+        setState((prevState) => ({
+          ...prevState,
+          user,
+        }));
+      },
     }),
     []
   );
