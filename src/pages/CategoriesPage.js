@@ -17,7 +17,7 @@ import useAsync from '@hooks/useAsync';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
 
-const GAME_ITEM = styled.div`
+const GameItem = styled.div`
   position: relative;
   width: 100%;
   height: 100px;
@@ -28,7 +28,7 @@ const GAME_ITEM = styled.div`
   grid-template-rows: repeat(2, 1fr);
 `;
 
-const CATEGORIES_CONTAINER = styled.div`
+const CategoriesContainer = styled.div`
   width: 100%;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
@@ -36,20 +36,20 @@ const CATEGORIES_CONTAINER = styled.div`
   gap: 1rem;
 `;
 
-const STYLED_IMG = styled.img`
+const GameImage = styled.img`
   min-width: 100%;
   max-width: 100%;
   height: 100px;
 `;
 
-const ICON_WRAPPER = styled.div`
+const IconWrapper = styled.div`
   position: absolute;
   z-index: 1000;
   top: 0;
   right: 0;
 `;
 
-const GAME_TITLE = styled.div`
+const GameTitle = styled.div`
   text-align: center;
   font-size: 0.75rem;
   font-weight: 700;
@@ -57,7 +57,7 @@ const GAME_TITLE = styled.div`
   margin-top: 0.1rem;
 `;
 
-const STYLED_DIV = styled.div`
+const MessageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -140,49 +140,49 @@ function CategoriesPage() {
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
         {userFavorites.length > 0 ? (
-          <CATEGORIES_CONTAINER>
+          <CategoriesContainer>
             {userFavorites.map((item) => {
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
-                  <GAME_ITEM>
-                    <STYLED_IMG src={images[item]} />
-                    <ICON_WRAPPER onClick={(e) => deleteFavorites(e, item)}>
+                  <GameItem>
+                    <GameImage src={images[item]} />
+                    <IconWrapper onClick={(e) => deleteFavorites(e, item)}>
                       <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
-                    </ICON_WRAPPER>
-                  </GAME_ITEM>
-                  <GAME_TITLE>{`${CATEGORIES[item]}`}</GAME_TITLE>
+                    </IconWrapper>
+                  </GameItem>
+                  <GameTitle>{`${CATEGORIES[item]}`}</GameTitle>
                 </Link>
               );
             })}
-          </CATEGORIES_CONTAINER>
+          </CategoriesContainer>
         ) : (
-          <STYLED_DIV>
+          <MessageContainer>
             <Header color={COLOR_MAIN}>즐겨찾기를 등록해보세요.</Header>
-          </STYLED_DIV>
+          </MessageContainer>
         )}
       </ContextProvider>
       <Header strong>게임 카테고리</Header>
       <Divider />
-      <CATEGORIES_CONTAINER>
+      <CategoriesContainer>
         {channels &&
           channels.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
-                <GAME_ITEM>
-                  <STYLED_IMG src={images[channel.id]} />
-                  <ICON_WRAPPER
+                <GameItem>
+                  <GameImage src={images[channel.id]} />
+                  <IconWrapper
                     onClick={(e) =>
                       updateFavorites(e, channel.id, channel.name)
                     }
                   >
                     <StarBorderIcon fontSize="small" sx={{ color: 'red' }} />
-                  </ICON_WRAPPER>
-                </GAME_ITEM>
-                <GAME_TITLE>{`${channel.name}`}</GAME_TITLE>
+                  </IconWrapper>
+                </GameItem>
+                <GameTitle>{`${channel.name}`}</GameTitle>
               </Link>
             );
           })}
-      </CATEGORIES_CONTAINER>
+      </CategoriesContainer>
     </>
   );
 }
