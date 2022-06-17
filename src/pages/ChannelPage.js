@@ -10,6 +10,7 @@ import channelImageObject from '@assets/ChannelImages/ChannelImageFiles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import useValueContext from '@hooks/useValueContext';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -63,9 +64,9 @@ const LinkButton = styled.button`
   background-color: ${COLOR_BG};
 `;
 
-const userId = '629f07fa7e01ad1cb7250131'; // 전역스토어에서 가져옴
-
 function ChannelPage() {
+  const { user } = useValueContext();
+  const userId = user && user._id; // 전역스토어에서 가져옴
   const navigate = useNavigate();
   const [start, setStart] = useState(0);
   const [channelData, setChannelData] = useState([]);
@@ -92,22 +93,23 @@ function ChannelPage() {
 
   const getUserInfoAndParse = async () => {
     // 사용자 정보가져오는 api 즐겨찾기 가져옴 전역스토어사용?
-    const userInfo = await fetch(`users/${DONG_EON_ID}`);
-    return JSON.parse(userInfo.username);
+    // const userInfo = await fetch(`users/${DONG_EON_ID}`);
+    // return JSON.parse(userInfo.username);
+    if (user) return user.username;
   };
 
   // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
   const findChannel = async () => {
-    const parsedChannelIdArray = await getUserInfoAndParse();
-    const found = parsedChannelIdArray.find((id) => tagTestChanneld === id);
-    if (!found) return null;
-
-    setIsFavorite(true);
+    console.log(user);
+    // const parsedChannelIdArray = await getUserInfoAndParse();
+    // const found = parsedChannelIdArray.find((id) => tagTestChanneld === id);
+    // if (!found) return null;
+    // setIsFavorite(true);
   };
 
   useEffect(() => {
     getChannelData(); // 채널의 포스트 목록 조회 함수
-    findChannel(); // 채널을 즐겨찾기 했는지 확인하는 함수
+    user && findChannel(); // 채널을 즐겨찾기 했는지 확인하는 함수
   }, []);
 
   // 사용자 정보 수정 api
@@ -120,8 +122,6 @@ function ChannelPage() {
       },
     });
   };
-
-  console.log(channelData);
 
   const favoriteClick = async (boolean) => {
     setIsFavorite(!isFavorite);
