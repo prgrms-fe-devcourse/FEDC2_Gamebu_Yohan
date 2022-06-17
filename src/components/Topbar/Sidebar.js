@@ -46,8 +46,6 @@ function Sidebar({ open, onClose }) {
     }
   }, [user]);
 
-  console.log(user, userFavorites);
-
   return (
     <Drawer variant="temporary" open={open} onClose={onClose}>
       <DrawerHeader>
