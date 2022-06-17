@@ -57,6 +57,13 @@ const GAME_TITLE = styled.div`
   margin-top: 0.1rem;
 `;
 
+const STYLED_DIV = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+`;
+
 function CategoriesPage() {
   const { user } = useValueContext();
   const { favorites } = useActionContext();
@@ -133,9 +140,9 @@ function CategoriesPage() {
       <ContextProvider>
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
-        <CATEGORIES_CONTAINER>
-          {userFavorites &&
-            userFavorites.map((item) => {
+        {userFavorites.length > 0 ? (
+          <CATEGORIES_CONTAINER>
+            {userFavorites.map((item) => {
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GAME_ITEM>
@@ -148,7 +155,12 @@ function CategoriesPage() {
                 </Link>
               );
             })}
-        </CATEGORIES_CONTAINER>
+          </CATEGORIES_CONTAINER>
+        ) : (
+          <STYLED_DIV>
+            <Header color={COLOR_MAIN}>즐겨찾기를 등록해보세요.</Header>
+          </STYLED_DIV>
+        )}
       </ContextProvider>
       <Header strong>게임 카테고리</Header>
       <Divider />
