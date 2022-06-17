@@ -6,25 +6,25 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
-import { CATEGORIES, CHANNELS } from '@utils/constants';
-import maple from '@assets/img/maple.png';
-import lol from '@assets/img/lol.png';
-import lostark from '@assets/img/lostark.png';
-import overwatch from '@assets/img/overwatch.png';
-import battleground from '@assets/img/battleground.png';
+import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
+
 import {
   GameIcon,
   GameImage,
   GameTitle,
   MessageTitle,
 } from '@components/Categories';
+import Toast from '@components/Toast';
+
+const CategoriesPageContainer = styled.div`
+  position: relative;
+`;
 
 const GameItem = styled.div`
   position: relative;
-
   width: 100%;
   height: 100px;
   border: 1px solid ${COLOR_MAIN};
@@ -33,6 +33,7 @@ const GameItem = styled.div`
   overflow: hidden;
   grid-template-rows: repeat(2, 1fr);
 `;
+
 const CategoriesContainer = styled.div`
   width: 100%;
   display: grid;
@@ -40,45 +41,61 @@ const CategoriesContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 `;
+
 const MessageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 1rem 0;
 `;
+
 function CategoriesPage() {
   const { user } = useValueContext();
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
-  const [images] = useState({
-    '62a7367f5517e27ffcab3bcb': maple,
-    '62a736925517e27ffcab3bcf': lol,
-    '62a736a15517e27ffcab3bd5': battleground,
-    '62a818db5517e27ffcab3ce2': lostark,
-    '62a818e85517e27ffcab3ce6': overwatch,
-  });
+  const [images] = useState(IMAGES);
+  const [toastState, setToastState] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const handleToastState = useCallback((message) => {
+    setToastMessage(message);
+    setToastState(true);
+  }, []);
+
+  useEffect(() => {
+    if (toastState) {
+      setTimeout(() => setToastState(false), 2000);
+    }
+  }, [toastState]);
+
   useEffect(() => {
     if (user && user.username) {
       setUserFavorites(JSON.parse(user.username));
     }
   }, [user]);
+
   const updateFavorites = useCallback(
     async (e, id, name) => {
       e.preventDefault();
-      let likes = [];
-      if (user.username) {
-        likes = JSON.parse(user.username);
-      }
-      if (likes.includes(id)) {
-        alert('이미 추가된 채널입니다.');
-        // TODO : Toast 또는 다른 UI로직
+      if (!user) {
+        handleToastState('로그인 후 즐겨찾기를 할 수 있습니다.');
         return;
       }
+
+      const likes = user.username ? JSON.parse(user.username) : [];
+
+      if (likes.includes(id)) {
+        handleToastState('이미 추가된 채널입니다.');
+        return;
+      }
+
       likes.push(id);
       likes.sort();
       setUserFavorites([...userFavorites, likes]);
-      alert(`즐겨찾기에 ${name} 채널을 추가`);
+
+      handleToastState(`즐겨찾기에 ${name} 채널을 추가합니다.`);
+
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
@@ -88,32 +105,56 @@ function CategoriesPage() {
       });
       favorites(res);
     },
-    [userFavorites, favorites, user]
+    [userFavorites, favorites, user, handleToastState]
   );
+
   const deleteFavorites = useCallback(
     async (e, id) => {
       e.preventDefault();
-      alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제`);
-      const newFavorites = userFavorites.filter((item) => item !== id);
+
+      const newFavorites = userFavorites.filter(
+        (item) => item !== id && item !== ''
+      );
+      const favoritesData =
+        newFavorites.length < 1
+          ? JSON.stringify([])
+          : JSON.stringify(newFavorites);
+
       setUserFavorites(newFavorites);
+
+      handleToastState(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제합니다.`);
+
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
-          username: JSON.stringify(newFavorites),
+          username: favoritesData,
         },
       });
       favorites(res);
     },
-    [userFavorites, favorites]
+    [userFavorites, favorites, handleToastState]
   );
+
   return (
-    <>
+    <CategoriesPageContainer>
+      {toastState && (
+        <Toast>
+          <span>{toastMessage}</span>
+        </Toast>
+      )}
       <ContextProvider>
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
-        {userFavorites.length > 0 ? (
+        {userFavorites.length === 1 && userFavorites[0] === '' ? (
+          <MessageContainer>
+            <MessageTitle color={COLOR_MAIN} weight={400}>
+              즐겨찾기를 등록해보세요.
+            </MessageTitle>
+          </MessageContainer>
+        ) : (
           <CategoriesContainer>
             {userFavorites.map((item) => {
+              if (item === '') return;
               return (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <GameItem>
@@ -130,12 +171,6 @@ function CategoriesPage() {
               );
             })}
           </CategoriesContainer>
-        ) : (
-          <MessageContainer>
-            <MessageTitle color={COLOR_MAIN} weight={400}>
-              즐겨찾기를 등록해보세요.
-            </MessageTitle>
-          </MessageContainer>
         )}
       </ContextProvider>
       <Header strong>게임 카테고리</Header>
@@ -163,7 +198,8 @@ function CategoriesPage() {
             );
           })}
       </CategoriesContainer>
-    </>
+    </CategoriesPageContainer>
   );
 }
+
 export default CategoriesPage;

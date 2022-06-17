@@ -1,4 +1,6 @@
 // TODO: 추후 채널 카테고리 더 추가
+import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
+
 export const CHANNELS = [
   {
     id: '62a7367f5517e27ffcab3bcb',
@@ -29,6 +31,14 @@ export const CATEGORIES = {
   '62a818db5517e27ffcab3ce2': '로스트아크',
   '62a818e85517e27ffcab3ce6': '오버워치',
   '629f0c7c7e01ad1cb7250151': '임시 카테고리',
+};
+
+export const IMAGES = {
+  '62a7367f5517e27ffcab3bcb': maple,
+  '62a736925517e27ffcab3bcf': lol,
+  '62a736a15517e27ffcab3bd5': battleground,
+  '62a818db5517e27ffcab3ce2': lostark,
+  '62a818e85517e27ffcab3ce6': overwatch,
 };
 
 export const NOT_FOUND_IMAGE =
