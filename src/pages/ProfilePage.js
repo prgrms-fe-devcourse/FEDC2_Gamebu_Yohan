@@ -192,6 +192,9 @@ function ProfilePage() {
       </Collapse>
     ) : null;
 
+  const Name =
+    user?._id === targetUser?._id ? user?.fullName : targetUser?.fullName;
+
   const EditfullNameIcon =
     user?._id === targetUser?._id ? (
       <>
@@ -222,7 +225,7 @@ function ProfilePage() {
       </ThumbnailCover>
       <ProfileMenuWrapper>
         <UserFullNameWrapper>
-          <Span>{targetUser?.fullName}</Span>
+          <Span>{Name}</Span>
           {EditfullNameIcon}
         </UserFullNameWrapper>
         <hr />
