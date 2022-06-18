@@ -14,6 +14,12 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import { authFetch, fetch } from '@utils/fetch';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Modal from '@mui/material/Modal';
 
 const DUMMY_DATA = {
   authorId: '629f07fa7e01ad1cb7250131',
@@ -71,6 +77,7 @@ const CommentsContainer = styled.div`
   height: 14rem;
   margin-bottom: 1rem;
   padding: 0.5rem 0.5rem;
+  overflow: scroll;
 `;
 
 const CommentBox = styled.div`
@@ -84,13 +91,15 @@ const CommentBox = styled.div`
 `;
 
 const AvatarIcon = styled(Avatar)`
-  height: 1.5rem;
-  width: 1.5rem;
+  height: 2rem;
+  width: 2rem;
 `;
 const TextBox = styled.div`
   /* background-color: gray; */
+  display: flex;
+  align-items: center;
   width: 11rem;
-  height: 1rem;
+  height: 2rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   overflow: hidden;
@@ -143,9 +152,9 @@ function PostContent({ content }) {
   return <PostContentContainer>{content}</PostContentContainer>;
 }
 
-PostContent.propTypes = {
-  content: PropTypes.string.isRequired,
-};
+// PostContent.propTypes = {
+//   content: PropTypes.string.isRequired,
+// };
 
 function Comment({
   commentId,
@@ -193,14 +202,66 @@ function CommentInput({ handlePostComment, commentValue, handleWriteComment }) {
   );
 }
 
+function CommentModal({
+  isVisible,
+  onClose,
+  comments,
+  isNew,
+  userId,
+  handleDeleteClick,
+}) {
+  return (
+    <div>
+      <Dialog open={isVisible} onClose={onClose} scroll="paper" fullScreen>
+        <DialogTitle>댓글목록</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>
+            {comments &&
+              comments.map((item, i) => {
+                if (isNew && i === 0) {
+                  return (
+                    <Comment
+                      key={item._id}
+                      commentId={item._id}
+                      author={item.author}
+                      comment={item.comment}
+                      updatedAt={<NewIcon color="inherit" />}
+                      userId={userId}
+                      handleDeleteClick={handleDeleteClick}
+                    />
+                  );
+                }
+                return (
+                  <Comment
+                    key={item._id}
+                    commentId={item._id}
+                    author={item.author}
+                    comment={item.comment}
+                    updatedAt={item.updatedAt.slice(0, 10)}
+                    userId={userId}
+                    handleDeleteClick={handleDeleteClick}
+                  />
+                );
+              })}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
+
 function PostDetailPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { user } = useValueContext();
   const userId = user && user._id;
-  const [detailData, setDetailData] = useState(DUMMY_DATA);
+  const [detailData, setDetailData] = useState(null);
   const [commentValue, setCommentValue] = useState('');
   const [isNew, setIsNew] = useState(false);
+  const [modalVisible, setModalVisble] = useState(false);
 
   let needData = {};
 
@@ -221,92 +282,94 @@ function PostDetailPage() {
   };
 
   useEffect(() => {
-    // setDetailData(state);
-    user && fetchPostDetail();
+    state && fetchPostDetail();
   }, [state, user]);
-  const { title, tag, content, postId, channelId } = DUMMY_DATA;
 
   const handleEditClick = () => {
-    navigate(`/posts/edit/${DUMMY_DATA.postId}`, {
+    const { title, tag, content, postId, channelId } = detailData;
+    navigate(`/posts/edit/${detailData.postId}`, {
       state: { title, tag, content, postId, channelId },
     });
   };
 
   const handleDeleteClick = async (id) => {
-    // const res = await authFetch('comments/delete', {
-    //   method: 'DELETE',
-    //   data: {
-    //     id,
-    //   },
-    // });
-    // console.log('delete res:', res);
-    // res &&
-    setDetailData({
-      ...detailData,
-      comments: [...detailData.comments.filter((item) => item._id !== id)],
+    const res = await authFetch('comments/delete', {
+      method: 'DELETE',
+      data: {
+        id,
+      },
     });
+    console.log('delete res:', res);
+    res &&
+      setDetailData({
+        ...detailData,
+        comments: [...detailData.comments.filter((item) => item._id !== id)],
+      });
   };
   const handlePostComment = async (e) => {
     if (e.type === 'keydown' && e.key !== 'Enter') return null;
-    // const res = await authFetch('comments/create', {
-    //   method: 'POST',
-    //   data: {
-    //     comment: commentValue,
-    //     postId: detailData.postId,
-    //   },
-    // });
-    // console.log('post res: ', res);
-    // res &&
-    setDetailData({
-      ...detailData,
-      comments: [
-        {
-          _id: '1',
-          comment: '새로운 댓글입니다',
-          updatedAt: '2022-06-18',
-          author: { _id: '629f07fa7e01ad1cb7250131', fullName: '하단동포그바' },
-        },
-        // res,
-        ...detailData.comments,
-      ],
+    const res = await authFetch('comments/create', {
+      method: 'POST',
+      data: {
+        comment: commentValue,
+        postId: detailData.postId,
+      },
     });
+    console.log('post res: ', res);
+    res &&
+      setDetailData({
+        ...detailData,
+        comments: [res, ...detailData.comments],
+      });
     setIsNew(true); // new 아이콘을 달아줌
+    setCommentValue('');
   };
 
   return (
     <PageContainer>
       <PostCardContainer />
-      {detailData.authorId === userId ? (
+      {detailData && detailData.authorId === userId ? (
         <Edit onClick={handleEditClick} />
       ) : null}
-      <PostContent content={detailData.content} />
-      <CommentsContainer>
-        {detailData.comments.map((item, i) => {
-          if (isNew && i === 0) {
+      <PostContent content={detailData && detailData.content} />
+      {detailData && (
+        <CommentModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisble(false)}
+          comments={detailData.comments}
+          isNew={isNew}
+          userId={userId}
+          handleDeleteClick={handleDeleteClick}
+        />
+      )}
+      <CommentsContainer onClick={() => setModalVisble(true)}>
+        {detailData &&
+          detailData.comments.map((item, i) => {
+            if (isNew && i === 0) {
+              return (
+                <Comment
+                  key={item._id}
+                  commentId={item._id}
+                  author={item.author}
+                  comment={item.comment}
+                  updatedAt={<NewIcon color="inherit" />}
+                  userId={userId}
+                  handleDeleteClick={handleDeleteClick}
+                />
+              );
+            }
             return (
               <Comment
                 key={item._id}
                 commentId={item._id}
                 author={item.author}
                 comment={item.comment}
-                updatedAt={<NewIcon color="inherit" />}
+                updatedAt={item.updatedAt.slice(0, 10)}
                 userId={userId}
                 handleDeleteClick={handleDeleteClick}
               />
             );
-          }
-          return (
-            <Comment
-              key={item._id}
-              commentId={item._id}
-              author={item.author}
-              comment={item.comment}
-              updatedAt={item.updatedAt.slice(0, 10)}
-              userId={userId}
-              handleDeleteClick={handleDeleteClick}
-            />
-          );
-        })}
+          })}
       </CommentsContainer>
       <CommentInput
         handlePostComment={handlePostComment}

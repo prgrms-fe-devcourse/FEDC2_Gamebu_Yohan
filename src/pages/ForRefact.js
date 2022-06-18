@@ -42,3 +42,34 @@ needData = {
 	tag: state.tag,
 	title: state.title
 }
+
+<Modal isVisible={modalVisible} onClose={() => setModalVisble(false)} />
+      <CommentsContainer onClick={() => setModalVisble(true)}>
+        {detailData &&
+          detailData.comments.map((item, i) => {
+            if (isNew && i === 0) {
+              return (
+                <Comment
+                  key={item._id}
+                  commentId={item._id}
+                  author={item.author}
+                  comment={item.comment}
+                  updatedAt={<NewIcon color="inherit" />}
+                  userId={userId}
+                  handleDeleteClick={handleDeleteClick}
+                />
+              );
+            }
+            return (
+              <Comment
+                key={item._id}
+                commentId={item._id}
+                author={item.author}
+                comment={item.comment}
+                updatedAt={item.updatedAt.slice(0, 10)}
+                userId={userId}
+                handleDeleteClick={handleDeleteClick}
+              />
+            );
+          })}
+      </CommentsContainer>

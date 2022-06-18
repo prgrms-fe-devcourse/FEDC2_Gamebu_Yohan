@@ -168,7 +168,7 @@ LikeButton.propTypes = {
     .isRequired,
 };
 
-function Sample1({
+function ChannelPostCard({
   title,
   updatedAt,
   fullName,
@@ -289,7 +289,7 @@ function Sample1({
   );
 }
 
-Sample1.propTypes = {
+ChannelPostCard.propTypes = {
   likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   tag: PropTypes.array.isRequired,
@@ -305,4 +305,4 @@ Sample1.propTypes = {
   changeLikeCount: PropTypes.func.isRequired,
 };
 
-export default Sample1;
+export default ChannelPostCard;
