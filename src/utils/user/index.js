@@ -5,6 +5,7 @@ const endpoints = {
   signup: 'signup',
   authUser: 'auth-user',
   changeMyInfo: 'settings/update-user',
+  getUserInfo: (userId) => `users/${userId}`,
 };
 
 export const loginAPI = (option) => {
@@ -21,4 +22,8 @@ export const authUserAPI = () => {
 
 export const changeMyInfoAPI = (option) => {
   return authFetch(endpoints.changeMyInfo, option);
+};
+
+export const getUserInfo = (userId) => {
+  return authFetch(endpoints.getUserInfo(userId));
 };
