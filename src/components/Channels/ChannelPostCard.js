@@ -25,11 +25,10 @@ const UserNameAndDate = styled.div`
   font-size: 0.75rem;
 `;
 
-const TagAndHeart = styled.div`
+const Footer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
-  margin-bottom: 1rem;
 `;
 
 const Title = styled.div`
@@ -66,13 +65,110 @@ const TagSpan = styled.span`
   margin-left: 0.5rem;
 `;
 
-const HeartIconButton = styled(IconButton)`
-  margin-left: 2rem;
+const HeartIconButton = styled(IconButton)``;
+
+const TagPartContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+`;
+
+const LikeButtonContainer = styled.div`
+  height: 2rem;
+  display: flex;
+  align-items: center;
 `;
 
 export const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
-function ChannelPostCard({
+function Header({ title, onClick, isClicked }) {
+  return (
+    <HeaderAndButton>
+      <Title>{title}</Title>
+      <ApplicaitonButton onClick={onClick} isClick={isClicked}>
+        {isClicked ? '신청완료' : '신청하기'}
+      </ApplicaitonButton>
+    </HeaderAndButton>
+  );
+}
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isClicked: PropTypes.bool.isRequired,
+};
+
+function UserInfo({ name, updateDate }) {
+  return (
+    <UserNameAndDate>
+      {name}
+      <Divider type="vertical" />
+      {updateDate}
+    </UserNameAndDate>
+  );
+}
+
+UserInfo.propTypes = {
+  name: PropTypes.string.isRequired,
+  updateDate: PropTypes.string.isRequired,
+};
+
+function TagPart({ tag }) {
+  return (
+    <TagPartContainer>
+      {tag.slice(0, 4).map((item, index) => (
+        <Tag
+          backgroundColor={TagColor[index]}
+          content={item}
+          key={item}
+          style={{
+            boxSizing: 'borderBox',
+            borderRadius: '0.5rem',
+            padding: '0.1rem 0.25rem',
+            fontSize: '0.75rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: '#eee',
+            marginLeft: '0.2rem',
+            marginRight: 0,
+          }}
+        />
+      ))}
+      {tag.length > 4 ? (
+        <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
+      ) : null}
+    </TagPartContainer>
+  );
+}
+TagPart.propTypes = {
+  tag: PropTypes.array.isRequired,
+};
+
+function LikeButton({ onClick, isLiked, likeCount }) {
+  return (
+    <LikeButtonContainer>
+      <HeartIconButton onClick={onClick}>
+        {isLiked ? (
+          <FavoriteIcon color="error" />
+        ) : (
+          <FavoriteBorderIcon color="error" />
+        )}
+      </HeartIconButton>
+      {likeCount}
+    </LikeButtonContainer>
+  );
+}
+LikeButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  isLiked: PropTypes.bool.isRequired,
+  likeCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+};
+
+function Sample1({
   title,
   updatedAt,
   fullName,
@@ -93,6 +189,7 @@ function ChannelPostCard({
   // TODO: 사용자 id를 가져와야함
   const userId = '629f07fa7e01ad1cb7250131';
   // const parsingTag = JSON.parse(tag);
+
   useEffect(() => {
     setLikeCount(likes.length);
 
@@ -171,59 +268,28 @@ function ChannelPostCard({
     setIsLiked(!isLiked);
     console.log('heartClick');
   };
+
   return (
     <CardContainer onClick={postClick}>
-      <HeaderAndButton>
-        <Title>{title}</Title>
-        <ApplicaitonButton
-          onClick={applicationButtonClick}
-          isClick={buttonIsClicked}
-        >
-          {buttonIsClicked ? '신청완료' : '신청하기'}
-        </ApplicaitonButton>
-      </HeaderAndButton>
-      <UserNameAndDate>
-        {fullName}
-        <Divider type="vertical" />
-        {updatedAt.slice(0, 10)}
-      </UserNameAndDate>
-      <TagAndHeart>
-        {tag.slice(0, 4).map((item, index) => (
-          <Tag
-            backgroundColor={TagColor[index]}
-            content={item}
-            key={item}
-            style={{
-              boxSizing: 'borderBox',
-              borderRadius: '0.5rem',
-              padding: '0.1rem 0.25rem',
-              fontSize: '0.75rem',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: '#eee',
-              marginLeft: '0.2rem',
-              marginRight: 0,
-            }}
-          />
-        ))}
-        {tag.length > 4 ? (
-          <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
-        ) : null}
-        <HeartIconButton onClick={(e) => heartClick(e)}>
-          {isLiked ? (
-            <FavoriteIcon color="error" />
-          ) : (
-            <FavoriteBorderIcon color="error" />
-          )}
-        </HeartIconButton>
-        {likeCount}
-      </TagAndHeart>
+      <Header
+        title={title}
+        onClick={applicationButtonClick}
+        isClicked={buttonIsClicked}
+      />
+      <UserInfo name={fullName} updateDate={updatedAt.slice(0, 10)} />
+      <Footer>
+        <TagPart tag={tag} />
+        <LikeButton
+          onClick={heartClick}
+          isLiked={isLiked}
+          likeCount={likeCount}
+        />
+      </Footer>
     </CardContainer>
   );
 }
 
-ChannelPostCard.propTypes = {
+Sample1.propTypes = {
   likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   tag: PropTypes.array.isRequired,
@@ -239,4 +305,4 @@ ChannelPostCard.propTypes = {
   changeLikeCount: PropTypes.func.isRequired,
 };
 
-export default ChannelPostCard;
+export default Sample1;
