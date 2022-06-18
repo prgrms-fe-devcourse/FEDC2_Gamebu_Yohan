@@ -21,6 +21,7 @@ export default function TagChip({
   label,
   index,
   simple,
+  onRender,
   onDelete,
   chipsx,
   tagsx,
@@ -35,11 +36,13 @@ export default function TagChip({
   };
   const image = tagdata[label] ? tagdata[label].image : '';
   const ref = useRef();
+  useEffect(() => {
+    onRender();
+  }, []);
 
   return (
-    <ListItem label={label} index={index} sx={ItemStyle}>
+    <ListItem ref={ref} label={label} index={index} sx={ItemStyle}>
       <Chip
-        ref={ref}
         label={simple ? `#${label}` : label}
         name={label}
         avatar={simple ? false : <Avatar alt={label} src={image} />}
@@ -54,7 +57,9 @@ export default function TagChip({
 
 TagChip.propTypes = {
   label: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   simple: PropTypes.bool,
+  onRender: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   onDelete: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   chipsx: PropTypes.object,
   tagsx: PropTypes.object,
@@ -62,6 +67,7 @@ TagChip.propTypes = {
 
 TagChip.defaultProps = {
   simple: false,
+  onRender: false,
   onDelete: false,
   chipsx: {},
   tagsx: {},

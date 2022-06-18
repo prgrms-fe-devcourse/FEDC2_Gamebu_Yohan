@@ -1,16 +1,32 @@
-import TagChipGroup from '@components/TagChip/TagChipGroup';
+import ShortTagList from '@components/TagChip/ShortTagList';
 
 export default {
-  title: 'Component/TagChipGroup',
-  component: TagChipGroup,
+  title: 'Component/TagList',
+  component: ShortTagList,
   argTypes: {
-    list: { defaultValue: ['딜러', '힐러', 'RPG', '경쟁'], control: 'object' },
+    list: {
+      defaultValue: [
+        '딜러',
+        '파티',
+        '듀오',
+        'RPG',
+        'FPS',
+        '레이드',
+        '탱커',
+        '서폿',
+      ],
+      control: 'object',
+    },
     simple: { defaultValue: false, control: 'boolean' },
-    onDelete: { defaultvalue: false, control: 'boolean' },
-    wrap: { control: 'inline-radio', options: ['wrap', 'skip'] },
+    onDelete: { defaultValue: false, control: 'boolean' },
+    wrap: {
+      defaultValue: 'skip',
+      control: 'inline-radio',
+      options: ['wrap', 'skip'],
+    },
     sx: {
       defaultValue: {
-        width: 300,
+        width: 500,
         height: 100,
         border: '1px solid blue',
       },
@@ -19,9 +35,9 @@ export default {
 };
 
 export function Default(args) {
-  return <TagChipGroup {...args} />;
+  return <ShortTagList {...args} />;
 }
 
 export function simple(args) {
-  return <TagChipGroup {...args} />;
+  return <ShortTagList {...args} />;
 }
