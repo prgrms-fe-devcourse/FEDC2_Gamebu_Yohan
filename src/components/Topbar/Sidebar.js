@@ -65,7 +65,10 @@ function Sidebar({ open, onClose }) {
         <HeaderWrapper>
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
-        {user && userFavorites.length === 1 && userFavorites[0] === '' ? (
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {!user ? (
+          <ContentWrapper>로그인 후 즐겨찾기를 등록해보세요.</ContentWrapper>
+        ) : user && userFavorites.length === 0 ? (
           <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
         ) : (
           userFavorites.map((item) => {
