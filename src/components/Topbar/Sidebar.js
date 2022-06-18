@@ -11,6 +11,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import GamesIcon from '@mui/icons-material/Games';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import ListItemText from '@mui/material/ListItemText';
+import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
 import { useState, useEffect } from 'react';
@@ -35,6 +38,14 @@ const ContentWrapper = styled.div`
   text-align: center;
 `;
 
+const AuthContainer = styled.div`
+  height: 3rem;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+`;
+
 function Sidebar({ open, onClose }) {
   const { user } = useValueContext();
   const [userFavorites, setUserFavorites] = useState([]);
@@ -56,12 +67,6 @@ function Sidebar({ open, onClose }) {
       </DrawerHeader>
       <Divider />
       <List>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemText primary={<Link to="/login">로그인</Link>} />
-          </ListItemButton>
-        </ListItem>
-        <Divider />
         <HeaderWrapper>
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
@@ -105,6 +110,30 @@ function Sidebar({ open, onClose }) {
           </ListItem>
         ))}
       </List>
+      <AuthContainer>
+        {!user ? (
+          <Button
+            variant="contained"
+            sx={{ color: '#424242', bgcolor: '#eeeeee' }}
+          >
+            <Link to="/login">
+              <LoginIcon sx={{ fontSize: 'small', mr: 1 }} />
+              로그인
+            </Link>
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            sx={{ color: '#424242', bgcolor: '#eeeeee' }}
+          >
+            <Link to="/#">
+              <LogoutIcon sx={{ fontSize: 'small', mr: 1 }} />
+              로그아웃
+              {/* TODO : 로그아웃 로직 추가 필요 */}
+            </Link>
+          </Button>
+        )}
+      </AuthContainer>
     </Drawer>
   );
 }
