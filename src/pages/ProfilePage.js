@@ -8,9 +8,10 @@ import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import { Link, useParams } from 'react-router-dom';
-import { COLOR_MAIN } from '@utils/color';
+import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import EditFullNameModal from '@components/EditFullNameModal';
 import { getUserInfo } from '@utils/user';
+import { CATEGORIES } from '@utils/constants';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -82,6 +83,46 @@ const UserMenuWrapper = styled.div`
 const UserMenu = styled.div`
   flex-grow: 1;
   text-align: center;
+`;
+
+const RecentPostsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  padding: 8px 0;
+`;
+
+const PostCategory = styled.div`
+  font-size: 0.5rem;
+  color: ${COLOR_MAIN};
+  margin-right: 0.5rem;
+  width: 5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const PostTitle = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 2rem;
+  color: ${COLOR_SIGNATURE};
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 0.2rem;
+`;
+
+const PostComments = styled.div`
+  font-size: 0.8rem;
+  line-height: 2rem;
+  color: red;
+`;
+
+const MyPostContainer = styled.div`
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 `;
 
 function ProfilePage() {
@@ -190,6 +231,45 @@ function ProfilePage() {
           <UserMenu>팔로우&nbsp;{user?.followers?.length || 0}</UserMenu>
         </UserMenuWrapper>
       </ProfileMenuWrapper>
+      {/* FIXME 확실한 카드의 형태가 정해지면 수정 */}
+      <MyPostContainer>
+        <div>내가 쓴 글</div>
+        {targetUser?.posts.map((post) => {
+          const { _id, channel, comments } = post;
+          let { title } = post;
+          if (title.startsWith('{')) {
+            title = JSON.parse(title).dt;
+          }
+          return (
+            <RecentPostsWrapper key={_id}>
+              <PostCategory>{CATEGORIES[channel]}</PostCategory>
+              <Link to={`posts/details/${_id}`}>
+                <PostTitle>{title}</PostTitle>
+              </Link>
+              <PostComments>[{comments.length}]</PostComments>
+            </RecentPostsWrapper>
+          );
+        })}
+      </MyPostContainer>
+      <MyPostContainer>
+        <div>내가 좋아요 한 글</div>
+        {targetUser?.likes.map((like) => {
+          const { _id, channel, comments } = like;
+          let { title } = like;
+          if (title.startsWith('{')) {
+            title = JSON.parse(title).dt;
+          }
+          return (
+            <RecentPostsWrapper key={_id}>
+              <PostCategory>{CATEGORIES[channel]}</PostCategory>
+              <Link to={`posts/details/${_id}`}>
+                <PostTitle>{title}</PostTitle>
+              </Link>
+              <PostComments>[{comments.length}]</PostComments>
+            </RecentPostsWrapper>
+          );
+        })}
+      </MyPostContainer>
     </ContentWrapper>
   );
 }
