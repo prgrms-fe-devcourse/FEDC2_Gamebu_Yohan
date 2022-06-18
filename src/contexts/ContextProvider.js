@@ -14,7 +14,7 @@ export const valueContext = createContext();
 export const actionContext = createContext();
 
 function ContextProvider({ children }) {
-  const [token] = useCookieToken(GAMEBU_TOKEN);
+  const [token, setToken] = useCookieToken(GAMEBU_TOKEN);
   const [state, setState] = useState({
     test: 100,
     user: null,
@@ -39,12 +39,20 @@ function ContextProvider({ children }) {
           user,
         }));
       },
+      logout() {
+        setState((prevState) => ({
+          ...prevState,
+          isLogin: false,
+          user: null,
+        }));
+        setToken('');
+      },
     }),
-    []
+    [setToken]
   );
 
   const getAuthUser = useCallback(async () => {
-    authUserAPI().then((result) => actions.login(result));
+    authUserAPI().then((result) => result && actions.login(result));
   }, [actions]);
 
   useEffect(() => {
