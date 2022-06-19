@@ -17,6 +17,7 @@ import ContextProvider from '@contexts/ContextProvider';
 import InterestedChannelModal from '@components/InterestedChannelModal';
 import SearchAllPage from '@pages/SearchAllPage';
 import NotFoundPage from '@pages/NotFoundPage';
+import MessagePage from '@pages/MessagePage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="message" element={<MessagePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

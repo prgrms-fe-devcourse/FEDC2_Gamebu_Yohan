@@ -23,6 +23,9 @@ function BottomNavBar() {
     if (pathname.includes('search')) {
       return setValue(2);
     }
+    if (pathname.includes('message')) {
+      return setValue(3);
+    }
     if (pathname.includes('alram')) {
       return setValue(4);
     }
@@ -33,6 +36,7 @@ function BottomNavBar() {
     0: '/',
     1: '/channel/categories',
     2: '/search/all',
+    3: '/message',
   };
   return (
     <BottomNavbarWrapper>
@@ -48,6 +52,7 @@ function BottomNavBar() {
         <BottomNavigationAction label="홈" icon={<HomeIcon />} />
         <BottomNavigationAction label="채널" icon={<WidgetsIcon />} />
         <BottomNavigationAction label="검색" icon={<SearchIcon />} />
+        <BottomNavigationAction label="메시지" icon={<SearchIcon />} />
       </BottomNavigation>
     </BottomNavbarWrapper>
   );
