@@ -18,6 +18,7 @@ import InterestedChannelModal from '@components/InterestedChannelModal';
 import SearchAllPage from '@pages/SearchAllPage';
 import NotFoundPage from '@pages/NotFoundPage';
 import MessagePage from '@pages/MessagePage';
+import DetailMessage from '@pages/DetailMessage';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="signup" element={<SignupPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="message" element={<MessagePage />} />
+          <Route path="message/:userId" element={<DetailMessage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
