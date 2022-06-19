@@ -5,13 +5,14 @@ import { useRef, useEffect } from 'react';
 import tagdata from './tagdata';
 
 const DefaultItemStyle = {
+  width: 'auto',
+  padding: 0,
   display: 'inline',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: 0,
 };
 
-const DefaultchipStyle = {
+const DefaultChipStyle = {
   color: blue.A400,
   borderColor: blue.A700,
   backgroundColor: 'white',
@@ -21,27 +22,24 @@ export default function TagChip({
   label,
   index,
   simple,
-  onRender,
   onDelete,
+  itemsx,
   chipsx,
-  tagsx,
 }) {
   const ItemStyle = {
     ...DefaultItemStyle,
+    ...itemsx,
+  };
+  const ChipStyle = {
+    ...DefaultChipStyle,
     ...chipsx,
   };
-  const TagStyle = {
-    ...DefaultchipStyle,
-    ...tagsx,
-  };
+
   const image = tagdata[label] ? tagdata[label].image : '';
   const ref = useRef();
-  useEffect(() => {
-    onRender();
-  }, []);
 
   return (
-    <ListItem ref={ref} label={label} index={index} sx={ItemStyle}>
+    <ListItem ref={ref} label={label} index={index} sx={ ...ItemStyle}>
       <Chip
         label={simple ? `#${label}` : label}
         name={label}
@@ -49,7 +47,7 @@ export default function TagChip({
         onDelete={onDelete}
         variant="outlined"
         size={simple ? 'small' : 'medium'}
-        sx={TagStyle}
+        sx={ChipStyle}
       />
     </ListItem>
   );
@@ -59,18 +57,14 @@ TagChip.propTypes = {
   label: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   simple: PropTypes.bool,
-  onRender: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   onDelete: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+  itemsx: PropTypes.object,
   chipsx: PropTypes.object,
-  tagsx: PropTypes.object,
 };
 
 TagChip.defaultProps = {
   simple: false,
-  onRender: false,
   onDelete: false,
+  itemsx: {},
   chipsx: {},
-  tagsx: {},
 };
-
-// TODO: label에 따라 avatar, color 지정: size에 따라 크기 지정

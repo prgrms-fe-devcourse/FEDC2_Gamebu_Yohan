@@ -1,80 +1,66 @@
 import { Box, List } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
-import PropTypes, { array } from 'prop-types';
-import { blue } from '@mui/material/colors';
+import PropTypes from 'prop-types';
+import { red } from '@mui/material/colors';
 import TagChip from '.';
 
-const defaultBoxStyle = {
+const DefaultBodyStyle = {
   alignItems: 'center',
 };
 
-const defaultListStyle = {
-  ListStyle: 'none',
+const DefaultListStyle = {
   display: 'inline-flex',
-  alignItems: 'center',
   flexDirection: 'row',
-};
-
-const helperTextBoxStyle = {
-  color: blue[500],
-  display: 'inline-block',
-  width: 100,
+  flexWrap: 'nowrap',
   alignItems: 'center',
 };
 
-export default function ShortTagList({
-  list,
-  simple,
-  onDelete,
-  wrap,
-  itemsx,
-  chipsx,
-  ...props
-}) {
-  const BoxStyle = {
-    ...defaultBoxStyle,
+const HelperStyle = {
+  alignItems: 'center',
+  color: red[300],
+};
+
+export default function TagList({ tags, simple, itemsx, chipsx, ...props }) {
+  const BodyStyle = {
+    ...DefaultBodyStyle,
     ...props.sx,
   };
 
   const ListStyle = {
-    ...defaultListStyle,
-    flexWrap: wrap === 'wrap' ? 'wrap' : 'nowrap',
+    ...DefaultListStyle,
   };
   const [listItem, setListItem] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isEnd, setIsEnd] = useState(false);
-  const BoxRef = useRef();
+  const [tagsIndex, setTagsIndex] = useState(0);
+  const [endList, setEndList] = useState(false);
+  const bodyRef = useRef();
   const listRef = useRef();
+  const tagsLength = tags.length;
 
   useEffect(() => {
-    const boxLength = BoxRef.current.offsetWidth;
+    if (endList) return;
+    const boxLength = bodyRef.current.offsetWidth;
     const listLength = listRef.current.offsetWidth;
-    if (boxLength - 150 < listLength) {
-      setIsEnd(true);
+    if (boxLength - 50 < listLength) {
       const newListItem = listItem.slice(0, -1);
-      setCurrentIndex(newListItem.length);
       setListItem(newListItem);
+      setTagsIndex(newListItem.length);
+      setEndList(true);
+      return;
     }
-    if (isEnd) return;
-    const newListItem = [...listItem];
-    if (list[currentIndex]) newListItem.push(list[currentIndex]);
-    setCurrentIndex(currentIndex + 1);
-
-    if (currentIndex >= list.length) {
-      setIsEnd(true);
+    const newItem = tags[tagsIndex];
+    if (typeof newItem === 'string') {
+      const newListItem = [...listItem];
+      newListItem.push(newItem);
+      setListItem(newListItem);
+      setTagsIndex(tagsIndex + 1);
+      if (tagsIndex >= tagsLength) {
+        setEndList(true);
+      }
     }
-    setListItem(newListItem);
   }, [listItem]);
 
-  const onRender = () => {};
   return (
-    <Box
-      ref={BoxRef}
-      sx={BoxStyle}
-      onClick={() => {
-        console.log(currentIndex);
-      }}
-    >
+    <Box ref={bodyRef} sx={BodyStyle}>
       <List ref={listRef} sx={ListStyle}>
         {listItem.map((name, index) => (
           <TagChip
@@ -82,34 +68,28 @@ export default function ShortTagList({
             key={name}
             index={index}
             simple={simple}
-            onRender={onRender}
-            onDelete={onDelete}
-            itemsx={props.itemsx}
-            chipsx={props.chipsx}
+            itemsx={{ ...itemsx, mr: 0 }}
+            chipsx={chipsx}
           />
         ))}
       </List>
-      {list.length > currentIndex && (
-        <Box sx={helperTextBoxStyle}>+{list.length - currentIndex}</Box>
+      {tagsLength > tagsIndex && (
+        <span sx={HelperStyle}>+{tagsLength - tagsIndex}</span>
       )}
     </Box>
   );
 }
 
-ShortTagList.propTypes = {
-  list: PropTypes.arrayOf(PropTypes.string).isRequired,
+TagList.propTypes = {
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   simple: PropTypes.bool,
-  onDelete: PropTypes.func,
-  wrap: PropTypes.oneOf(['wrap', 'skip']),
   sx: PropTypes.object,
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
 };
 
-ShortTagList.defaultProps = {
+TagList.defaultProps = {
   simple: false,
-  onDelete: false,
-  wrap: 'wrap',
   sx: {},
   itemsx: {},
   chipsx: {},
