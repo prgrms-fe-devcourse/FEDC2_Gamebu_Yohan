@@ -1,7 +1,6 @@
 import { Chip, Avatar, ListItem } from '@mui/material';
 import PropTypes from 'prop-types';
 import { blue } from '@mui/material/colors';
-import { useRef, useEffect } from 'react';
 import tagdata from './tagdata';
 
 const DefaultItemStyle = {
@@ -18,14 +17,7 @@ const DefaultChipStyle = {
   backgroundColor: 'white',
 };
 
-export default function TagChip({
-  label,
-  index,
-  simple,
-  onDelete,
-  itemsx,
-  chipsx,
-}) {
+export default function TagChip({ label, index, simple, itemsx, chipsx }) {
   const ItemStyle = {
     ...DefaultItemStyle,
     ...itemsx,
@@ -36,15 +28,13 @@ export default function TagChip({
   };
 
   const image = tagdata[label] ? tagdata[label].image : '';
-  const ref = useRef();
 
   return (
-    <ListItem ref={ref} label={label} index={index} sx={ ...ItemStyle}>
+    <ListItem label={label} name={label} index={index} sx={{ ...ItemStyle }}>
       <Chip
         label={simple ? `#${label}` : label}
         name={label}
         avatar={simple ? false : <Avatar alt={label} src={image} />}
-        onDelete={onDelete}
         variant="outlined"
         size={simple ? 'small' : 'medium'}
         sx={ChipStyle}
@@ -57,14 +47,12 @@ TagChip.propTypes = {
   label: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   simple: PropTypes.bool,
-  onDelete: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
 };
 
 TagChip.defaultProps = {
   simple: false,
-  onDelete: false,
   itemsx: {},
   chipsx: {},
 };
