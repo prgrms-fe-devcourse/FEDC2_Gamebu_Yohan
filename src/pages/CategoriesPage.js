@@ -6,17 +6,22 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
-import { CATEGORIES, CHANNELS } from '@utils/constants';
+import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
-import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
+
 import {
   GameIcon,
   GameImage,
   GameTitle,
   MessageTitle,
 } from '@components/Categories';
+import Toast from '@components/Toast';
+
+const CategoriesPageContainer = styled.div`
+  position: relative;
+`;
 
 const GameItem = styled.div`
   position: relative;
@@ -49,13 +54,20 @@ function CategoriesPage() {
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
-  const [images] = useState({
-    '62a7367f5517e27ffcab3bcb': maple,
-    '62a736925517e27ffcab3bcf': lol,
-    '62a736a15517e27ffcab3bd5': battleground,
-    '62a818db5517e27ffcab3ce2': lostark,
-    '62a818e85517e27ffcab3ce6': overwatch,
-  });
+  const [images] = useState(IMAGES);
+  const [toastState, setToastState] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const handleToastState = useCallback((message) => {
+    setToastMessage(message);
+    setToastState(true);
+  }, []);
+
+  useEffect(() => {
+    if (toastState) {
+      setTimeout(() => setToastState(false), 2000);
+    }
+  }, [toastState]);
 
   useEffect(() => {
     if (user && user.username) {
@@ -66,14 +78,15 @@ function CategoriesPage() {
   const updateFavorites = useCallback(
     async (e, id, name) => {
       e.preventDefault();
-      let likes = [];
-      if (user.username) {
-        likes = JSON.parse(user.username);
+      if (!user) {
+        handleToastState('로그인 후 즐겨찾기를 할 수 있습니다.');
+        return;
       }
 
+      const likes = user.username ? JSON.parse(user.username) : [];
+
       if (likes.includes(id)) {
-        alert('이미 추가된 채널입니다.');
-        // TODO : Toast 또는 다른 UI로직
+        handleToastState('이미 추가된 채널입니다.');
         return;
       }
 
@@ -81,7 +94,7 @@ function CategoriesPage() {
       likes.sort();
       setUserFavorites([...userFavorites, likes]);
 
-      alert(`즐겨찾기에 ${name} 채널을 추가`);
+      handleToastState(`즐겨찾기에 ${name} 채널을 추가합니다.`);
 
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
@@ -92,23 +105,25 @@ function CategoriesPage() {
       });
       favorites(res);
     },
-    [userFavorites, favorites, user]
+    [userFavorites, favorites, user, handleToastState]
   );
 
   const deleteFavorites = useCallback(
     async (e, id) => {
       e.preventDefault();
 
-      alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제`);
       const newFavorites = userFavorites.filter(
         (item) => item !== id && item !== ''
       );
       const favoritesData =
         newFavorites.length < 1
-          ? JSON.stringify([''])
+          ? JSON.stringify([])
           : JSON.stringify(newFavorites);
 
       setUserFavorites(newFavorites);
+
+      handleToastState(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제합니다.`);
+
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
@@ -117,11 +132,16 @@ function CategoriesPage() {
       });
       favorites(res);
     },
-    [userFavorites, favorites]
+    [userFavorites, favorites, handleToastState]
   );
 
   return (
-    <>
+    <CategoriesPageContainer>
+      {toastState && (
+        <Toast>
+          <span>{toastMessage}</span>
+        </Toast>
+      )}
       <ContextProvider>
         <Header strong>즐겨찾기 목록</Header>
         <Divider />
@@ -178,7 +198,7 @@ function CategoriesPage() {
             );
           })}
       </CategoriesContainer>
-    </>
+    </CategoriesPageContainer>
   );
 }
 

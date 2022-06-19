@@ -1,5 +1,5 @@
 import { Button, Stack } from '@mui/material';
-import { authFetch, fetch } from '@utils/fetch';
+import { authFetch } from '@utils/fetch';
 import useForm from '@hooks/useForm';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
@@ -46,12 +46,9 @@ export default function PostForm() {
       });
 
       const isError = Boolean(response?.response);
+
       if (isError) {
-        if (response?.response?.status === 400) {
-          alert('데이터 입력이 잘못되었습니다.');
-        } else {
-          alert('알 수 없는 오류가 발생했습니다. ');
-        }
+        throw new Error('Fetch 오류');
       }
     },
     validate: (formValues) => {
@@ -100,16 +97,6 @@ export default function PostForm() {
         />
         <Button type="submit" variant="contained" disableElevation>
           제출
-        </Button>
-
-        <Button
-          onClick={async () => {
-            await fetch('channels', {
-              method: 'GET',
-            });
-          }}
-        >
-          겟 포스트
         </Button>
       </Stack>
     </form>
