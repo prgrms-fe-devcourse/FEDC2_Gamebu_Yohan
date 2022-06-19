@@ -25,12 +25,12 @@ function MessagePage() {
       </div>
       <div>
         {myMessageList.map((myMessage) => {
-          const { message, receiver, sender, seen } = myMessage;
-          const you = receiver._id === user._id ? receiver : sender;
+          const { message, receiver, sender, seen, createdAt } = myMessage;
+          const you = receiver._id !== user._id ? receiver : sender;
           const { _id, email, fullName } = you;
           return (
             <button
-              key={_id}
+              key={`${_id}-${createdAt}`}
               type="button"
               style={{ border: '1px solid black', width: '100%' }}
               onClick={() => navigate(`/message/${_id}`)}

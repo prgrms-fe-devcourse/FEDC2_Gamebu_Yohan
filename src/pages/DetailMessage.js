@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDetailMessage } from '@utils/message';
+import { getDetailMessage, postMessage } from '@utils/message';
 import useValueContext from '@hooks/useValueContext';
 
 function DetailMessage() {
   const [messageList, setMessageList] = useState([]);
+  const inputRef = useRef();
   const { user } = useValueContext();
   const { userId } = useParams();
 
   const handleClickGetMessageButton = () => {
     getDetailMessage(userId).then((response) => setMessageList(response));
+  };
+
+  const handleSubmitMessage = (e) => {
+    e.preventDefault();
+    postMessage({
+      method: 'POST',
+      data: {
+        message: inputRef.current.value,
+        receiver: userId,
+      },
+    });
+    inputRef.current.value = '';
   };
 
   return (
@@ -38,6 +51,10 @@ function DetailMessage() {
           </div>
         );
       })}
+      <form onSubmit={handleSubmitMessage}>
+        <input ref={inputRef} />
+        <button type="submit">전송</button>
+      </form>
     </div>
   );
 }
