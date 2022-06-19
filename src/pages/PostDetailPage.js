@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import { COLOR_BG } from '@utils/color';
@@ -81,7 +81,6 @@ const DateBox = styled.div`
 const DeleteBox = styled.div`
   margin-left: 0.5rem;
 `;
-// eslint-disable-next-line no-unused-vars
 
 const Paragraph = styled.p`
   text-align: right;
@@ -96,6 +95,10 @@ const NewIcon = styled(FiberNewIcon)`
 function Edit({ onClick }) {
   return <Paragraph onClick={onClick}>글 수정</Paragraph>;
 }
+
+Edit.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 
 const CommentInputContainer = styled.div`
   width: 100%;
@@ -119,9 +122,9 @@ function PostContent({ content }) {
   return <PostContentContainer>{content}</PostContentContainer>;
 }
 
-// PostContent.propTypes = {
-//   content: PropTypes.string.isRequired,
-// };
+PostContent.propTypes = {
+  content: PropTypes.string.isRequired,
+};
 
 function Comment({
   commentId,
@@ -144,6 +147,17 @@ function Comment({
     </CommentBox>
   );
 }
+Comment.propTypes = {
+  commentId: PropTypes.string.isRequired,
+  author: PropTypes.shape({
+    fullName: PropTypes.array.isRequired,
+    _id: PropTypes.string.isRequired,
+  }).isRequired,
+  comment: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
+  handleDeleteClick: PropTypes.func.isRequired,
+};
 
 function CommentInput({ handlePostComment, commentValue, handleWriteComment }) {
   return (
@@ -169,7 +183,15 @@ function CommentInput({ handlePostComment, commentValue, handleWriteComment }) {
   );
 }
 
+CommentInput.propTypes = {
+  handlePostComment: PropTypes.func.isRequired,
+  handleWriteComment: PropTypes.func.isRequired,
+  commentValue: PropTypes.oneOf([PropTypes.string, PropTypes.number])
+    .isRequired,
+};
+
 function CommentModal({
+  title,
   isVisible,
   onClose,
   comments,
@@ -180,7 +202,7 @@ function CommentModal({
   return (
     <div>
       <Dialog open={isVisible} onClose={onClose} scroll="paper" fullScreen>
-        <DialogTitle>댓글목록</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent dividers>
           <DialogContentText>
             {comments &&
@@ -220,15 +242,25 @@ function CommentModal({
   );
 }
 
+CommentModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  isVisible: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  comments: PropTypes.array.isRequired,
+  isNew: PropTypes.bool.isRequired,
+  userId: PropTypes.string.isRequired,
+  handleDeleteClick: PropTypes.func.isRequired,
+};
+
 function PostDetailPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { user } = useValueContext();
   const userId = user && user._id;
-  const [detailData, setDetailData] = useState(null);
+  const [detailData, setDetailData] = useState(null); // page data
   const [commentValue, setCommentValue] = useState('');
-  const [isNew, setIsNew] = useState(false);
-  const [modalVisible, setModalVisble] = useState(false);
+  const [isNew, setIsNew] = useState(false); // new 아이콘을 달아줌
+  const [modalVisible, setModalVisble] = useState(false); // modal 활성화
 
   let needData = {};
 
@@ -253,6 +285,7 @@ function PostDetailPage() {
 
   useEffect(() => {
     fetchPostDetail();
+    if (!state) navigate('/*');
   }, [user]);
 
   const handleEditClick = () => {
@@ -289,7 +322,7 @@ function PostDetailPage() {
         ...detailData,
         comments: [res, ...detailData.comments],
       });
-    setIsNew(true); // new 아이콘을 달아줌
+    setIsNew(true);
     setCommentValue('');
   };
 
@@ -305,6 +338,7 @@ function PostDetailPage() {
               email: 'abcd',
             },
             createdAt: detailData.updatedAt,
+            tag: detailData.tag.slice(0, 3),
           }}
           badge
           icon
@@ -316,6 +350,7 @@ function PostDetailPage() {
       <PostContent content={detailData && detailData.content} />
       {detailData && (
         <CommentModal
+          title="댓글목록"
           isVisible={modalVisible}
           onClose={() => setModalVisble(false)}
           comments={detailData.comments}

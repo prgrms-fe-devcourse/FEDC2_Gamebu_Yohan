@@ -76,7 +76,6 @@ function ChannelPage() {
   const [isPopular, setIsPopular] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const DONG_EON_ID = '629f07fa7e01ad1cb7250131';
   // const { channelId } = useParams('');
   const channelId = '62a817a85517e27ffcab3cce';
   const infiniteChannelId = '62a97c1c6c77714531010109';

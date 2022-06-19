@@ -1,5 +1,5 @@
 import Card from '@components/Card';
-import { likePost, unlikePost } from '@utils/test';
+// import { likePost, unlikePost } from '@utils/test';
 
 export default {
   title: 'Component/Card',
@@ -53,6 +53,6 @@ export function Post() {
   return <Card.Post>{postObject}</Card.Post>;
 }
 
-export function Author(args) {
-  return <Card.Author {...args} data={likePost} />;
-}
+// export function Author(args) {
+//   return <Card.Author {...args} data={likePost} />;
+// }

@@ -10,6 +10,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { authFetch } from '@utils/fetch';
 import { useNavigate } from 'react-router-dom';
+import TagList from '@components/TagChip/TagList';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -63,6 +64,7 @@ const CardContainer = styled(Card)`
 
 const TagSpan = styled.span`
   margin-left: 0.5rem;
+  color: #8e24aa;
 `;
 
 const HeartIconButton = styled(IconButton)``;
@@ -73,6 +75,7 @@ const TagPartContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   flex: 1;
+  height: 2rem;
 `;
 
 const LikeButtonContainer = styled.div`
@@ -118,7 +121,8 @@ UserInfo.propTypes = {
 function TagPart({ tag }) {
   return (
     <TagPartContainer>
-      {tag.slice(0, 4).map((item, index) => (
+      <TagList tags={tag.slice(0, 4)} simple />
+      {/* {tag.slice(0, 4).map((item, index) => (
         <Tag
           backgroundColor={TagColor[index]}
           content={item}
@@ -136,10 +140,8 @@ function TagPart({ tag }) {
             marginRight: 0,
           }}
         />
-      ))}
-      {tag.length > 4 ? (
-        <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
-      ) : null}
+				))} */}
+      {tag.length > 4 ? <TagSpan>+{tag.length - 4}</TagSpan> : null}
     </TagPartContainer>
   );
 }

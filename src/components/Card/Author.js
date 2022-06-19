@@ -5,6 +5,7 @@ import { COLOR_BG } from '@utils/color';
 import CommentIcon from '@mui/icons-material/Comment';
 import Thumbnail from '@components/Thumbnail';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import TagList from '@components/TagChip/TagList';
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -50,13 +51,6 @@ const InfoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const parseTitle = (title) => {
-  try {
-    return JSON.parse(title);
-  } catch (e) {
-    return {};
-  }
-};
 
 const convertDate = (dateString) => {
   const date = new Date(dateString);
@@ -66,12 +60,8 @@ const convertDate = (dateString) => {
 };
 
 function Author({ data, badge, icon, ...props }) {
-  const { author, title, createdAt, comments, likes } = data;
+  const { author, title, createdAt, comments, likes, tag } = data;
   const { fullName, isOnline } = author;
-
-  // TODO: 테스트 이후 컨벤션대로 수정 {dt, dd, tg}
-  // const { dt: postTitle, tg: tag } = parseTitle(title);
-  // const { tt: postTitle, tg: tag } = parseTitle(title);
 
   return (
     <Container {...props}>
@@ -80,19 +70,7 @@ function Author({ data, badge, icon, ...props }) {
         <TinyText>{fullName}</TinyText>
       </AvatarWrapper>
       <Title> {title}</Title>
-      <div
-        style={{
-          height: '100%',
-          textAlign: 'center',
-          backgroundColor: 'tomato',
-          borderRadius: '2rem',
-          color: 'white',
-          fontWeight: 'bold',
-        }}
-      >
-        태그 자리 입니다.
-        {/* TODO: Chip component 추가 */}
-      </div>
+      <TagList tags={tag} />
       <InfoWrapper>
         <TinyText>작성 {convertDate(createdAt)}</TinyText>
         {icon && (
@@ -119,6 +97,7 @@ Author.propTypes = {
     createdAt: PropTypes.string.isRequired,
     comments: PropTypes.array,
     likes: PropTypes.array,
+    tag: PropTypes.array,
   }).isRequired,
   badge: PropTypes.bool,
   icon: PropTypes.bool,
