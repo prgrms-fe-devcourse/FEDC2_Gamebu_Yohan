@@ -171,42 +171,36 @@ function ProfilePage() {
     getUserInfo(userId).then((response) => setTargetUser(response));
   }, [userId]);
 
-  const LinkToCategories =
-    user?._id === targetUser?._id ? (
-      <LinkButton variant="outlined" size="small">
-        <NoneDecorationLink to="/channel/categories">
-          즐겨찾기 수정
-        </NoneDecorationLink>
-      </LinkButton>
-    ) : null;
-
-  const ProfileAlert =
-    user?._id === targetUser?._id ? (
-      <Collapse in={alertInfo.visible}>
-        <ProfileWarningAlert
-          severity={alertInfo.success ? 'success' : 'warning'}
-          onClose={handleClickAlert}
-        >
-          {alertInfo.message}
-        </ProfileWarningAlert>
-      </Collapse>
-    ) : null;
-
-  const Name =
-    user?._id === targetUser?._id ? user?.fullName : targetUser?.fullName;
-
-  const EditfullNameIcon =
-    user?._id === targetUser?._id ? (
-      <>
-        <EditIconRight onClick={handleClickEditIcon} />
-        <EditFullNameModal
-          visible={modalVisible}
-          handleCloseModal={handleCloseModal}
-          onSuccess={handleSuccessProfile}
-          onError={handleErrorProfile}
-        />
-      </>
-    ) : null;
+  const isMe = user?._id === targetUser?._id;
+  const LinkToCategories = isMe ? (
+    <LinkButton variant="outlined" size="small">
+      <NoneDecorationLink to="/channel/categories">
+        즐겨찾기 수정
+      </NoneDecorationLink>
+    </LinkButton>
+  ) : null;
+  const ProfileAlert = isMe ? (
+    <Collapse in={alertInfo.visible}>
+      <ProfileWarningAlert
+        severity={alertInfo.success ? 'success' : 'warning'}
+        onClose={handleClickAlert}
+      >
+        {alertInfo.message}
+      </ProfileWarningAlert>
+    </Collapse>
+  ) : null;
+  const Name = isMe ? user?.fullName : targetUser?.fullName;
+  const EditfullNameIcon = isMe ? (
+    <>
+      <EditIconRight onClick={handleClickEditIcon} />
+      <EditFullNameModal
+        visible={modalVisible}
+        handleCloseModal={handleCloseModal}
+        onSuccess={handleSuccessProfile}
+        onError={handleErrorProfile}
+      />
+    </>
+  ) : null;
 
   return (
     <ContentWrapper>
