@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import styled from '@emotion/styled';
-import { COLOR_BG, COLOR_MAIN } from '@utils/color';
+import { COLOR_MAIN } from '@utils/color';
 import { Card } from '@mui/material';
 import Divider from '@components/Divider';
 import Tag from '@components/Tag';
@@ -188,7 +188,6 @@ function ChannelPostCard({
 
   // TODO: 사용자 id를 가져와야함
   const userId = '629f07fa7e01ad1cb7250131';
-  // const parsingTag = JSON.parse(tag);
 
   useEffect(() => {
     setLikeCount(likes.length);
