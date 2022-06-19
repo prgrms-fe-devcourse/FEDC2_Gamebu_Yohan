@@ -204,7 +204,6 @@ function ChannelPostCard({
 
   const applicationButtonClick = (e) => {
     e.stopPropagation();
-    console.log('buttonClick');
     setButtonIsClicked(!buttonIsClicked);
   };
 
@@ -218,10 +217,11 @@ function ChannelPostCard({
     postId,
     channelId,
     authorId,
+    updatedAt,
+    likes,
   };
 
   const postClick = () => {
-    console.log(postId);
     navigate('/posts/details', {
       replace: false,
       state: toDetailInfo,
@@ -266,7 +266,6 @@ function ChannelPostCard({
     }
     // isLiked 가 true 면 좋아요취소 api 후 낙관적업데이트 : 좋아요 후 낙관적 업데이트
     setIsLiked(!isLiked);
-    console.log('heartClick');
   };
 
   return (

@@ -2,8 +2,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { PropTypes } from 'prop-types';
-import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import { COLOR_BG } from '@utils/color';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -19,44 +17,17 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Modal from '@mui/material/Modal';
-
-const DUMMY_DATA = {
-  authorId: '629f07fa7e01ad1cb7250131',
-  channelId: '62aa146171f64a5582899ae9',
-  comments: [
-    {
-      _id: '코멘트 id',
-      comment:
-        '이샛기 개몬함 ㄹㅇ 이샛기 개몬함 ㄹㅇ 이샛기 개몬함 ㄹㅇ 이샛기 개몬함 ㄹㅇ',
-      updatedAt: '2022-06-17',
-      author: { _id: '댓글작성자id', fullName: '하단동네이마르' },
-    },
-    {
-      _id: '코멘트 id2',
-      comment: 'ㅈㄹ ㄴㄴ',
-      updatedAt: '2022-06-17',
-      author: { _id: '629f07fa7e01ad1cb7250131', fullName: 'EonDongKim' },
-    },
-  ],
-  content:
-    '시프트 삼 인생은 원래 원래 혼자	시프트 사 너 땜에 남아도는 거 시프트 오 널 다시 만날 수는 몇 시프트 육 육 이거 하려고 내가 이 짓 하는 거야 시프트 칠까진 갈 수 없으니까 팔베개를 하고 별을 바라보던 우린 9, 0처럼 그저 괄호 속 안에 묶인 그냥 컴퓨터 화면 속 데이터 뿐 당최 알 수가 없는 물질 시프트 삼 인생은 원래 원래 혼자	시프트 사 너 땜에 남아도는 거 시프트 오 널 다시 만날 수는 몇 시프트 육 육 이거 하려고 내가 이 짓 하는 거야 시프트 칠까진 갈 수 없으니까 팔베개를 하고 별을 바라보던 우린 9, 0처럼 그저 괄호 속 안에 묶인 그냥 컴퓨터 화면 속 데이터 뿐 당최 알 수가 없는 물질 시프트 삼 인생은 원래 원래 혼자	시프트 사 너 땜에 남아도는 거 시프트 오 널 다시 만날 수는 몇 시프트 육 육 이거 하려고 내가 이 짓 하는 거야 시프트 칠까진 갈 수 없으니까 팔베개를 하고 별을 바라보던 우린 9, 0처럼 그저 괄호 속 안에 묶인 그냥 컴퓨터 화면 속 데이터 뿐 당최 알 수가 없는 물질 시프트 삼 인생은 원래 원래 혼자	시프트 사 너 땜에 남아도는 거 시프트 오 널 다시 만날 수는 몇 시프트 육 육 이거 하려고 내가 이 짓 하는 거야 시프트 칠까진 갈 수 없으니까 팔베개를 하고 별을 바라보던 우린 9, 0처럼 그저 괄호 속 안에 묶인 그냥 컴퓨터 화면 속 데이터 뿐 당최 알 수가 없는 물질 ',
-  fullName: 'EonDongKim',
-  isLiked: false,
-  postId: '62aa1d0f71f64a558289a3aa',
-  tag: ['칼바람', '파티모집'],
-  title: '칼바람 할사람',
-};
+import Card from '@components/Card';
 
 const PageContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
 `;
 
-const PostCardContainer = styled.div`
-  background-color: royalblue;
+const PostCardContainer = styled(Card.Author)`
   width: 100%;
   height: 7.5rem;
+  background-color: ${COLOR_BG};
 `;
 
 const PostContentContainer = styled.div`
@@ -83,7 +54,6 @@ const CommentsContainer = styled.div`
 const CommentBox = styled.div`
   width: 100%;
   height: 2rem;
-  /* background-color: aqua; */
   display: flex;
   align-items: center;
   overflow: scroll;
@@ -95,7 +65,6 @@ const AvatarIcon = styled(Avatar)`
   width: 2rem;
 `;
 const TextBox = styled.div`
-  /* background-color: gray; */
   display: flex;
   align-items: center;
   width: 11rem;
@@ -107,7 +76,6 @@ const TextBox = styled.div`
   white-space: nowrap;
 `;
 const DateBox = styled.div`
-  /* background-color: beige; */
   font-size: 0.8rem;
 `;
 const DeleteBox = styled.div`
@@ -130,7 +98,6 @@ function Edit({ onClick }) {
 }
 
 const CommentInputContainer = styled.div`
-  /* background-color: yellowgreen; */
   width: 100%;
   height: 2.5rem;
   display: flex;
@@ -184,7 +151,7 @@ function CommentInput({ handlePostComment, commentValue, handleWriteComment }) {
       <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
       <InputComment
         id="input-with-sx"
-        placeholder="가는 말이 고와야 오는 말이 곱다."
+        placeholder="가는 말이 고와야 오는 말이 고와요."
         variant="standard"
         fullWidth
         value={commentValue}
@@ -269,6 +236,7 @@ function PostDetailPage() {
     const res = await fetch(`posts/${state.postId}`);
     needData = {
       authorId: res.author._id,
+      isOnline: res.author.isOnline,
       channelId: res.channel._id,
       comments: res.comments,
       content: state.content,
@@ -277,13 +245,15 @@ function PostDetailPage() {
       postId: res._id,
       tag: state.tag,
       title: state.title,
+      updatedAt: state.updatedAt,
+      likes: state.likes,
     };
     setDetailData(needData);
   };
 
   useEffect(() => {
-    state && fetchPostDetail();
-  }, [state, user]);
+    fetchPostDetail();
+  }, [user]);
 
   const handleEditClick = () => {
     const { title, tag, content, postId, channelId } = detailData;
@@ -299,7 +269,6 @@ function PostDetailPage() {
         id,
       },
     });
-    console.log('delete res:', res);
     res &&
       setDetailData({
         ...detailData,
@@ -315,7 +284,6 @@ function PostDetailPage() {
         postId: detailData.postId,
       },
     });
-    console.log('post res: ', res);
     res &&
       setDetailData({
         ...detailData,
@@ -327,7 +295,21 @@ function PostDetailPage() {
 
   return (
     <PageContainer>
-      <PostCardContainer />
+      {detailData && (
+        <PostCardContainer
+          data={{
+            ...detailData,
+            author: {
+              fullName: detailData.fullName,
+              isOnline: detailData.isOnline,
+              email: 'abcd',
+            },
+            createdAt: detailData.updatedAt,
+          }}
+          badge
+          icon
+        />
+      )}
       {detailData && detailData.authorId === userId ? (
         <Edit onClick={handleEditClick} />
       ) : null}

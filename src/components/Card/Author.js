@@ -71,7 +71,7 @@ function Author({ data, badge, icon, ...props }) {
 
   // TODO: 테스트 이후 컨벤션대로 수정 {dt, dd, tg}
   // const { dt: postTitle, tg: tag } = parseTitle(title);
-  const { tt: postTitle, tg: tag } = parseTitle(title);
+  // const { tt: postTitle, tg: tag } = parseTitle(title);
 
   return (
     <Container {...props}>
@@ -79,7 +79,7 @@ function Author({ data, badge, icon, ...props }) {
         <Thumbnail name={fullName} isOnline={isOnline} badge={badge} />
         <TinyText>{fullName}</TinyText>
       </AvatarWrapper>
-      <Title> {postTitle}</Title>
+      <Title> {title}</Title>
       <div
         style={{
           height: '100%',
