@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BannerImage from '@components/Image/BannerImage';
+import Button from '@mui/material/Button';
 
 const HomePageContainer = styled.div`
   display: flex;
@@ -160,15 +161,14 @@ function HomePage() {
               </RecentPostsWrapper>
             );
           })}
-        <button
-          type="button"
+        <Button
           onClick={() => {
-            console.log('더보기 버튼 클릭');
             getExtraPostsList();
           }}
+          variant="outlined"
         >
-          더 보기
-        </button>
+          더보기
+        </Button>
       </RecentPostsContainer>
     </HomePageContainer>
   );
