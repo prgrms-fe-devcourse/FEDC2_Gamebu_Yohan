@@ -23,17 +23,6 @@ const CategoriesPageContainer = styled.div`
   position: relative;
 `;
 
-const GameItem = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100px;
-  border: 1px solid ${COLOR_MAIN};
-  border-radius: 0.4rem;
-  display: grid;
-  overflow: hidden;
-  grid-template-rows: repeat(2, 1fr);
-`;
-
 const CategoriesContainer = styled.div`
   width: 100%;
   display: grid;
@@ -152,27 +141,20 @@ function CategoriesPage() {
             </MessageTitle>
           </MessageContainer>
         ) : (
-          <CategoriesContainer>
-            {userFavorites.map((item) => {
-              if (item === '') return;
-              return (
+            <CategoriesContainer>
+              {userFavorites.map((item) => (
                 <Link to={`/channel/${item}`} key={`${item}`}>
-                  <GameItem>
-                    <GameImage src={images[item]} />
-                    <GameIcon onClick={(e) => deleteFavorites(e, item)}>
-                      <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
-                    </GameIcon>
-                  </GameItem>
-                  <GameTitle
-                    color={COLOR_SIGNATURE}
-                    weight={700}
-                  >{`${CATEGORIES[item]}`}</GameTitle>
+                  <CategoriItem
+                    img={IMAGES[item]}
+                    title={CATEGORIES[item]}
+                    icon
+                    onIconClick={(e) => deleteFavorites(e, item)}
+                  />
                 </Link>
-              );
-            })}
-          </CategoriesContainer>
-        )}
-      </ContextProvider>
+              ))}
+            </CategoriesContainer>
+          )}
+        </ContextProvider>
       <Header strong>게임 카테고리</Header>
       <Divider />
       <CategoriesContainer>
@@ -180,24 +162,19 @@ function CategoriesPage() {
           channels.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
-                <GameItem>
-                  <GameImage src={images[channel.id]} />
-                  <GameIcon
-                    onClick={(e) =>
-                      updateFavorites(e, channel.id, channel.name)
-                    }
-                  >
-                    <StarBorderIcon fontSize="small" sx={{ color: 'red' }} />
-                  </GameIcon>
-                </GameItem>
-                <GameTitle
-                  color={COLOR_SIGNATURE}
-                  weight={700}
-                >{`${channel.name}`}</GameTitle>
+                <CategoriItem
+                  img={IMAGES[channel.id]}
+                  title={channel.name}
+                  icon={Boolean(user)}
+                  onIconClick={(e) =>
+                    updateFavorites(e, channel.id, channel.name)
+                  }
+                />
               </Link>
             );
           })}
-      </CategoriesContainer>
+        </CategoriesContainer>
+      )}
     </CategoriesPageContainer>
   );
 }
