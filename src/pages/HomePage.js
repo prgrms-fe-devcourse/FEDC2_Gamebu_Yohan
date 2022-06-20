@@ -6,7 +6,6 @@ import Header from '@components/Header';
 import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
-import useAsync from '@hooks/useAsync';
 import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
 import { useEffect, useState } from 'react';
 import Image from '@components/Image';
@@ -93,23 +92,10 @@ function HomePage() {
   }, []);
 
   const getPostsList = async () => {
-    const mapleResult = await fetch('posts/channel/62a7367f5517e27ffcab3bcb');
-    const allPosts = await fetch('search/all/tt');
-    const filteredPosts = allPosts
-      .filter(
-        (post) =>
-          post.channel === '62a7367f5517e27ffcab3bcb' ||
-          post.channel === '62a736925517e27ffcab3bcf' ||
-          post.channel === '62a736a15517e27ffcab3bd5' ||
-          post.channel === '62a818db5517e27ffcab3ce2' ||
-          post.channel === '62a818e85517e27ffcab3ce6'
-      )
-      .reverse();
+    const getAllPosts = await fetch('posts');
+    const newPosts = getAllPosts.slice(0, 10);
 
-    const postsResult = mapleResult.concat(filteredPosts);
-    postsResult.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-
-    setPosts(postsResult);
+    setPosts(newPosts);
   };
 
   useEffect(() => {
@@ -146,7 +132,8 @@ function HomePage() {
           posts.map((item) => {
             let { title } = item;
             if (title.startsWith('{')) {
-              title = JSON.parse(title).tt;
+              title = JSON.parse(title).tt || JSON.parse(title).dt;
+              // TODO : 추후 게시글 정리 후 dt로 통일
             }
             const categoriesId = item.channel._id;
             const comments = item.comments.length;
