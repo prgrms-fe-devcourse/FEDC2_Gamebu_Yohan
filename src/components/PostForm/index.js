@@ -22,8 +22,9 @@ const Tags = [
 ];
 
 export default function PostForm({ channelId, postId, post }) {
+  const initialValues = post || { title: '', tags: [], content: '' };
   const { values, isLoading, handleChange, handleSubmit } = useForm({
-    post,
+    initialValues,
     onSubmit: async () => {
       console.log(`Attempting ${postId ? 'Edit' : 'Post'}`);
       const { title, tags, content } = values;
@@ -61,7 +62,6 @@ export default function PostForm({ channelId, postId, post }) {
       return newErrors;
     },
   });
-
   const { title, tags, content } = values;
 
   const [focused, setFocused] = useState({
