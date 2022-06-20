@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const TopRightIconWrapper = styled.div`
   position: absolute;
-  z-index: 1000;
   top: 0;
   right: 0;
 `;

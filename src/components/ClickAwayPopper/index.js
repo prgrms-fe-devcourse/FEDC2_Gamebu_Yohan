@@ -9,6 +9,9 @@ const ContentWrapper = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
 `;
+const StyledPopper = styled(Popper)`
+  z-index: 1001;
+`;
 function ClickAwayPopper({
   children,
   id,
@@ -40,7 +43,7 @@ function ClickAwayPopper({
           'aria-describedby': id,
           onClick: handlePopperClick,
         })}
-        <Popper
+        <StyledPopper
           id={id}
           open={pop}
           anchorEl={popperRef.current}
@@ -59,7 +62,7 @@ function ClickAwayPopper({
               )}
             </Fade>
           )}
-        </Popper>
+        </StyledPopper>
       </div>
     </ClickAwayListener>
   );

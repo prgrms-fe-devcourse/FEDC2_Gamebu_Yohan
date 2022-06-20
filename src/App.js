@@ -41,7 +41,7 @@ function App() {
           </Route>
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/:userId" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
