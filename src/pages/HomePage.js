@@ -71,7 +71,7 @@ const PostComments = styled.div`
   color: red;
 `;
 
-const settings = {
+const sliderOptions = {
   dots: false,
   infinite: true,
   autoplay: true,
@@ -109,7 +109,7 @@ function HomePage() {
       <SliderWrapper>
         <Header strong>게임 카테고리</Header>
         <Divider />
-        <Slider {...settings}>
+        <Slider {...sliderOptions}>
           {channels &&
             channels.map((item) => {
               return (
