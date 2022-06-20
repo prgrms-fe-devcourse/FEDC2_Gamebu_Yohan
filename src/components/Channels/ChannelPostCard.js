@@ -10,6 +10,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { authFetch } from '@utils/fetch';
 import { useNavigate } from 'react-router-dom';
+import { createLikes, deleteLikes } from '@utils/likes';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -138,21 +139,11 @@ function ChannelPostCard({
 
       if (!data) return;
       const id = data._id;
-      await authFetch('likes/delete', {
-        method: 'DELETE',
-        data: {
-          id,
-        },
-      });
+      await deleteLikes(id);
 
       changeLikeCount(false, postId);
     } else {
-      const res = await authFetch('likes/create', {
-        method: 'POST',
-        data: {
-          postId,
-        },
-      });
+      const res = await createLikes(postId);
       changeLikeCount(true, postId, res._id);
     }
   };
