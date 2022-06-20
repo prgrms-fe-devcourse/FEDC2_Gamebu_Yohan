@@ -1,23 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ContextProvider from '@contexts/ContextProvider';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
-import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
-import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
-
-import {
-  GameIcon,
-  GameImage,
-  GameTitle,
-  MessageTitle,
-} from '@components/Categories';
+import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
+import { authFetch } from '@utils/fetch';
+import { MessageTitle } from '@components/Categories';
+import { COLOR_MAIN } from '@utils/color';
 import Toast from '@components/Toast';
+import CategoriItem from '@components/CategoryItem';
 
 const CategoriesPageContainer = styled.div`
   position: relative;
@@ -26,9 +20,10 @@ const CategoriesPageContainer = styled.div`
 const CategoriesContainer = styled.div`
   width: 100%;
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  margin: 1rem 0;
 `;
 
 const MessageContainer = styled.div`
@@ -39,19 +34,21 @@ const MessageContainer = styled.div`
 `;
 
 function CategoriesPage() {
-  const { user } = useValueContext();
+  const { user, isLogin } = useValueContext();
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
-  const [channels] = useState(CHANNELS);
-  const [images] = useState(IMAGES);
   const [toastState, setToastState] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
+  const unlikes = useMemo(() => {
+    if (!Array.isArray(CHANNELS)) return [];
+    if (!Array.isArray(userFavorites)) return CHANNELS;
+    return CHANNELS.filter((channel) => !userFavorites.includes(channel.id));
+  }, [userFavorites]);
   const handleToastState = useCallback((message) => {
     setToastMessage(message);
     setToastState(true);
   }, []);
-
   useEffect(() => {
     if (toastState) {
       setTimeout(() => setToastState(false), 2000);
@@ -67,48 +64,30 @@ function CategoriesPage() {
   const updateFavorites = useCallback(
     async (e, id, name) => {
       e.preventDefault();
-      if (!user) {
-        handleToastState('로그인 후 즐겨찾기를 할 수 있습니다.');
-        return;
-      }
 
-      const likes = user.username ? JSON.parse(user.username) : [];
-
-      if (likes.includes(id)) {
-        handleToastState('이미 추가된 채널입니다.');
-        return;
-      }
-
-      likes.push(id);
-      likes.sort();
-      setUserFavorites([...userFavorites, likes]);
-
+      const newFavorites = user.username ? JSON.parse(user.username) : [];
+      newFavorites.push(id);
+      newFavorites.sort();
+      setUserFavorites(newFavorites);
       handleToastState(`즐겨찾기에 ${name} 채널을 추가합니다.`);
 
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
           fullName: user.fullName,
-          username: JSON.stringify(likes),
+          username: JSON.stringify(newFavorites),
         },
       });
       favorites(res);
     },
-    [userFavorites, favorites, user, handleToastState]
+    [favorites, user, handleToastState]
   );
 
   const deleteFavorites = useCallback(
     async (e, id) => {
       e.preventDefault();
 
-      const newFavorites = userFavorites.filter(
-        (item) => item !== id && item !== ''
-      );
-      const favoritesData =
-        newFavorites.length < 1
-          ? JSON.stringify([])
-          : JSON.stringify(newFavorites);
-
+      const newFavorites = userFavorites.filter((item) => item !== id);
       setUserFavorites(newFavorites);
 
       handleToastState(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제합니다.`);
@@ -116,12 +95,13 @@ function CategoriesPage() {
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
-          username: favoritesData,
+          fullName: user.fullName,
+          username: JSON.stringify(newFavorites),
         },
       });
       favorites(res);
     },
-    [userFavorites, favorites, handleToastState]
+    [userFavorites, handleToastState, user, favorites]
   );
 
   return (
@@ -131,16 +111,17 @@ function CategoriesPage() {
           <span>{toastMessage}</span>
         </Toast>
       )}
-      <ContextProvider>
-        <Header strong>즐겨찾기 목록</Header>
-        <Divider />
-        {userFavorites.length === 1 && userFavorites[0] === '' ? (
-          <MessageContainer>
-            <MessageTitle color={COLOR_MAIN} weight={400}>
-              즐겨찾기를 등록해보세요.
-            </MessageTitle>
-          </MessageContainer>
-        ) : (
+      {isLogin && (
+        <ContextProvider>
+          <Header strong>즐겨찾기 목록</Header>
+          <Divider />
+          {userFavorites.length === 0 ? (
+            <MessageContainer>
+              <MessageTitle color={COLOR_MAIN} weight={400}>
+                즐겨찾기를 등록해보세요.
+              </MessageTitle>
+            </MessageContainer>
+          ) : (
             <CategoriesContainer>
               {userFavorites.map((item) => (
                 <Link to={`/channel/${item}`} key={`${item}`}>
@@ -155,11 +136,19 @@ function CategoriesPage() {
             </CategoriesContainer>
           )}
         </ContextProvider>
+      )}
       <Header strong>게임 카테고리</Header>
       <Divider />
-      <CategoriesContainer>
-        {channels &&
-          channels.map((channel) => {
+      {unlikes.length === 0 ? (
+        <MessageContainer>
+          <MessageTitle color={COLOR_MAIN} weight={400}>
+            모든 게임을 좋아 하는군요!
+            <br /> 다음 업데이트를 기다려주세요~
+          </MessageTitle>
+        </MessageContainer>
+      ) : (
+        <CategoriesContainer>
+          {unlikes.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
                 <CategoriItem
