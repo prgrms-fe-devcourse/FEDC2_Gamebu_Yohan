@@ -36,7 +36,6 @@ export default function SelectInput({
         multiple
         input={<OutlinedInput id="select-multiple-chip" label="name" />}
         renderValue={(selected) => <TagList tags={selected} />}
-        helperText={error ? helperText : ''}
       >
         {options.map((option) => (
           <MenuItem key={option} value={option}>

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Button, CircularProgress, Stack } from '@mui/material';
 import { authFetch } from '@utils/fetch';
 import { useState } from 'react';
@@ -7,12 +8,6 @@ import SelectInput from './SelectInput';
 import MultiLineTextInput from './MultiLineTextInput';
 
 const channelId = '629f0c7c7e01ad1cb7250151';
-
-const initialValues = {
-  title: '',
-  tags: [],
-  content: '',
-};
 
 const Tags = [
   '파티',
@@ -28,7 +23,7 @@ const Tags = [
   '서폿',
 ];
 
-export default function PostForm() {
+export default function PostForm({ initialValues }) {
   const { values, isLoading, handleChange, handleSubmit } = useForm({
     initialValues,
     onSubmit: async () => {
@@ -131,3 +126,15 @@ export default function PostForm() {
     </form>
   );
 }
+
+PostForm.propTypes = {
+  initialValues: PropTypes.object,
+};
+
+PostForm.defaultProps = {
+  initialValues: {
+    title: '',
+    tags: [],
+    content: '',
+  },
+};
