@@ -85,19 +85,32 @@ const sliderOptions = {
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [channels, setChannels] = useState([]);
+  const [offset, setOffset] = useState(0);
   const [images] = useState(IMAGES);
   useEffect(() => {
     setChannels(CHANNELS);
   }, []);
 
   const getPostsList = async () => {
-    const params = { offset: 0, limit: 10 };
-    const getAllPosts = await fetch('posts', {
+    const params = { offset, limit: 10 };
+    const fetchPosts = await fetch('posts', {
       method: 'GET',
       params,
     });
 
-    setPosts(getAllPosts);
+    setOffset(offset + 10);
+    setPosts(fetchPosts);
+  };
+
+  const getExtraPostsList = async () => {
+    const params = { offset, limit: 10 };
+    const fetchPosts = await fetch('posts', {
+      method: 'GET',
+      params,
+    });
+
+    setOffset(offset + 10);
+    setPosts(posts.concat(fetchPosts));
   };
 
   useEffect(() => {
@@ -147,6 +160,15 @@ function HomePage() {
               </RecentPostsWrapper>
             );
           })}
+        <button
+          type="button"
+          onClick={() => {
+            console.log('더보기 버튼 클릭');
+            getExtraPostsList();
+          }}
+        >
+          더 보기
+        </button>
       </RecentPostsContainer>
     </HomePageContainer>
   );
