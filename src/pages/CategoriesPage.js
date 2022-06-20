@@ -127,12 +127,13 @@ function CategoriesPage() {
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
+          fullName: user.fullName,
           username: favoritesData,
         },
       });
       favorites(res);
     },
-    [userFavorites, favorites, handleToastState]
+    [userFavorites, favorites, user, handleToastState]
   );
 
   return (
