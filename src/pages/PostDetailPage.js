@@ -12,11 +12,6 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import { authFetch, fetch } from '@utils/fetch';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Card from '@components/Card';
 
 const PageContainer = styled.div`
@@ -51,17 +46,11 @@ const CommentsContainer = styled.div`
 
 const CommentBox = styled.div`
   width: 100%;
-  max-width: 326px;
-  height: 2rem;
+  height: auto;
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
 `;
-
-// const AvatarIcon = styled(Avatar)`
-//   height: 2rem;
-//   width: 2rem;
-// `;
 
 const NameBox = styled.div`
   font-size: 0.8rem;
@@ -83,7 +72,8 @@ const TextBox = styled.div`
   display: block;
   margin: 0.2rem 0 0.2rem;
   white-space: normal;
-  max-width: 326px;
+  word-break: break-all;
+  max-width: 300px;
 `;
 
 const DateBox = styled.div`
@@ -114,20 +104,6 @@ const NewIcon = styled(FiberNewIcon)`
   font-size: 1.7rem;
   color: #f44336;
 `;
-const convertDate = (dateString) => {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-};
-
-function Edit({ onClick }) {
-  return <Paragraph onClick={onClick}>글 수정</Paragraph>;
-}
-
-Edit.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
 
 const CommentInputContainer = styled.div`
   width: 100%;
@@ -144,21 +120,9 @@ const InputComment = styled(TextField)`
 
 const InputButton = styled(Button)`
   width: 6.5rem;
-  margin-left: 1rem;
+  margin-left: 0.8rem;
   height: 2rem;
 `;
-
-function PostContent({ content }) {
-  return <PostContentContainer>{content}</PostContentContainer>;
-}
-
-PostContent.propTypes = {
-  content: PropTypes.string,
-};
-
-PostContent.defaultProps = {
-  content: '',
-};
 
 function Comment({
   commentId,
@@ -271,6 +235,13 @@ function PostDetailPage() {
     });
   };
 
+  const convertDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  };
+
   const handleDeleteClick = async (id) => {
     const res = await authFetch('comments/delete', {
       method: 'DELETE',
@@ -278,11 +249,10 @@ function PostDetailPage() {
         id,
       },
     });
-    res &&
-      setDetailData({
-        ...detailData,
-        comments: [...detailData.comments.filter((item) => item._id !== id)],
-      });
+    setDetailData({
+      ...detailData,
+      comments: [...detailData.comments.filter((item) => item._id !== id)],
+    });
   };
   const postNotification = async (res) => {
     await authFetch('notifications/create', {
@@ -304,46 +274,45 @@ function PostDetailPage() {
         postId: detailData.postId,
       },
     });
-    res &&
-      setDetailData({
-        ...detailData,
-        comments: [res, ...detailData.comments],
-      });
+    setDetailData({
+      ...detailData,
+      comments: [res, ...detailData.comments],
+    });
 
     postNotification(res);
     setIsNew(true);
     setCommentValue('');
   };
 
-  return (
+  return detailData && userId ? (
     <PageContainer>
-      {detailData && (
-        <PostCardContainer
-          data={{
-            ...detailData,
-            author: {
-              fullName: detailData.fullName,
-              isOnline: detailData.isOnline,
-              email: 'abcd',
-            },
-            createdAt: detailData.updatedAt,
-            tag: detailData.tag.slice(0, 3),
-          }}
-          badge
-          icon
-        />
-      )}
-      {detailData && detailData.authorId === userId ? (
-        <Edit onClick={handleEditClick} />
+      <PostCardContainer
+        data={{
+          ...detailData,
+          author: {
+            fullName: detailData.fullName,
+            isOnline: detailData.isOnline,
+            email: 'abcd',
+          },
+          createdAt: detailData.updatedAt,
+          tag: detailData.tag.slice(0, 3),
+        }}
+        badge
+        icon
+        simple
+      />
+
+      {detailData.authorId === userId ? (
+        <Paragraph onClick={handleEditClick}>글 수정</Paragraph>
       ) : null}
-      <PostContent content={detailData && detailData.content} />
+      <PostContentContainer>{detailData.content}</PostContentContainer>
       <CommentInput
         handlePostComment={handlePostComment}
         commentValue={commentValue}
         handleWriteComment={(e) => setCommentValue(e.target.value)}
       />
       <CommentsContainer>
-        {(detailData && userId && detailData.comments.length > 0) || isNew ? (
+        {detailData.comments.length > 0 || isNew ? (
           detailData.comments.map((item, i) => {
             if (isNew && i === 0) {
               return (
@@ -375,7 +344,7 @@ function PostDetailPage() {
         )}
       </CommentsContainer>
     </PageContainer>
-  );
+  ) : null;
 }
 
 export default PostDetailPage;

@@ -210,7 +210,7 @@ function ChannelPostCard({
   };
 
   const postNotification = async (res) => {
-    const result = await authFetch('notifications/create', {
+    await authFetch('notifications/create', {
       method: 'POST',
       data: {
         notificationType: 'LIKE',

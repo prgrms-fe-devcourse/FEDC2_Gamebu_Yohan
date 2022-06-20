@@ -66,7 +66,7 @@ const LinkButton = styled.button`
 `;
 
 function ChannelPage() {
-  const { user } = useValueContext();
+  const { user, isLogin } = useValueContext();
   const userId = user && user._id; // 전역스토어에서 가져옴
   const { favorites } = useActionContext();
   const navigate = useNavigate();
@@ -106,7 +106,7 @@ function ChannelPage() {
   }, [user]);
 
   // 사용자 정보 수정 api
-  const modifyUserInfo = async (channelIdInfo) => {
+  const modifyUserInfo = async () => {
     await authFetch('settings/update-user', {
       method: 'PUT',
       data: {
@@ -204,7 +204,9 @@ function ChannelPage() {
   };
 
   const goToWrite = () => {
-    navigate('/posts/write', { state: { channelId, postId: false } });
+    if (isLogin)
+      return navigate('/posts/write', { state: { channelId, postId: false } });
+    navigate('/');
   };
 
   return (

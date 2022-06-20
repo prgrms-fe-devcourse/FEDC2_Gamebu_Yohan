@@ -70,7 +70,7 @@ function Author({ data, badge, icon, ...props }) {
         <TinyText>{fullName}</TinyText>
       </AvatarWrapper>
       <Title> {title}</Title>
-      <TagList tags={tag} />
+      <TagList tags={tag} simple={props.simple} />
       <InfoWrapper>
         <TinyText>작성 {convertDate(createdAt)}</TinyText>
         {icon && (
@@ -101,11 +101,13 @@ Author.propTypes = {
   }).isRequired,
   badge: PropTypes.bool,
   icon: PropTypes.bool,
+  simple: PropTypes.bool,
 };
 
 Author.defaultProps = {
   badge: false,
   icon: false,
+  simple: false,
 };
 
 export default Author;
