@@ -135,10 +135,8 @@ function HomePage() {
 
             return (
               <RecentPostsWrapper key={item._id}>
-                <Link to={`channel/${categoriesId || item.channel}`}>
-                  <PostCategory>
-                    {CATEGORIES[categoriesId] || CATEGORIES[item.channel]}
-                  </PostCategory>
+                <Link to={`channel/${categoriesId}`}>
+                  <PostCategory>{CATEGORIES[categoriesId]}</PostCategory>
                 </Link>
                 <Link to={`posts/details/${item._id}`}>
                   <PostTitle>{title}</PostTitle>
