@@ -56,10 +56,7 @@ const ProfileWrapper = styled.div`
 `;
 
 const UserNameWrapper = styled.div`
-  padding: 0.5rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  padding: 1rem;
 `;
 
 function Sidebar({ open, onClose }) {
@@ -86,20 +83,19 @@ function Sidebar({ open, onClose }) {
       <List>
         {user && (
           <>
-            <ProfileWrapper>
-              <Thumbnail
-                image={user.image || null}
-                name={user.fullName}
-                badge={false}
-                isOnline={user.isOnline}
-              />
-              <UserNameWrapper>
-                <Header strong>{user.fullName}</Header>
-                <Link to={`profile/${user._id}`}>
-                  <EditIcon sx={{ fontSize: 'small' }} />
-                </Link>
-              </UserNameWrapper>
-            </ProfileWrapper>
+            <Link to={`profile/${user._id}`}>
+              <ProfileWrapper>
+                <Thumbnail
+                  image={user.image || null}
+                  name={user.fullName}
+                  badge={false}
+                  isOnline={user.isOnline}
+                />
+                <UserNameWrapper>
+                  <Header strong>{user.fullName}</Header>
+                </UserNameWrapper>
+              </ProfileWrapper>
+            </Link>
             <Divider />
           </>
         )}
