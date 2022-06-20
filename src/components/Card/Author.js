@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { COLOR_BG } from '@utils/color';
@@ -60,9 +60,17 @@ const convertDate = (dateString) => {
 };
 
 function Author({ data, badge, icon, ...props }) {
-  const { author, title, createdAt, comments, likes, tag } = data;
+  const { author, likes, createdAt, comments } = data;
   const { fullName, isOnline } = author;
-
+  const { title, tag } = useMemo(() => {
+    // TODO: 작성방식 수립 이후 try-catch 삭제
+    try {
+      const { dt: title, tg: tag } = JSON.parse(data.title);
+      return { title, tag };
+    } catch (e) {
+      return { title: 'error', tag: [] };
+    }
+  }, [data]);
   return (
     <Container {...props}>
       <AvatarWrapper>
