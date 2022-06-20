@@ -95,7 +95,9 @@ function Sidebar({ open, onClose }) {
               />
               <UserNameWrapper>
                 <Header strong>{user.fullName}</Header>
-                <EditIcon sx={{ fontSize: 'small' }} />
+                <Link to={`profile/${user._id}`}>
+                  <EditIcon sx={{ fontSize: 'small' }} />
+                </Link>
               </UserNameWrapper>
             </ProfileWrapper>
             <Divider />
