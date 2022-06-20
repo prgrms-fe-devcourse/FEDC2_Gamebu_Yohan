@@ -92,10 +92,13 @@ function HomePage() {
   }, []);
 
   const getPostsList = async () => {
-    const getAllPosts = await fetch('posts');
-    const newPosts = getAllPosts.slice(0, 10);
+    const params = { offset: 0, limit: 10 };
+    const getAllPosts = await fetch('posts', {
+      method: 'GET',
+      params,
+    });
 
-    setPosts(newPosts);
+    setPosts(getAllPosts);
   };
 
   useEffect(() => {
