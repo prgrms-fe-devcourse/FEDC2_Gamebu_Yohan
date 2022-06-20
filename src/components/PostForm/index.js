@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, CircularProgress, Stack } from '@mui/material';
 import { authFetch } from '@utils/fetch';
 import { useState } from 'react';
 import useForm from '@hooks/useForm';
@@ -105,6 +105,7 @@ export default function PostForm() {
           onBlur={handleOnBlur('tags')}
           onChange={handleChange}
           error={focused.tags && tags.length < 1}
+          helperText="하나 이상의 태그를 지정해주세요!"
         />
         <MultiLineTextInput
           name="content"
@@ -121,9 +122,10 @@ export default function PostForm() {
           type="submit"
           onClick={handleOnClick}
           variant="contained"
+          disabled={isLoading}
           disableElevation
         >
-          제출
+          {isLoading ? <CircularProgress color="inherit" /> : '제출'}
         </Button>
       </Stack>
     </form>
