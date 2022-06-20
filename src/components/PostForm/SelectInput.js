@@ -1,13 +1,12 @@
-import Box from '@mui/material/Box';
 import {
   FormControl,
   OutlinedInput,
   InputLabel,
   MenuItem,
   Select,
-  Chip,
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import TagList from '@components/TagChip/TagList';
 
 export default function SelectInput({
   name,
@@ -28,13 +27,7 @@ export default function SelectInput({
         error={error}
         multiple
         input={<OutlinedInput id="select-multiple-chip" label="name" />}
-        renderValue={(selected) => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((value) => (
-              <Chip key={value} label={value} />
-            ))}
-          </Box>
-        )}
+        renderValue={(selected) => <TagList tags={selected} />}
       >
         {options.map((option) => (
           <MenuItem key={option} value={option}>
