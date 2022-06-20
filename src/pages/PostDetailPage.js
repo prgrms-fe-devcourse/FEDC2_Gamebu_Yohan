@@ -43,43 +43,67 @@ const PostContentContainer = styled.div`
 
 const CommentsContainer = styled.div`
   box-sizing: border-box;
-  background-color: ${COLOR_BG};
+  background-color: white;
   width: 100%;
-  height: 14rem;
   margin-bottom: 1rem;
   padding: 0.5rem 0.5rem;
-  overflow: scroll;
 `;
 
 const CommentBox = styled.div`
   width: 100%;
+  max-width: 326px;
   height: 2rem;
   display: flex;
-  align-items: center;
-  overflow: scroll;
+  flex-direction: column;
   margin-bottom: 1rem;
 `;
 
-const AvatarIcon = styled(Avatar)`
-  height: 2rem;
-  width: 2rem;
+// const AvatarIcon = styled(Avatar)`
+//   height: 2rem;
+//   width: 2rem;
+// `;
+
+const NameBox = styled.div`
+  font-size: 0.8rem;
+  font-weight: bold;
 `;
-const TextBox = styled.div`
+
+const UserInfoBox = styled.div`
   display: flex;
   align-items: center;
-  width: 11rem;
-  height: 2rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  justify-content: space-between;
 `;
+
+const NameAndDate = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const TextBox = styled.div`
+  display: block;
+  margin: 0.2rem 0 0.2rem;
+
+  white-space: normal;
+  max-width: 326px;
+`;
+
 const DateBox = styled.div`
-  font-size: 0.8rem;
+  font-size: 0.6rem;
+  margin-left: 1rem;
 `;
+
 const DeleteBox = styled.div`
   margin-left: 0.5rem;
+`;
+
+const NoneExistingComments = styled.div`
+  width: 100%;
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #009688;
 `;
 
 const Paragraph = styled.p`
@@ -91,6 +115,12 @@ const NewIcon = styled(FiberNewIcon)`
   font-size: 1.7rem;
   color: #f44336;
 `;
+const convertDate = (dateString) => {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+};
 
 function Edit({ onClick }) {
   return <Paragraph onClick={onClick}>글 수정</Paragraph>;
@@ -106,6 +136,7 @@ const CommentInputContainer = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  margin-bottom: 1rem;
 `;
 
 const InputComment = styled(TextField)`
@@ -123,7 +154,11 @@ function PostContent({ content }) {
 }
 
 PostContent.propTypes = {
-  content: PropTypes.string.isRequired,
+  content: PropTypes.string,
+};
+
+PostContent.defaultProps = {
+  content: '',
 };
 
 function Comment({
@@ -136,25 +171,30 @@ function Comment({
 }) {
   return (
     <CommentBox>
-      <AvatarIcon>{author.fullName[0]}</AvatarIcon>
+      <UserInfoBox>
+        <NameAndDate>
+          <NameBox>{author.fullName}</NameBox>
+          <DateBox>{updatedAt}</DateBox>
+        </NameAndDate>
+        {userId && userId === author._id ? (
+          <DeleteBox onClick={() => handleDeleteClick(commentId)}>
+            <DeleteForeverIcon />
+          </DeleteBox>
+        ) : null}
+      </UserInfoBox>
       <TextBox>{comment}</TextBox>
-      <DateBox>{updatedAt}</DateBox>
-      {userId && userId === author._id ? (
-        <DeleteBox onClick={() => handleDeleteClick(commentId)}>
-          <DeleteForeverIcon />
-        </DeleteBox>
-      ) : null}
     </CommentBox>
   );
 }
 Comment.propTypes = {
   commentId: PropTypes.string.isRequired,
   author: PropTypes.shape({
-    fullName: PropTypes.array.isRequired,
+    fullName: PropTypes.string.isRequired,
     _id: PropTypes.string.isRequired,
   }).isRequired,
   comment: PropTypes.string.isRequired,
-  updatedAt: PropTypes.string.isRequired,
+  updatedAt: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+    .isRequired,
   userId: PropTypes.string.isRequired,
   handleDeleteClick: PropTypes.func.isRequired,
 };
@@ -186,70 +226,8 @@ function CommentInput({ handlePostComment, commentValue, handleWriteComment }) {
 CommentInput.propTypes = {
   handlePostComment: PropTypes.func.isRequired,
   handleWriteComment: PropTypes.func.isRequired,
-  commentValue: PropTypes.oneOf([PropTypes.string, PropTypes.number])
+  commentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
-};
-
-function CommentModal({
-  title,
-  isVisible,
-  onClose,
-  comments,
-  isNew,
-  userId,
-  handleDeleteClick,
-}) {
-  return (
-    <div>
-      <Dialog open={isVisible} onClose={onClose} scroll="paper" fullScreen>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent dividers>
-          <DialogContentText>
-            {comments &&
-              comments.map((item, i) => {
-                if (isNew && i === 0) {
-                  return (
-                    <Comment
-                      key={item._id}
-                      commentId={item._id}
-                      author={item.author}
-                      comment={item.comment}
-                      updatedAt={<NewIcon color="inherit" />}
-                      userId={userId}
-                      handleDeleteClick={handleDeleteClick}
-                    />
-                  );
-                }
-                return (
-                  <Comment
-                    key={item._id}
-                    commentId={item._id}
-                    author={item.author}
-                    comment={item.comment}
-                    updatedAt={item.updatedAt.slice(0, 10)}
-                    userId={userId}
-                    handleDeleteClick={handleDeleteClick}
-                  />
-                );
-              })}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
-}
-
-CommentModal.propTypes = {
-  title: PropTypes.string.isRequired,
-  isVisible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  comments: PropTypes.array.isRequired,
-  isNew: PropTypes.bool.isRequired,
-  userId: PropTypes.string.isRequired,
-  handleDeleteClick: PropTypes.func.isRequired,
 };
 
 function PostDetailPage() {
@@ -260,7 +238,6 @@ function PostDetailPage() {
   const [detailData, setDetailData] = useState(null); // page data
   const [commentValue, setCommentValue] = useState('');
   const [isNew, setIsNew] = useState(false); // new 아이콘을 달아줌
-  const [modalVisible, setModalVisble] = useState(false); // modal 활성화
 
   let needData = {};
 
@@ -308,6 +285,17 @@ function PostDetailPage() {
         comments: [...detailData.comments.filter((item) => item._id !== id)],
       });
   };
+  const postNotification = async (res) => {
+    const result = await authFetch('notifications/create', {
+      method: 'POST',
+      data: {
+        notificationType: 'COMMENT',
+        notificationTypeId: res._id,
+        userId,
+        postId: res.post,
+      },
+    });
+  };
   const handlePostComment = async (e) => {
     if (e.type === 'keydown' && e.key !== 'Enter') return null;
     const res = await authFetch('comments/create', {
@@ -322,6 +310,8 @@ function PostDetailPage() {
         ...detailData,
         comments: [res, ...detailData.comments],
       });
+
+    postNotification(res);
     setIsNew(true);
     setCommentValue('');
   };
@@ -348,19 +338,13 @@ function PostDetailPage() {
         <Edit onClick={handleEditClick} />
       ) : null}
       <PostContent content={detailData && detailData.content} />
-      {detailData && (
-        <CommentModal
-          title="댓글목록"
-          isVisible={modalVisible}
-          onClose={() => setModalVisble(false)}
-          comments={detailData.comments}
-          isNew={isNew}
-          userId={userId}
-          handleDeleteClick={handleDeleteClick}
-        />
-      )}
-      <CommentsContainer onClick={() => setModalVisble(true)}>
-        {detailData &&
+      <CommentInput
+        handlePostComment={handlePostComment}
+        commentValue={commentValue}
+        handleWriteComment={(e) => setCommentValue(e.target.value)}
+      />
+      <CommentsContainer>
+        {(detailData && userId && detailData.comments.length > 0) || isNew ? (
           detailData.comments.map((item, i) => {
             if (isNew && i === 0) {
               return (
@@ -381,18 +365,16 @@ function PostDetailPage() {
                 commentId={item._id}
                 author={item.author}
                 comment={item.comment}
-                updatedAt={item.updatedAt.slice(0, 10)}
+                updatedAt={convertDate(item.updatedAt)}
                 userId={userId}
                 handleDeleteClick={handleDeleteClick}
               />
             );
-          })}
+          })
+        ) : (
+          <NoneExistingComments>댓글이 없습니다</NoneExistingComments>
+        )}
       </CommentsContainer>
-      <CommentInput
-        handlePostComment={handlePostComment}
-        commentValue={commentValue}
-        handleWriteComment={(e) => setCommentValue(e.target.value)}
-      />
     </PageContainer>
   );
 }

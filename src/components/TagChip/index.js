@@ -25,6 +25,7 @@ export default function TagChip({ label, index, simple, itemsx, chipsx }) {
   const ChipStyle = {
     ...DefaultChipStyle,
     ...chipsx,
+    '& .MuiChip-avatar': {},
   };
 
   const image = tagdata[label] ? tagdata[label].image : '';

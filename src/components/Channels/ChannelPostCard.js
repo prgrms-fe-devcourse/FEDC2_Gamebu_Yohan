@@ -4,7 +4,6 @@ import styled from '@emotion/styled';
 import { COLOR_MAIN } from '@utils/color';
 import { Card } from '@mui/material';
 import Divider from '@components/Divider';
-import Tag from '@components/Tag';
 import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -122,25 +121,6 @@ function TagPart({ tag }) {
   return (
     <TagPartContainer>
       <TagList tags={tag.slice(0, 4)} simple />
-      {/* {tag.slice(0, 4).map((item, index) => (
-        <Tag
-          backgroundColor={TagColor[index]}
-          content={item}
-          key={item}
-          style={{
-            boxSizing: 'borderBox',
-            borderRadius: '0.5rem',
-            padding: '0.1rem 0.25rem',
-            fontSize: '0.75rem',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: '#eee',
-            marginLeft: '0.2rem',
-            marginRight: 0,
-          }}
-        />
-				))} */}
       {tag.length > 4 ? <TagSpan>+{tag.length - 4}</TagSpan> : null}
     </TagPartContainer>
   );
@@ -223,9 +203,21 @@ function ChannelPostCard({
   };
 
   const postClick = () => {
-    navigate('/posts/details', {
+    navigate(`/posts/details/${postId}`, {
       replace: false,
       state: toDetailInfo,
+    });
+  };
+
+  const postNotification = async (res) => {
+    const result = await authFetch('notifications/create', {
+      method: 'POST',
+      data: {
+        notificationType: 'LIKE',
+        notificationTypeId: res._id,
+        userId,
+        postId: res.post,
+      },
     });
   };
 
@@ -251,6 +243,8 @@ function ChannelPostCard({
           postId,
         },
       });
+
+      postNotification(res);
       changeLikeCount(true, postId, res._id);
     }
   };

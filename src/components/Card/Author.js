@@ -5,7 +5,7 @@ import { COLOR_BG } from '@utils/color';
 import CommentIcon from '@mui/icons-material/Comment';
 import Thumbnail from '@components/Thumbnail';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import TagList from '@components/TagChip/TagList';
+import TagList from '@components/TagChip/ShortTagList';
 
 const Container = styled.div`
   box-sizing: border-box;
