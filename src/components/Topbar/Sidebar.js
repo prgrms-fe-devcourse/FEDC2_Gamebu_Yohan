@@ -116,7 +116,7 @@ function Sidebar({ open, onClose }) {
             if (item === '') return;
 
             return (
-              <ListItem key={item} disablePadding>
+              <ListItem onClick={() => onClose()} key={item} disablePadding>
                 <Link to={`channel/${item}`}>
                   <ListItemButton>
                     <ListItemIcon>
@@ -134,7 +134,7 @@ function Sidebar({ open, onClose }) {
           <Header>채널 카테고리</Header>
         </HeaderWrapper>
         {channels.map((item) => (
-          <ListItem key={item.id} disablePadding>
+          <ListItem onClick={() => onClose()} key={item.id} disablePadding>
             <Link to={`channel/${item.id}`}>
               <ListItemButton>
                 <ListItemIcon>
@@ -159,6 +159,7 @@ function Sidebar({ open, onClose }) {
           </Button>
         ) : (
           <Button
+            onClick={() => onClose()}
             variant="contained"
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
