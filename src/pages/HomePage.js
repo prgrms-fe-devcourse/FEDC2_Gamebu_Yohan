@@ -8,13 +8,13 @@ import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
 import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
 import { useEffect, useState } from 'react';
-import Image from '@components/Image';
 import { Link } from 'react-router-dom';
 import maple from '@assets/img/maple.png';
 import lol from '@assets/img/lol.png';
 import lostark from '@assets/img/lostark.png';
 import overwatch from '@assets/img/overwatch.png';
 import battleground from '@assets/img/battleground.png';
+import BannerImage from '@components/Image/BannerImage';
 
 const HomePageContainer = styled.div`
   display: flex;
@@ -113,12 +113,7 @@ function HomePage() {
               return (
                 <Link to={`/channel/${item.id}`} key={item.id}>
                   <SliderItemWrapper>
-                    <Image
-                      src={images[index] || NOT_FOUND_IMAGE}
-                      width={342}
-                      height={160}
-                      alt={`${item.name} 카테고리`}
-                    />
+                    <BannerImage src={images[index] || NOT_FOUND_IMAGE} />
                   </SliderItemWrapper>
                 </Link>
               );
