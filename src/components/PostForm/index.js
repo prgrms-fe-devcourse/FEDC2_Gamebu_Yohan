@@ -7,8 +7,6 @@ import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import MultiLineTextInput from './MultiLineTextInput';
 
-const channelId = '629f0c7c7e01ad1cb7250151';
-
 const Tags = [
   '파티',
   '경쟁',
@@ -23,23 +21,28 @@ const Tags = [
   '서폿',
 ];
 
-export default function PostForm({ initialValues }) {
+export default function PostForm({ channelId, postId, post }) {
   const { values, isLoading, handleChange, handleSubmit } = useForm({
-    initialValues,
+    post,
     onSubmit: async () => {
+      console.log(`Attempting ${postId ? 'Edit' : 'Post'}`);
       const { title, tags, content } = values;
-      const response = await authFetch('posts/create', {
-        method: 'POST',
-        data: {
-          title: JSON.stringify({
-            dt: title,
-            tg: tags,
-            dd: content,
-          }),
-          image: null,
-          channelId,
-        },
-      });
+      const response = await authFetch(
+        `posts/${postId ? 'update' : 'create'}`,
+        {
+          method: `${postId ? 'PUT' : 'POST'}`,
+          data: {
+            postId,
+            title: JSON.stringify({
+              dt: title,
+              tg: tags,
+              dd: content,
+            }),
+            image: null,
+            channelId,
+          },
+        }
+      );
 
       const isError = Boolean(response?.response);
 
@@ -128,13 +131,19 @@ export default function PostForm({ initialValues }) {
 }
 
 PostForm.propTypes = {
-  initialValues: PropTypes.object,
+  channelId: PropTypes.string.isRequired,
+  postId: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  post: PropTypes.shape({
+    title: PropTypes.string,
+    tag: PropTypes.arrayOf(PropTypes.string),
+    content: PropTypes.string,
+  }),
 };
 
 PostForm.defaultProps = {
-  initialValues: {
+  post: {
     title: '',
-    tags: [],
+    tag: [],
     content: '',
   },
 };
