@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
-import { COLOR_BG, COLOR_MAIN } from '@utils/color';
+import { COLOR_BG, COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import useForm from '@hooks/useForm';
 import GoBack from '@components/GoBack';
 import { regexId, regexName } from '@utils/constants';
@@ -31,9 +31,8 @@ const SignupHeader = styled.h1`
 const FormWrapper = styled.div`
   background-color: ${COLOR_BG};
   color: ${COLOR_MAIN};
-
+  border-radius: 0.5rem;
   & p {
-    margin-left: 0;
     margin-top: 0.5rem;
   }
 
@@ -47,7 +46,20 @@ const FormWrapper = styled.div`
 `;
 
 const Form = styled.form`
-  padding: 1.5rem;
+  padding: 1.5rem 1rem;
+  & .MuiTextField-root {
+    margin-bottom: 1rem;
+  }
+`;
+
+const StyledTextField = styled(TextField)`
+  & .MuiInputLabel-root {
+    color: ${COLOR_MAIN};
+  }
+
+  & .Mui-focused.MuiInputLabel-root {
+    color: ${COLOR_SIGNATURE};
+  }
 `;
 
 const SignupButtonWrapper = styled.div`
@@ -71,13 +83,6 @@ const SignupWarningAlert = styled(Alert)`
   font-size: 0.75rem;
   margin-top: 1rem;
 `;
-
-const helperText = {
-  id: '아이디를 입력하세요',
-  name: '이름을 입력하세요',
-  password: '비밀번호를 입력하세요',
-  passwordConfirm: '비밀번호를 한번 더 입력해주세요',
-};
 
 function SignupPage() {
   const [warningAlertInfo, setWarningAlertInfo] = useState({
@@ -123,19 +128,20 @@ function SignupPage() {
     },
     validate: ({ id, name, password, passwordConfirm }) => {
       const newErrors = {};
-      if (!id) newErrors.id = '아이디를 입력하지 않았습니다';
+      if (!id) newErrors.id = '아이디를 입력하세요';
       const filteredId = id.replace(regexId, '');
       if (id !== filteredId)
         newErrors.id = '아이디에 사용할 수 없는 문자가 포함되어 있습니다';
-      if (!name) newErrors.name = '이름을 입력하지 않았습니다';
+      if (!name) newErrors.name = '이름을 입력하세요';
       const filteredName = name.replace(regexName, '');
       if (name !== filteredName)
         newErrors.name = '이름에 사용할 수 없는 문자가 포함되어 있습니다';
-      if (!password) newErrors.password = '비밀번호를 입력하지 않았습니다';
+      if (!password) newErrors.password = '비밀번호를 입력하세요';
       if (!passwordConfirm)
-        newErrors.passwordConfirm = '비밀번호를 한번 더 입력하지 않았습니다';
+        newErrors.passwordConfirm = '비밀번호 확인을 입력하세요';
       if (password !== passwordConfirm)
-        newErrors.passwordConfirm = '같은 비밀번호를 입력하지 않았습니다';
+        newErrors.passwordConfirm =
+          '비밀번호와 비밀번호 확인이 일치하지 않습니다';
       return newErrors;
     },
   });
@@ -159,40 +165,40 @@ function SignupPage() {
       <SignupHeader>회원가입</SignupHeader>
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
-          <TextField
-            placeholder={helperText.id}
+          <StyledTextField
+            label="아이디"
             values={values.id}
             onChange={handleChange}
-            helperText={errors.id || helperText.id}
+            helperText={errors.id}
             fullWidth
             name="id"
             error={Boolean(errors.id)}
           />
-          <TextField
-            placeholder={helperText.name}
+          <StyledTextField
+            label="이름"
             values={values.name}
             onChange={handleChange}
-            helperText={errors.name || helperText.name}
+            helperText={errors.name}
             fullWidth
             name="name"
             error={Boolean(errors.name)}
           />
-          <TextField
-            placeholder={helperText.password}
+          <StyledTextField
+            label="비밀번호"
             value={values.password}
             onChange={handleChange}
-            helperText={errors.password || helperText.password}
+            helperText={errors.password}
             fullWidth
             name="password"
             type="password"
             autoComplete="on"
             error={Boolean(errors.password)}
           />
-          <TextField
-            placeholder={helperText.passwordConfirm}
+          <StyledTextField
+            label="비밀번호 확인"
             value={values.passwordConfirm}
             onChange={handleChange}
-            helperText={errors.passwordConfirm || helperText.passwordConfirm}
+            helperText={errors.passwordConfirm}
             fullWidth
             name="passwordConfirm"
             type="password"
