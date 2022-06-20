@@ -6,14 +6,14 @@ import Header from '@components/Header';
 import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
-import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
+import {
+  CHANNELS,
+  NOT_FOUND_IMAGE,
+  CATEGORIES,
+  IMAGES,
+} from '@utils/constants';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import maple from '@assets/img/maple.png';
-import lol from '@assets/img/lol.png';
-import lostark from '@assets/img/lostark.png';
-import overwatch from '@assets/img/overwatch.png';
-import battleground from '@assets/img/battleground.png';
 import BannerImage from '@components/Image/BannerImage';
 
 const HomePageContainer = styled.div`
@@ -86,7 +86,7 @@ const settings = {
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [channels, setChannels] = useState([]);
-  const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+  const [images] = useState(IMAGES);
   useEffect(() => {
     setChannels(CHANNELS);
   }, []);
@@ -109,11 +109,11 @@ function HomePage() {
         <Divider />
         <Slider {...settings}>
           {channels &&
-            channels.map((item, index) => {
+            channels.map((item) => {
               return (
                 <Link to={`/channel/${item.id}`} key={item.id}>
                   <SliderItemWrapper>
-                    <BannerImage src={images[index] || NOT_FOUND_IMAGE} />
+                    <BannerImage src={images[item.id] || NOT_FOUND_IMAGE} />
                   </SliderItemWrapper>
                 </Link>
               );
