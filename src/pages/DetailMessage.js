@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getDetailMessage, postMessage } from '@utils/message';
 import useValueContext from '@hooks/useValueContext';
 import useInterval from '@hooks/useInterval';
+import './DetailMessage.css';
 
 function DetailMessage() {
   const [messageList, setMessageList] = useState([]);
@@ -31,38 +32,24 @@ function DetailMessage() {
   };
 
   return (
-    <div>
-      <div>DetailMessage</div>
-      <button type="button" onClick={handleClickGetMessageButton}>
-        get message
-      </button>
-      {messageList.length &&
-        user &&
-        messageList.map((messageOne) => {
-          const { message, seen, sender, _id } = messageOne;
-          const isMe = sender._id === user._id;
-
-          return (
-            <div
-              key={_id}
-              style={{
-                marginTop: '5px',
-                marginBottom: '5px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: isMe ? 'flex-end' : 'flex-start',
-              }}
-            >
-              <div>내용: {message}</div>
-              <div>읽었나?: {seen ? 'O' : 'X'}</div>
-            </div>
-          );
-        })}
+    <>
+      <div className="chat">
+        {messageList.length &&
+          user &&
+          messageList.map(({ message, sender, _id }) => {
+            const isMe = sender._id === user._id;
+            return (
+              <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
+                {message}
+              </div>
+            );
+          })}
+      </div>
       <form onSubmit={handleSubmitMessage}>
         <input ref={inputRef} />
         <button type="submit">전송</button>
       </form>
-    </div>
+    </>
   );
 }
 
