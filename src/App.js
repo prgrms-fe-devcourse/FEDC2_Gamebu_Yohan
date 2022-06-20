@@ -39,13 +39,13 @@ function App() {
             <Route path="channel/categories" element={<CategoriesPage />} />
             <Route path="posts/write" element={<PostWritePage />} />
             <Route path="posts/edit/:postId" element={<PostEditPage />} />
+            <Route path="message" element={<MessagePage />} />
+            <Route path="message/:userId" element={<DetailMessage />} />
           </Route>
           <Route path="posts/details/:postId" element={<PostDetailPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="message" element={<MessagePage />} />
-          <Route path="message/:userId" element={<DetailMessage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

@@ -1,8 +1,14 @@
 import React, { useState, useCallback } from 'react';
+import styled from '@emotion/styled';
 import { getMyMessageList } from '@utils/message';
 import useValueContext from '@hooks/useValueContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useInterval from '@hooks/useInterval';
+import Card from '@components/Card';
+
+const P = styled.p`
+  margin-bottom: 1rem;
+`;
 
 function MessagePage() {
   const [myMessageList, setMyMessageList] = useState([]);
@@ -17,40 +23,22 @@ function MessagePage() {
   useInterval(handleClickGetMessageButton, 3000);
 
   return (
-    <div>
-      <Link to="/">home</Link>
-      <div>MessagePage</div>
+    <>
+      <P>Message</P>
       <div>
         {myMessageList.length &&
           user &&
-          myMessageList.map((myMessage) => {
-            console.log(myMessage);
-            const { message, receiver, sender, seen, createdAt } = myMessage;
+          myMessageList.map(({ message, receiver, sender }) => {
             const you = receiver._id !== user._id ? receiver : sender;
-            const { _id, email, fullName } = you;
+            const { _id } = you;
             return (
-              <button
-                key={`${_id}-${createdAt}`}
-                type="button"
-                style={{ border: '1px solid black', width: '100%' }}
-                onClick={() => navigate(`/message/${_id}`)}
-              >
-                <div
-                  style={{
-                    marginTop: '5px',
-                    marginBottom: '5px',
-                  }}
-                >
-                  <div>상대방 아이디: {email}</div>
-                  <div>상대방 이름: {fullName}</div>
-                  <div>message: {message}</div>
-                  <div>읽었나?: {seen ? 'O' : 'X'}</div>
-                </div>
-              </button>
+              <Card.User key={_id} onClick={() => navigate(`/message/${_id}`)}>
+                {{ ...you, email: message }}
+              </Card.User>
             );
           })}
       </div>
-    </div>
+    </>
   );
 }
 
