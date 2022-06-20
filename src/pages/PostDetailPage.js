@@ -97,6 +97,7 @@ function PostDetailPage() {
 
   const fetchPostDetail = useCallback(async () => {
     const postDetail = await fetch(`posts/${postId}`);
+    // FIXME: 이름이 null 인 경우를 대비한 임시 수정. 이후 삭제가 필요하다.
     postDetail.author.fullName = '';
     setDetailData(postDetail);
   }, [postId]);
