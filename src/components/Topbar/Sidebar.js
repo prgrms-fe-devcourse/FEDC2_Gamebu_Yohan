@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Drawer from '@mui/material/Drawer';
@@ -16,9 +17,11 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
-import { useState, useEffect } from 'react';
+
 import useValueContext from '@hooks/useValueContext';
 import Header from '@components/Header';
+import Thumbnail from '@components/Thumbnail';
+import EditIcon from '@mui/icons-material/Edit';
 
 const DrawerHeader = styled.div`
   display: 'flex';
@@ -46,6 +49,18 @@ const AuthContainer = styled.div`
   right: 0;
 `;
 
+const ProfileWrapper = styled.div`
+  padding: 0.5rem;
+  display: flex;
+`;
+
+const UserNameWrapper = styled.div`
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+`;
+
 function Sidebar({ open, onClose }) {
   const { user } = useValueContext();
   const [userFavorites, setUserFavorites] = useState([]);
@@ -67,6 +82,23 @@ function Sidebar({ open, onClose }) {
       </DrawerHeader>
       <Divider />
       <List>
+        {user && (
+          <>
+            <ProfileWrapper>
+              <Thumbnail
+                image={user.image || null}
+                name={user.fullName}
+                badge={false}
+                isOnline={user.isOnline}
+              />
+              <UserNameWrapper>
+                <Header strong>{user.fullName}</Header>
+                <EditIcon sx={{ fontSize: 'small' }} />
+              </UserNameWrapper>
+            </ProfileWrapper>
+            <Divider />
+          </>
+        )}
         <HeaderWrapper>
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
