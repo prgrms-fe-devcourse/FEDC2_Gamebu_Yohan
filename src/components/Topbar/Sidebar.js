@@ -22,6 +22,7 @@ import useValueContext from '@hooks/useValueContext';
 import Header from '@components/Header';
 import Thumbnail from '@components/Thumbnail';
 import EditIcon from '@mui/icons-material/Edit';
+import useActionContext from '@hooks/useActionContext';
 
 const DrawerHeader = styled.div`
   display: 'flex';
@@ -63,6 +64,7 @@ const UserNameWrapper = styled.div`
 
 function Sidebar({ open, onClose }) {
   const { user } = useValueContext();
+  const { logout } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
 
@@ -159,9 +161,11 @@ function Sidebar({ open, onClose }) {
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
             <Link to="/#">
-              <LogoutIcon sx={{ fontSize: 'small', mr: 1 }} />
+              <LogoutIcon
+                sx={{ fontSize: 'small', mr: 1 }}
+                onClick={() => logout()}
+              />
               로그아웃
-              {/* TODO : 로그아웃 로직 추가 필요 */}
             </Link>
           </Button>
         )}
