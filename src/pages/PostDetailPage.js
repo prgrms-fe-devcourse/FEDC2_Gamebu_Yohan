@@ -1,18 +1,12 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
 import { COLOR_BG } from '@utils/color';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import useValueContext from '@hooks/useValueContext';
-import TextField from '@mui/material/TextField';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
 import { authFetch, fetch } from '@utils/fetch';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import Card from '@components/Card';
+import Comment from '@components/Comment';
 
 const PageContainer = styled.div`
   box-sizing: border-box;
@@ -44,47 +38,6 @@ const CommentsContainer = styled.div`
   padding: 0.5rem 0.5rem;
 `;
 
-const CommentBox = styled.div`
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-`;
-
-const NameBox = styled.div`
-  font-size: 0.8rem;
-  font-weight: bold;
-`;
-
-const UserInfoBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const NameAndDate = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const TextBox = styled.div`
-  display: block;
-  margin: 0.2rem 0 0.2rem;
-  white-space: normal;
-  word-break: break-all;
-  max-width: 300px;
-`;
-
-const DateBox = styled.div`
-  font-size: 0.6rem;
-  margin-left: 1rem;
-`;
-
-const DeleteBox = styled.div`
-  margin-left: 0.5rem;
-`;
-
 const NoneExistingComments = styled.div`
   width: 100%;
   height: 10rem;
@@ -104,94 +57,6 @@ const NewIcon = styled(FiberNewIcon)`
   font-size: 1.7rem;
   color: #f44336;
 `;
-
-const CommentInputContainer = styled.div`
-  width: 100%;
-  height: 2.5rem;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-`;
-
-const InputComment = styled(TextField)`
-  display: inline-block;
-`;
-
-const InputButton = styled(Button)`
-  width: 6.5rem;
-  margin-left: 0.8rem;
-  height: 2rem;
-`;
-
-function Comment({
-  commentId,
-  author,
-  comment,
-  updatedAt,
-  userId,
-  handleDeleteClick,
-}) {
-  return (
-    <CommentBox>
-      <UserInfoBox>
-        <NameAndDate>
-          <NameBox>{author.fullName}</NameBox>
-          <DateBox>{updatedAt}</DateBox>
-        </NameAndDate>
-        {userId && userId === author._id ? (
-          <DeleteBox onClick={() => handleDeleteClick(commentId)}>
-            <DeleteForeverIcon />
-          </DeleteBox>
-        ) : null}
-      </UserInfoBox>
-      <TextBox>{comment}</TextBox>
-    </CommentBox>
-  );
-}
-Comment.propTypes = {
-  commentId: PropTypes.string.isRequired,
-  author: PropTypes.shape({
-    fullName: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
-  }).isRequired,
-  comment: PropTypes.string.isRequired,
-  updatedAt: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
-    .isRequired,
-  userId: PropTypes.string.isRequired,
-  handleDeleteClick: PropTypes.func.isRequired,
-};
-
-function CommentInput({ handlePostComment, commentValue, handleWriteComment }) {
-  return (
-    <CommentInputContainer>
-      <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-      <InputComment
-        id="input-with-sx"
-        placeholder="가는 말이 고와야 오는 말이 고와요."
-        variant="standard"
-        fullWidth
-        value={commentValue}
-        onChange={handleWriteComment}
-        onKeyDown={handlePostComment}
-      />
-      <InputButton
-        onClick={handlePostComment}
-        variant="contained"
-        endIcon={<SendIcon />}
-      >
-        Send
-      </InputButton>
-    </CommentInputContainer>
-  );
-}
-
-CommentInput.propTypes = {
-  handlePostComment: PropTypes.func.isRequired,
-  handleWriteComment: PropTypes.func.isRequired,
-  commentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
-};
 
 function PostDetailPage() {
   const { state } = useLocation();
@@ -243,7 +108,7 @@ function PostDetailPage() {
   };
 
   const handleDeleteClick = async (id) => {
-    const res = await authFetch('comments/delete', {
+    await authFetch('comments/delete', {
       method: 'DELETE',
       data: {
         id,
@@ -306,7 +171,7 @@ function PostDetailPage() {
         <Paragraph onClick={handleEditClick}>글 수정</Paragraph>
       ) : null}
       <PostContentContainer>{detailData.content}</PostContentContainer>
-      <CommentInput
+      <Comment.Input
         handlePostComment={handlePostComment}
         commentValue={commentValue}
         handleWriteComment={(e) => setCommentValue(e.target.value)}

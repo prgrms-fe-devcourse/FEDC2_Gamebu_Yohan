@@ -10,6 +10,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { authFetch } from '@utils/fetch';
 import { useNavigate } from 'react-router-dom';
 import TagList from '@components/TagChip/TagList';
+import useValueContext from '@hooks/useValueContext';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -82,8 +83,6 @@ const LikeButtonContainer = styled.div`
   display: flex;
   align-items: center;
 `;
-
-export const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
 function Header({ title, onClick, isClicked }) {
   return (
@@ -167,9 +166,8 @@ function ChannelPostCard({
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes.length);
   const navigate = useNavigate();
-
-  // TODO: 사용자 id를 가져와야함
-  const userId = '629f07fa7e01ad1cb7250131';
+  const { user } = useValueContext();
+  const userId = user && user._id;
 
   useEffect(() => {
     setLikeCount(likes.length);
@@ -181,7 +179,7 @@ function ChannelPostCard({
     } else {
       setIsLiked(false);
     }
-  }, [likes]);
+  }, [likes, userId]);
 
   const applicationButtonClick = (e) => {
     e.stopPropagation();
