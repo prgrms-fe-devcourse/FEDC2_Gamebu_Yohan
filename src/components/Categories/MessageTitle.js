@@ -6,7 +6,7 @@ const LargeTitle = styled.div`
   font-size: 1rem;
   font-weight: ${(prop) => prop.weight};
   color: ${(prop) => prop.color};
-  margin-top: 1rem;
+  margin: 1rem 0;
 `;
 
 function MessageTitle({ children, color, weight }) {
