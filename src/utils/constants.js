@@ -1,4 +1,6 @@
 // TODO: 추후 채널 카테고리 더 추가
+import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
+
 export const CHANNELS = [
   {
     id: '62a7367f5517e27ffcab3bcb',
@@ -31,5 +33,19 @@ export const CATEGORIES = {
   '629f0c7c7e01ad1cb7250151': '임시 카테고리',
 };
 
+export const IMAGES = {
+  '62a7367f5517e27ffcab3bcb': maple,
+  '62a736925517e27ffcab3bcf': lol,
+  '62a736a15517e27ffcab3bd5': battleground,
+  '62a818db5517e27ffcab3ce2': lostark,
+  '62a818e85517e27ffcab3ce6': overwatch,
+};
+
 export const NOT_FOUND_IMAGE =
   'https://images.unsplash.com/flagged/photo-1580234748052-2c23d8b27a71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NjZ8fGdhbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60';
+
+export const GAMEBU_TOKEN = 'GAMEBU_TOKEN';
+export const CHANNEL_MODAL_VISIBLE = 'CHANNEL_MODAL_VISIBLE';
+
+export const regexId = /[^0-9a-zA-Z]/g;
+export const regexName = /[^0-9a-zA-Zㄱ-ㅎ가-힣]/g;
