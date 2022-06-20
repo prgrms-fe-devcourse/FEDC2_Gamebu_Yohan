@@ -82,7 +82,6 @@ const NameAndDate = styled.div`
 const TextBox = styled.div`
   display: block;
   margin: 0.2rem 0 0.2rem;
-
   white-space: normal;
   max-width: 326px;
 `;
@@ -268,7 +267,7 @@ function PostDetailPage() {
   const handleEditClick = () => {
     const { title, tag, content, postId, channelId } = detailData;
     navigate(`/posts/edit/${detailData.postId}`, {
-      state: { title, tag, content, postId, channelId },
+      state: { post: { title, tag, content }, postId, channelId },
     });
   };
 
@@ -286,7 +285,7 @@ function PostDetailPage() {
       });
   };
   const postNotification = async (res) => {
-    const result = await authFetch('notifications/create', {
+    await authFetch('notifications/create', {
       method: 'POST',
       data: {
         notificationType: 'COMMENT',

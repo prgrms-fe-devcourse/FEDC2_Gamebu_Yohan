@@ -204,7 +204,7 @@ function ChannelPage() {
   };
 
   const goToWrite = () => {
-    navigate('/posts/write', { state: { channelId } });
+    navigate('/posts/write', { state: { channelId, postId: false } });
   };
 
   return (
