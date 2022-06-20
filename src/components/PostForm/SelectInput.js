@@ -4,6 +4,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  FormHelperText,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import TagList from '@components/TagChip/TagList';
@@ -13,9 +14,15 @@ export default function SelectInput({
   label,
   options,
   value,
+  onBlur,
   onChange,
   error,
+  helperText,
 }) {
+  const HelperTextStyle = {
+    color: 'red',
+    display: error ? 'block' : 'none',
+  };
   return (
     <FormControl variant="outlined">
       <InputLabel>{label}</InputLabel>
@@ -23,6 +30,7 @@ export default function SelectInput({
         name={name}
         label={label}
         value={value}
+        onBlur={onBlur}
         onChange={onChange}
         error={error}
         multiple
@@ -35,6 +43,7 @@ export default function SelectInput({
           </MenuItem>
         ))}
       </Select>
+      <FormHelperText sx={HelperTextStyle}>{helperText}</FormHelperText>
     </FormControl>
   );
 }
@@ -44,12 +53,16 @@ SelectInput.propTypes = {
   label: PropTypes.string,
   options: PropTypes.array.isRequired,
   value: PropTypes.array,
+  onBlur: PropTypes.func,
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool,
+  helperText: PropTypes.string,
 };
 
 SelectInput.defaultProps = {
   label: '',
   value: [],
+  onBlur: () => {},
   error: false,
+  helperText: '',
 };
