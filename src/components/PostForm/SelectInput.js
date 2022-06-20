@@ -13,6 +13,7 @@ export default function SelectInput({
   label,
   options,
   value,
+  onBlur,
   onChange,
   error,
 }) {
@@ -23,6 +24,7 @@ export default function SelectInput({
         name={name}
         label={label}
         value={value}
+        onBlur={onBlur}
         onChange={onChange}
         error={error}
         multiple
@@ -44,6 +46,7 @@ SelectInput.propTypes = {
   label: PropTypes.string,
   options: PropTypes.array.isRequired,
   value: PropTypes.array,
+  onBlur: PropTypes.func,
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool,
 };
@@ -51,5 +54,6 @@ SelectInput.propTypes = {
 SelectInput.defaultProps = {
   label: '',
   value: [],
+  onBlur: () => {},
   error: false,
 };

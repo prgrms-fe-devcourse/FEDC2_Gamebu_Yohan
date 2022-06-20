@@ -1,5 +1,6 @@
 import { Button, Stack } from '@mui/material';
 import { authFetch } from '@utils/fetch';
+import { useState } from 'react';
 import useForm from '@hooks/useForm';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
@@ -65,6 +66,24 @@ export default function PostForm() {
 
   const { title, tags, content } = values;
 
+  const [focused, setFocused] = useState({
+    title: false,
+    tags: false,
+    content: false,
+  });
+
+  const handleOnBlur = (name) => () => {
+    setFocused({ ...focused, [name]: true });
+  };
+
+  const handleOnClick = () => {
+    const allFocused = { ...focused };
+    Object.keys(allFocused).forEach((key) => {
+      allFocused[key] = true;
+    });
+    setFocused(allFocused);
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
@@ -72,8 +91,9 @@ export default function PostForm() {
           name="title"
           label="제목"
           value={title}
+          onBlur={handleOnBlur('title')}
           onChange={handleChange}
-          error={title.length < 3}
+          error={focused.title && title.length < 3}
           placeholder="3글자 이상"
           helperText="3글자 이상을 입력해주세요!"
         />
@@ -82,20 +102,27 @@ export default function PostForm() {
           label="태그"
           options={Tags}
           value={tags}
+          onBlur={handleOnBlur('tags')}
           onChange={handleChange}
-          error={tags.length < 1}
+          error={focused.tags && tags.length < 1}
         />
         <MultiLineTextInput
           name="content"
           label="내용"
           value={content}
+          onBlur={handleOnBlur('content')}
           onChange={handleChange}
-          error={content.length < 10}
+          error={focused.content && content.length < 10}
           placeholder="10글자 이상"
           helperText="10글자 이상을 입력해주세요!"
           rows={5}
         />
-        <Button type="submit" variant="contained" disableElevation>
+        <Button
+          type="submit"
+          onClick={handleOnClick}
+          variant="contained"
+          disableElevation
+        >
           제출
         </Button>
       </Stack>
