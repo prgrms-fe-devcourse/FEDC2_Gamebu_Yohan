@@ -8,7 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
-import { authUserAPI } from '../utils/user/index';
+import { authUserAPI } from '@utils/user';
 
 export const valueContext = createContext();
 export const actionContext = createContext();
@@ -19,6 +19,7 @@ function ContextProvider({ children }) {
     test: 100,
     user: null,
     isLogin: false,
+    initialLoading: !!token,
   });
 
   const actions = useMemo(
@@ -30,6 +31,7 @@ function ContextProvider({ children }) {
         setState((prevState) => ({
           ...prevState,
           isLogin: true,
+          initialLoading: false,
           user,
         }));
       },
@@ -56,14 +58,11 @@ function ContextProvider({ children }) {
   }, [actions]);
 
   useEffect(() => {
-    const { isLogin } = state;
-    if (isLogin) {
-      return;
-    }
-    if (token) {
+    const { initialLoading } = state;
+    if (initialLoading) {
       getAuthUser();
     }
-  }, [state, token, getAuthUser]);
+  }, [state, getAuthUser]);
 
   return (
     <actionContext.Provider value={actions}>
