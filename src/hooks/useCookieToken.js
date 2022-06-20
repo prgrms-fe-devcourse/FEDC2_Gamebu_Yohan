@@ -18,7 +18,7 @@ const useCookieToken = (key, defaultValue = null) => {
     (value) => {
       try {
         setStoredCookie(value);
-        document.cookie = `${key}=${value}`;
+        document.cookie = `${key}=${value}; path=/`;
       } catch (error) {
         console.error(error);
       }
