@@ -107,7 +107,7 @@ function Sidebar({ open, onClose }) {
         {/* eslint-disable-next-line no-nested-ternary */}
         {!user ? (
           <ContentWrapper>로그인 후 즐겨찾기를 등록해보세요.</ContentWrapper>
-        ) : user && userFavorites.length === 0 ? (
+        ) : userFavorites.length === 0 ? (
           <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
         ) : (
           userFavorites.map((item) => {
