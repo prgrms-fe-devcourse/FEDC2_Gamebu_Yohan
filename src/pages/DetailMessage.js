@@ -7,6 +7,8 @@ import useInterval from '@hooks/useInterval';
 import useCheckAuth from '@hooks/useCheckAuth';
 import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
 
 const MessageContainer = styled.div`
   & {
@@ -85,11 +87,23 @@ const Container = styled.div`
   height: 100vh;
   width: 100%;
   display: grid;
-  grid-template-rows: 1fr 2rem;
+  grid-template-rows: 1fr 3rem;
 `;
+
+const Form = styled.form`
+  display: flex;
+  padding: 0 2rem 0.5rem 2rem;
+  gap: 1rem;
+`;
+
+const BottomDiv = styled.div`
+  height: 1px;
+`;
+
 function DetailMessage() {
   const [messageList, setMessageList] = useState([]);
   const inputRef = useRef();
+  const bottomRef = useRef();
   const { user } = useValueContext();
   const { userId } = useParams();
   const [token] = useCookieToken(GAMEBU_TOKEN);
@@ -106,20 +120,24 @@ function DetailMessage() {
 
   const handleSubmitMessage = async (e) => {
     e.preventDefault();
+    const input = inputRef.current.querySelector('input');
     await postMessage({
       method: 'POST',
       data: {
-        message: inputRef.current.value,
+        message: input.value,
         receiver: userId,
       },
     });
-    inputRef.current.value = '';
+    input.value = '';
     keepInterval();
+    bottomRef.current.scrollIntoView();
   };
 
   useEffect(() => {
-    inputRef.current.scrollIntoView();
-  }, [messageList]);
+    setTimeout(() => {
+      bottomRef.current.scrollIntoView();
+    }, 100);
+  }, []);
 
   return (
     <Container>
@@ -134,11 +152,14 @@ function DetailMessage() {
               );
             })
           : '아직 대화가 없어요'}
+        <BottomDiv ref={bottomRef}>&nbsp;</BottomDiv>
       </MessageContainer>
-      <form onSubmit={handleSubmitMessage}>
-        <input ref={inputRef} />
-        <button type="submit">전송</button>
-      </form>
+      <Form onSubmit={handleSubmitMessage}>
+        <Input ref={inputRef} fullWidth />
+        <Button type="submit" variant="outlined">
+          전송
+        </Button>
+      </Form>
     </Container>
   );
 }
