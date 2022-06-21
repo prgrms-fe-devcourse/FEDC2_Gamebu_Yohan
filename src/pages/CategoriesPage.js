@@ -48,6 +48,8 @@ function CategoriesPage() {
   useEffect(() => {
     if (user && user.username) {
       setUserFavorites(JSON.parse(user.username));
+    } else {
+      setUserFavorites([]);
     }
   }, [user]);
 
