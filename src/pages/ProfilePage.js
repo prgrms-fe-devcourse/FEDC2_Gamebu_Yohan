@@ -5,12 +5,14 @@ import Thumbnail from '@components/Thumbnail';
 import useValueContext from '@hooks/useValueContext';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import EditFullNameModal from '@components/EditFullNameModal';
 import { getUserInfo } from '@utils/user';
 import { CATEGORIES } from '@utils/constants';
 import useOurSnackbar from '@hooks/useOurSnackbar';
+import SendIcon from '@mui/icons-material/Send';
+import LoginModal from '@components/LoginModal';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -63,6 +65,12 @@ const Span = styled.span`
 `;
 
 const EditIconRight = styled(EditIcon)`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+`;
+
+const SendIconRight = styled(SendIcon)`
   position: absolute;
   right: 0;
   bottom: 0;
@@ -123,7 +131,9 @@ function ProfilePage() {
   const { userId } = useParams();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetUser, setTargetUser] = useState(null);
+  const [loginModalVisbile, setLoginModalVisible] = useState(false);
   const renderSnackbar = useOurSnackbar();
+  const navigate = useNavigate();
 
   const handleClickEditIcon = useCallback(() => {
     setModalVisible(true);
@@ -131,6 +141,10 @@ function ProfilePage() {
 
   const handleCloseModal = useCallback(() => {
     setModalVisible(false);
+  }, []);
+
+  const handleCloseLoginModal = useCallback(() => {
+    setLoginModalVisible(false);
   }, []);
 
   useEffect(() => {
@@ -156,7 +170,17 @@ function ProfilePage() {
         onError={() => renderSnackbar('이름 변경', false)}
       />
     </>
-  ) : null;
+  ) : (
+    <SendIconRight
+      onClick={() => {
+        if (user) {
+          navigate(`/message/${targetUser._id}`);
+          return;
+        }
+        setLoginModalVisible(true);
+      }}
+    />
+  );
 
   return (
     <ContentWrapper>
@@ -179,8 +203,11 @@ function ProfilePage() {
         </UserFullNameWrapper>
         <hr />
         <UserMenuWrapper>
-          <UserMenu>팔로잉&nbsp;{user?.following?.length || 0}</UserMenu>
-          <UserMenu>팔로우&nbsp;{user?.followers?.length || 0}</UserMenu>
+          <UserMenu>작성한 글&nbsp;{targetUser?.posts?.length || 0}</UserMenu>
+          <UserMenu>
+            작성한 댓글&nbsp;{targetUser?.comments?.length || 0}
+          </UserMenu>
+          <UserMenu>좋아요한 글&nbsp;{targetUser?.likes?.length || 0}</UserMenu>
         </UserMenuWrapper>
       </ProfileMenuWrapper>
       {/* FIXME 확실한 카드의 형태가 정해지면 수정 */}
@@ -203,6 +230,10 @@ function ProfilePage() {
           );
         })}
       </MyPostContainer>
+      <LoginModal
+        visible={loginModalVisbile}
+        handleCloseModal={handleCloseLoginModal}
+      />
     </ContentWrapper>
   );
 }
