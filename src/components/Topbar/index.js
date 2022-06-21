@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import styled from '@emotion/styled';
+import ClickAwayPopper from '@components/ClickAwayPopper';
 import Sidebar from './Sidebar';
 
 const GrowBlank = styled.div`
@@ -34,9 +35,28 @@ function Topbar() {
             <MenuIcon />
           </IconButton>
           <GrowBlank />
-          <IconButton color="inherit">
-            <NotificationsNoneIcon />
-          </IconButton>
+          <ClickAwayPopper
+            id="alarm-popper"
+            placement="auto-end"
+            contentProps={{
+              style: {
+                width: 200,
+                height: 180,
+                backgroundColor: 'white',
+                borderRadius: 8,
+                border: '1px solid black',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+            }}
+          >
+            <IconButton color="inherit">
+              <NotificationsNoneIcon />
+            </IconButton>
+            <div>POP!!</div>
+            <div>POP!!</div>
+          </ClickAwayPopper>
         </Toolbar>
       </AppBar>
       <Sidebar open={open} onClose={handleDrawerClose} />

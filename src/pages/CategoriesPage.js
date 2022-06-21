@@ -1,40 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ContextProvider from '@contexts/ContextProvider';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
-import { CATEGORIES, CHANNELS } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
-import { authFetch } from '@utils/fetch';
 import useActionContext from '@hooks/useActionContext';
-import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
-import {
-  GameIcon,
-  GameImage,
-  GameTitle,
-  MessageTitle,
-} from '@components/Categories';
+import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
+import { authFetch } from '@utils/fetch';
+import { MessageTitle } from '@components/Categories';
+import { COLOR_MAIN } from '@utils/color';
+import Toast from '@components/Toast';
+import CategoriItem from '@components/CategoryItem';
 
-const GameItem = styled.div`
+const CategoriesPageContainer = styled.div`
   position: relative;
-  width: 100%;
-  height: 100px;
-  border: 1px solid ${COLOR_MAIN};
-  border-radius: 0.4rem;
-  display: grid;
-  overflow: hidden;
-  grid-template-rows: repeat(2, 1fr);
 `;
 
 const CategoriesContainer = styled.div`
   width: 100%;
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  margin: 1rem 0;
 `;
 
 const MessageContainer = styled.div`
@@ -45,17 +34,26 @@ const MessageContainer = styled.div`
 `;
 
 function CategoriesPage() {
-  const { user } = useValueContext();
+  const { user, isLogin } = useValueContext();
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
-  const [channels] = useState(CHANNELS);
-  const [images] = useState({
-    '62a7367f5517e27ffcab3bcb': maple,
-    '62a736925517e27ffcab3bcf': lol,
-    '62a736a15517e27ffcab3bd5': battleground,
-    '62a818db5517e27ffcab3ce2': lostark,
-    '62a818e85517e27ffcab3ce6': overwatch,
-  });
+  const [toastState, setToastState] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const unlikes = useMemo(() => {
+    if (!Array.isArray(CHANNELS)) return [];
+    if (!Array.isArray(userFavorites)) return CHANNELS;
+    return CHANNELS.filter((channel) => !userFavorites.includes(channel.id));
+  }, [userFavorites]);
+  const handleToastState = useCallback((message) => {
+    setToastMessage(message);
+    setToastState(true);
+  }, []);
+  useEffect(() => {
+    if (toastState) {
+      setTimeout(() => setToastState(false), 2000);
+    }
+  }, [toastState]);
 
   useEffect(() => {
     if (user && user.username) {
@@ -66,119 +64,107 @@ function CategoriesPage() {
   const updateFavorites = useCallback(
     async (e, id, name) => {
       e.preventDefault();
-      let likes = [];
-      if (user.username) {
-        likes = JSON.parse(user.username);
-      }
 
-      if (likes.includes(id)) {
-        alert('이미 추가된 채널입니다.');
-        // TODO : Toast 또는 다른 UI로직
-        return;
-      }
-
-      likes.push(id);
-      likes.sort();
-      setUserFavorites([...userFavorites, likes]);
-
-      alert(`즐겨찾기에 ${name} 채널을 추가`);
+      const newFavorites = user.username ? JSON.parse(user.username) : [];
+      newFavorites.push(id);
+      newFavorites.sort();
+      setUserFavorites(newFavorites);
+      handleToastState(`즐겨찾기에 ${name} 채널을 추가합니다.`);
 
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
           fullName: user.fullName,
-          username: JSON.stringify(likes),
+          username: JSON.stringify(newFavorites),
         },
       });
       favorites(res);
     },
-    [userFavorites, favorites, user]
+    [favorites, user, handleToastState]
   );
 
   const deleteFavorites = useCallback(
     async (e, id) => {
       e.preventDefault();
 
-      alert(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제`);
-      const newFavorites = userFavorites.filter(
-        (item) => item !== id && item !== ''
-      );
-      const favoritesData =
-        newFavorites.length < 1
-          ? JSON.stringify([''])
-          : JSON.stringify(newFavorites);
-
+      const newFavorites = userFavorites.filter((item) => item !== id);
       setUserFavorites(newFavorites);
+
+      handleToastState(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제합니다.`);
+
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
-          username: favoritesData,
+          fullName: user.fullName,
+          username: JSON.stringify(newFavorites),
         },
       });
       favorites(res);
     },
-    [userFavorites, favorites]
+    [userFavorites, handleToastState, user, favorites]
   );
 
   return (
-    <>
-      <ContextProvider>
-        <Header strong>즐겨찾기 목록</Header>
-        <Divider />
-        {userFavorites.length === 1 && userFavorites[0] === '' ? (
-          <MessageContainer>
-            <MessageTitle color={COLOR_MAIN} weight={400}>
-              즐겨찾기를 등록해보세요.
-            </MessageTitle>
-          </MessageContainer>
-        ) : (
-          <CategoriesContainer>
-            {userFavorites.map((item) => {
-              if (item === '') return;
-              return (
+    <CategoriesPageContainer>
+      {toastState && (
+        <Toast>
+          <span>{toastMessage}</span>
+        </Toast>
+      )}
+      {isLogin && (
+        <ContextProvider>
+          <Header strong>즐겨찾기 목록</Header>
+          <Divider />
+          {userFavorites.length === 0 ? (
+            <MessageContainer>
+              <MessageTitle color={COLOR_MAIN} weight={400}>
+                즐겨찾기를 등록해보세요.
+              </MessageTitle>
+            </MessageContainer>
+          ) : (
+            <CategoriesContainer>
+              {userFavorites.map((item) => (
                 <Link to={`/channel/${item}`} key={`${item}`}>
-                  <GameItem>
-                    <GameImage src={images[item]} />
-                    <GameIcon onClick={(e) => deleteFavorites(e, item)}>
-                      <StarBorderIcon fontSize="small" sx={{ color: 'blue' }} />
-                    </GameIcon>
-                  </GameItem>
-                  <GameTitle
-                    color={COLOR_SIGNATURE}
-                    weight={700}
-                  >{`${CATEGORIES[item]}`}</GameTitle>
+                  <CategoriItem
+                    img={IMAGES[item]}
+                    title={CATEGORIES[item]}
+                    icon
+                    onIconClick={(e) => deleteFavorites(e, item)}
+                  />
                 </Link>
-              );
-            })}
-          </CategoriesContainer>
-        )}
-      </ContextProvider>
+              ))}
+            </CategoriesContainer>
+          )}
+        </ContextProvider>
+      )}
       <Header strong>게임 카테고리</Header>
       <Divider />
-      <CategoriesContainer>
-        {channels &&
-          channels.map((channel) => {
+      {unlikes.length === 0 ? (
+        <MessageContainer>
+          <MessageTitle color={COLOR_MAIN} weight={400}>
+            모든 게임을 좋아 하는군요!
+            <br /> 다음 업데이트를 기다려주세요~
+          </MessageTitle>
+        </MessageContainer>
+      ) : (
+        <CategoriesContainer>
+          {unlikes.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
-                <GameItem>
-                  <GameImage src={images[channel.id]} />
-                  <GameIcon
-                    onClick={(e) =>
-                      updateFavorites(e, channel.id, channel.name)
-                    }
-                  >
-                    <StarBorderIcon fontSize="small" sx={{ color: 'red' }} />
-                  </GameIcon>
-                </GameItem>
-                <GameTitle
-                  color={COLOR_SIGNATURE}
-                  weight={700}
-                >{`${channel.name}`}</GameTitle>
+                <CategoriItem
+                  img={IMAGES[channel.id]}
+                  title={channel.name}
+                  icon={Boolean(user)}
+                  onIconClick={(e) =>
+                    updateFavorites(e, channel.id, channel.name)
+                  }
+                />
               </Link>
             );
           })}
-      </CategoriesContainer>
-    </>
+        </CategoriesContainer>
+      )}
+    </CategoriesPageContainer>
   );
 }
 

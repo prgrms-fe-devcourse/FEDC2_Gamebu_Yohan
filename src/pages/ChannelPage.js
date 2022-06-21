@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetch, authFetch } from '@utils/fetch';
 import styled from '@emotion/styled';
@@ -66,7 +66,7 @@ const LinkButton = styled.button`
 `;
 
 function ChannelPage() {
-  const { user } = useValueContext();
+  const { user, isLogin } = useValueContext();
   const userId = user && user._id; // 전역스토어에서 가져옴
   const { favorites } = useActionContext();
   const navigate = useNavigate();
@@ -76,7 +76,6 @@ function ChannelPage() {
   const [isPopular, setIsPopular] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const DONG_EON_ID = '629f07fa7e01ad1cb7250131';
   // const { channelId } = useParams('');
   const channelId = '62a817a85517e27ffcab3cce';
   const infiniteChannelId = '62a97c1c6c77714531010109';
@@ -107,7 +106,7 @@ function ChannelPage() {
   }, [user]);
 
   // 사용자 정보 수정 api
-  const modifyUserInfo = async (channelIdInfo) => {
+  const modifyUserInfo = async () => {
     await authFetch('settings/update-user', {
       method: 'PUT',
       data: {
@@ -205,7 +204,9 @@ function ChannelPage() {
   };
 
   const goToWrite = () => {
-    navigate('/posts/write', { state: { channelId } });
+    if (isLogin)
+      return navigate('/posts/write', { state: { channelId, postId: false } });
+    navigate('/');
   };
 
   return (

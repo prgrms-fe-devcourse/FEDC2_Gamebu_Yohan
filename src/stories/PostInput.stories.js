@@ -1,4 +1,4 @@
-import TextInput from '@components/TextInput';
+import TextInput from '@components/PostForm/TextInput';
 
 export default {
   title: 'Component/TextInput',
