@@ -1,15 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Collapse from '@mui/material/Collapse';
-import Alert from '@mui/material/Alert';
 import { COLOR_BG, COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import useForm from '@hooks/useForm';
 import GoBack from '@components/GoBack';
 import { regexId, regexName } from '@utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { signupAPI } from '@utils/user';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -79,17 +78,8 @@ const SignupButton = styled(Button)`
   }
 `;
 
-const SignupWarningAlert = styled(Alert)`
-  font-size: 0.75rem;
-  margin-top: 1rem;
-`;
-
 function SignupPage() {
-  const [warningAlertInfo, setWarningAlertInfo] = useState({
-    visible: false,
-    message: '',
-  });
-
+  const renderSnackbar = useOurSnackbar();
   const navigate = useNavigate();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
@@ -111,19 +101,13 @@ function SignupPage() {
       const isError = Boolean(response);
       if (isError) {
         if (response?.status === 400) {
-          setWarningAlertInfo({
-            visible: true,
-            message: '입력하신 아이디는 가입할 수 없습니다',
-          });
+          renderSnackbar('이미 존재하는 아이디입니다');
         } else {
-          setWarningAlertInfo({
-            visible: true,
-            message: '회원가입 요청 중 오류가 발생했습니다',
-          });
+          renderSnackbar('회원가입', false);
         }
         return;
       }
-
+      renderSnackbar('회원가입', true);
       navigate('/login');
     },
     validate: ({ id, name, password, passwordConfirm }) => {
@@ -146,21 +130,9 @@ function SignupPage() {
     },
   });
 
-  const handleClickAlert = useCallback(() => {
-    setWarningAlertInfo((prevWarningAlertInfo) => ({
-      ...prevWarningAlertInfo,
-      visible: false,
-    }));
-  }, []);
-
   return (
     <ContentWrapper>
       <GoBack />
-      <Collapse in={warningAlertInfo.visible}>
-        <SignupWarningAlert severity="warning" onClose={handleClickAlert}>
-          {warningAlertInfo.message}
-        </SignupWarningAlert>
-      </Collapse>
       <FlexGrowBox grow={1} />
       <SignupHeader>회원가입</SignupHeader>
       <FormWrapper>
