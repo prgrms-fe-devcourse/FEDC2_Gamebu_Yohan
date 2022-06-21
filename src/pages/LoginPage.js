@@ -1,9 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Collapse from '@mui/material/Collapse';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import { useNavigate, Link } from 'react-router-dom';
 import { COLOR_BG, COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
@@ -14,6 +12,7 @@ import useValueContext from '@hooks/useValueContext';
 import GoBack from '@components/GoBack';
 import { GAMEBU_TOKEN, regexId } from '@utils/constants';
 import { loginAPI } from '@utils/user';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -82,11 +81,6 @@ const LoginButton = styled(Button)`
   }
 `;
 
-const LoginWarningAlert = styled(Alert)`
-  font-size: 0.75rem;
-  margin-top: 1rem;
-`;
-
 const SignupLinkBox = styled(Box)`
   margin-top: 1rem;
   text-align: center;
@@ -99,15 +93,11 @@ const SignupLink = styled(Link)`
 `;
 
 function LoginPage() {
-  const [warningAlertInfo, setWarningAlertInfo] = useState({
-    visible: false,
-    message: '',
-  });
-
   const navigate = useNavigate();
   const [, setToken] = useCookieToken(GAMEBU_TOKEN);
   const { login } = useActionContext();
   const { isLogin } = useValueContext();
+  const renderSnackbar = useOurSnackbar();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -125,20 +115,15 @@ function LoginPage() {
       const isError = Boolean(response);
       if (isError) {
         if (response?.status === 400) {
-          setWarningAlertInfo({
-            visible: true,
-            message: '아이디 또는 비밀번호를 잘못 입력했습니다',
-          });
+          renderSnackbar('아이디나 비밀번호가 다릅니다');
         } else {
-          setWarningAlertInfo({
-            visible: true,
-            message: '로그인 요청 중 오류가 발생했습니다',
-          });
+          renderSnackbar('로그인', false);
         }
         return;
       }
 
       setToken(token);
+      renderSnackbar('로그인', true);
       login(user);
     },
     validate: ({ id, password }) => {
@@ -152,13 +137,6 @@ function LoginPage() {
     },
   });
 
-  const handleClickAlert = useCallback(() => {
-    setWarningAlertInfo((prevWarningAlertInfo) => ({
-      ...prevWarningAlertInfo,
-      visible: false,
-    }));
-  }, []);
-
   useEffect(() => {
     if (isLogin) {
       navigate('/');
@@ -168,11 +146,6 @@ function LoginPage() {
   return (
     <ContentWrapper>
       <GoBack />
-      <Collapse in={warningAlertInfo.visible}>
-        <LoginWarningAlert severity="warning" onClose={handleClickAlert}>
-          {warningAlertInfo.message}
-        </LoginWarningAlert>
-      </Collapse>
       <FlexGrowBox grow={1} />
       <LoginHeader>Login</LoginHeader>
       <FormWrapper>
