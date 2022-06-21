@@ -13,19 +13,22 @@ const useOurSnackbar = () => {
   const { ref } = useValueContext();
 
   const renderSnackbar = (message, isSuccess) =>
-    enqueueSnackbar(message, {
-      variant: isSuccess ? 'success' : 'warning',
-      anchorOrigin: {
-        vertical: 'top',
-        horizontal: 'center',
-      },
-      action: (key) => (
-        <WhiteColorButton onClick={() => ref.current.closeSnackbar(key)}>
-          닫기
-        </WhiteColorButton>
-      ),
-      autoHideDuration: 3000,
-    });
+    enqueueSnackbar(
+      `${message}에 ${isSuccess ? '성공했습니다!' : '실패했습니다...'}`,
+      {
+        variant: isSuccess ? 'success' : 'warning',
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        action: (key) => (
+          <WhiteColorButton onClick={() => ref.current.closeSnackbar(key)}>
+            닫기
+          </WhiteColorButton>
+        ),
+        autoHideDuration: 3000,
+      }
+    );
 
   return renderSnackbar;
 };
