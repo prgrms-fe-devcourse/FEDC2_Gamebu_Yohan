@@ -19,6 +19,8 @@ import SearchAllPage from '@pages/SearchAllPage';
 import NotFoundPage from '@pages/NotFoundPage';
 import { SnackbarProvider } from 'notistack';
 import useActionContext from '@hooks/useActionContext';
+import MessagePage from '@pages/MessagePage';
+import DetailMessage from '@pages/DetailMessage';
 
 function App() {
   const notistackRef = useRef();
@@ -47,6 +49,8 @@ function App() {
             <Route path="posts/write/:channelId" element={<PostWritePage />} />
             <Route path="posts/edit/:postId" element={<PostEditPage />} />
             <Route path="posts/details/:postId" element={<PostDetailPage />} />
+            <Route path="message" element={<MessagePage />} />
+            <Route path="message/:userId" element={<DetailMessage />} />
           </Route>
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
