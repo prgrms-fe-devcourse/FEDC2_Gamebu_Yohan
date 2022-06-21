@@ -20,7 +20,14 @@ const HelperStyle = {
   color: red[300],
 };
 
-export default function TagList({ tags, simple, itemsx, chipsx, ...props }) {
+export default function TagList({
+  tags,
+  simple,
+  itemsx,
+  chipsx,
+  avatarsx,
+  ...props
+}) {
   const BodyStyle = {
     ...DefaultBodyStyle,
     ...props.sx,
@@ -86,6 +93,7 @@ TagList.propTypes = {
   sx: PropTypes.object,
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
+  avatarsx: PropTypes.object,
 };
 
 TagList.defaultProps = {
@@ -93,4 +101,5 @@ TagList.defaultProps = {
   sx: {},
   itemsx: {},
   chipsx: {},
+  avatarsx: {},
 };
