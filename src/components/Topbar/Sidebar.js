@@ -9,7 +9,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import GamesIcon from '@mui/icons-material/Games';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
@@ -21,6 +20,7 @@ import useValueContext from '@hooks/useValueContext';
 import Header from '@components/Header';
 import Thumbnail from '@components/Thumbnail';
 import useActionContext from '@hooks/useActionContext';
+import IconImages from '@assets/ChannelIcons';
 
 const DrawerHeader = styled.div`
   display: 'flex';
@@ -55,6 +55,11 @@ const ProfileWrapper = styled.div`
 
 const UserNameWrapper = styled.div`
   padding: 1rem;
+`;
+
+const GameIcon = styled.img`
+  width: 24px;
+  height: 24px;
 `;
 
 function Sidebar({ open, onClose }) {
@@ -144,7 +149,7 @@ function Sidebar({ open, onClose }) {
             <Link to={`channel/${item.id}`}>
               <ListItemButton>
                 <ListItemIcon>
-                  <GamesIcon />
+                  <GameIcon src={`${IconImages[item.id]}`} />
                 </ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItemButton>
