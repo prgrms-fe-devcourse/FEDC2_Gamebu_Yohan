@@ -1,14 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import styled from '@emotion/styled';
 import { getMyMessageList } from '@utils/message';
 import useValueContext from '@hooks/useValueContext';
 import { useNavigate } from 'react-router-dom';
 import useInterval from '@hooks/useInterval';
 import Card from '@components/Card';
-
-const P = styled.p`
-  margin-bottom: 1rem;
-`;
 
 function MessagePage() {
   const [myMessageList, setMyMessageList] = useState([]);
@@ -23,12 +18,9 @@ function MessagePage() {
   useInterval(handleClickGetMessageButton, 3000);
 
   return (
-    <>
-      <P>Message</P>
-      <div>
-        {myMessageList.length &&
-          user &&
-          myMessageList.map(({ message, receiver, sender }) => {
+    <div>
+      {myMessageList.length && user
+        ? myMessageList.map(({ message, receiver, sender }) => {
             const you = receiver._id !== user._id ? receiver : sender;
             const { _id } = you;
             return (
@@ -36,9 +28,9 @@ function MessagePage() {
                 {{ ...you, email: message }}
               </Card.User>
             );
-          })}
-      </div>
-    </>
+          })
+        : '아직 대화한 상대가 없어요'}
+    </div>
   );
 }
 

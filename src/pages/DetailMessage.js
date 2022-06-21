@@ -86,9 +86,9 @@ function DetailMessage() {
 
   const keepInterval = useInterval(handleClickGetMessageButton, 1500);
 
-  const handleSubmitMessage = (e) => {
+  const handleSubmitMessage = async (e) => {
     e.preventDefault();
-    postMessage({
+    await postMessage({
       method: 'POST',
       data: {
         message: inputRef.current.value,
@@ -102,16 +102,16 @@ function DetailMessage() {
   return (
     <>
       <MessageContainer className="chat">
-        {messageList.length &&
-          user &&
-          messageList.map(({ message, sender, _id }) => {
-            const isMe = sender._id === user._id;
-            return (
-              <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
-                {message}
-              </div>
-            );
-          })}
+        {messageList.length && user
+          ? messageList.map(({ message, sender, _id }) => {
+              const isMe = sender._id === user._id;
+              return (
+                <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
+                  {message}
+                </div>
+              );
+            })
+          : '아직 대화가 없어요'}
       </MessageContainer>
       <form onSubmit={handleSubmitMessage}>
         <input ref={inputRef} />
