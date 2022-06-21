@@ -18,6 +18,7 @@ import LoginModal from '@components/LoginModal';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { IconButton } from '@mui/material';
 import { createLikes, deleteLikes } from '@utils/likes';
+import { convertDate } from '@utils/time';
 
 const PageContainer = styled.div`
   box-sizing: border-box;
@@ -90,13 +91,6 @@ const LikeIcon = styled(FavoriteRoundedIcon)`
     color: ${({ like }) => like};
   }
 `;
-
-const convertDate = (dateString) => {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-};
 
 function PostDetailPage() {
   const renderSnackbar = useOurSnackbar();
