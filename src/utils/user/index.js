@@ -6,6 +6,7 @@ const endpoints = {
   authUser: 'auth-user',
   changeMyInfo: 'settings/update-user',
   getUserInfo: (userId) => `users/${userId}`,
+  getAllUserList: 'users/get-users',
 };
 
 export const loginAPI = (option) => {
@@ -26,4 +27,8 @@ export const changeMyInfoAPI = (option) => {
 
 export const getUserInfo = (userId) => {
   return authFetch(endpoints.getUserInfo(userId));
+};
+
+export const getAllUserList = () => {
+  return fetch(endpoints.getAllUserList);
 };
