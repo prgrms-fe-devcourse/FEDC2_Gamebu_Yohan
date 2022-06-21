@@ -4,6 +4,7 @@ import { authFetch } from '@utils/fetch';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useForm from '@hooks/useForm';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import MultiLineTextInput from './MultiLineTextInput';
@@ -14,7 +15,6 @@ const Tags = [
   '레이드',
   'FPS',
   '듀오',
-  'AOS',
   'RPG',
   '딜러',
   '힐러',
@@ -28,6 +28,7 @@ export default function PostForm({ channelId, postId, post }) {
   const navigateTo = postId
     ? `/posts/details/${postId}`
     : `/channel/${channelId}`;
+  const renderSnackbar = useOurSnackbar();
   useEffect(() => {
     if (isComplete) {
       navigate(navigateTo);
@@ -58,8 +59,10 @@ export default function PostForm({ channelId, postId, post }) {
       const isError = Boolean(response?.response);
 
       if (isError) {
+        renderSnackbar(`${postId ? '글 수정' : '글 작성'}`, false);
         throw new Error('Fetch 오류');
       } else {
+        renderSnackbar(`${postId ? '글 수정' : '글 작성'}`, true);
         setComplete(true);
       }
     },

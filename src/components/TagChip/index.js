@@ -1,7 +1,7 @@
 import { Chip, Avatar, ListItem } from '@mui/material';
 import PropTypes from 'prop-types';
 import { blue } from '@mui/material/colors';
-import tagdata from './tagdata';
+import TagAvatar from '@assets/TagAvatars';
 
 const DefaultItemStyle = {
   width: 'auto',
@@ -35,8 +35,6 @@ export default function TagChip({
     '& .MuiChip-avatar': {},
   };
 
-  const image = tagdata[label] ? tagdata[label].image : '';
-
   return (
     <ListItem label={label} name={label} index={index} sx={{ ...ItemStyle }}>
       {simple ? (
@@ -51,7 +49,7 @@ export default function TagChip({
         <Chip
           label={simple ? `#${label}` : label}
           name={label}
-          avatar={<Avatar alt={label} src={image} />}
+          avatar={<Avatar alt={label} src={TagAvatar[label]} sx={avatarsx} />}
           variant="outlined"
           size={simple ? 'small' : 'medium'}
           sx={ChipStyle}
