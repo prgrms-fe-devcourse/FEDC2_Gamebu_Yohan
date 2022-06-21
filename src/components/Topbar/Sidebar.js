@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import StarRateIcon from '@mui/icons-material/StarRate';
-import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { ChevronLeft, StarRate, Login, Logout } from '@mui/icons-material';
+import {
+  List,
+  ListItem,
+  Drawer,
+  IconButton,
+  Divider,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Button,
+} from '@mui/material';
 import { Link, useLocation, Route, Navigate } from 'react-router-dom';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
@@ -92,7 +91,7 @@ function Sidebar({ open, onClose }) {
     <Drawer variant="temporary" open={open} onClose={onClose}>
       <DrawerHeader>
         <IconButton onClick={onClose}>
-          <ChevronLeftIcon />
+          <ChevronLeft />
           <Header>Gamebu</Header>
         </IconButton>
       </DrawerHeader>
@@ -131,7 +130,7 @@ function Sidebar({ open, onClose }) {
                 <Link to={`channel/${item}`}>
                   <ListItemButton>
                     <ListItemIcon>
-                      <StarRateIcon sx={{ color: '#f2f20d' }} />
+                      <StarRate sx={{ color: '#f2f20d' }} />
                     </ListItemIcon>
                     <ListItemText primary={CATEGORIES[item]} />
                   </ListItemButton>
@@ -164,7 +163,7 @@ function Sidebar({ open, onClose }) {
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
             <Link to="/login">
-              <LoginIcon sx={{ fontSize: 'small', mr: 1 }} />
+              <Login sx={{ fontSize: 'small', mr: 1 }} />
               로그인
             </Link>
           </Button>
@@ -178,7 +177,7 @@ function Sidebar({ open, onClose }) {
             variant="contained"
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
-            <LogoutIcon sx={{ fontSize: 'small', mr: 1 }} />
+            <Logout sx={{ fontSize: 'small', mr: 1 }} />
             로그아웃
           </Button>
         )}
