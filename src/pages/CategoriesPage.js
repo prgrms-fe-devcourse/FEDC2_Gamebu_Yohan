@@ -10,8 +10,8 @@ import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
 import { authFetch } from '@utils/fetch';
 import { MessageTitle } from '@components/Categories';
 import { COLOR_MAIN } from '@utils/color';
-import Toast from '@components/Toast';
-import CategoriItem from '@components/CategoryItem';
+import CategoryItem from '@components/CategoryItem';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const CategoriesPageContainer = styled.div`
   position: relative;
@@ -37,27 +37,19 @@ function CategoriesPage() {
   const { user, isLogin } = useValueContext();
   const { favorites } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
-  const [toastState, setToastState] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const renderSnackbar = useOurSnackbar();
 
   const unlikes = useMemo(() => {
     if (!Array.isArray(CHANNELS)) return [];
     if (!Array.isArray(userFavorites)) return CHANNELS;
     return CHANNELS.filter((channel) => !userFavorites.includes(channel.id));
   }, [userFavorites]);
-  const handleToastState = useCallback((message) => {
-    setToastMessage(message);
-    setToastState(true);
-  }, []);
-  useEffect(() => {
-    if (toastState) {
-      setTimeout(() => setToastState(false), 2000);
-    }
-  }, [toastState]);
 
   useEffect(() => {
     if (user && user.username) {
       setUserFavorites(JSON.parse(user.username));
+    } else {
+      setUserFavorites([]);
     }
   }, [user]);
 
@@ -69,7 +61,6 @@ function CategoriesPage() {
       newFavorites.push(id);
       newFavorites.sort();
       setUserFavorites(newFavorites);
-      handleToastState(`즐겨찾기에 ${name} 채널을 추가합니다.`);
 
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
@@ -78,9 +69,14 @@ function CategoriesPage() {
           username: JSON.stringify(newFavorites),
         },
       });
+
+      let isSuccess = false;
+      if (res) isSuccess = true;
+      renderSnackbar(`${name} 채널을 즐겨찾기 추가`, isSuccess);
+
       favorites(res);
     },
-    [favorites, user, handleToastState]
+    [favorites, user, renderSnackbar]
   );
 
   const deleteFavorites = useCallback(
@@ -90,8 +86,6 @@ function CategoriesPage() {
       const newFavorites = userFavorites.filter((item) => item !== id);
       setUserFavorites(newFavorites);
 
-      handleToastState(`즐겨찾기에서 ${CATEGORIES[id]} 채널을 삭제합니다.`);
-
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
         data: {
@@ -99,18 +93,18 @@ function CategoriesPage() {
           username: JSON.stringify(newFavorites),
         },
       });
+
+      let isSuccess = false;
+      if (res) isSuccess = true;
+      renderSnackbar(`${CATEGORIES[id]} 채널을 즐겨찾기 삭제`, isSuccess);
+
       favorites(res);
     },
-    [userFavorites, handleToastState, user, favorites]
+    [userFavorites, renderSnackbar, user, favorites]
   );
 
   return (
     <CategoriesPageContainer>
-      {toastState && (
-        <Toast>
-          <span>{toastMessage}</span>
-        </Toast>
-      )}
       {isLogin && (
         <ContextProvider>
           <Header strong>즐겨찾기 목록</Header>
@@ -125,7 +119,7 @@ function CategoriesPage() {
             <CategoriesContainer>
               {userFavorites.map((item) => (
                 <Link to={`/channel/${item}`} key={`${item}`}>
-                  <CategoriItem
+                  <CategoryItem
                     img={IMAGES[item]}
                     title={CATEGORIES[item]}
                     icon
@@ -151,7 +145,7 @@ function CategoriesPage() {
           {unlikes.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
-                <CategoriItem
+                <CategoryItem
                   img={IMAGES[channel.id]}
                   title={channel.name}
                   icon={Boolean(user)}
