@@ -9,6 +9,7 @@ import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
+import GoBack from '@components/GoBack';
 
 const MessageContainer = styled.div`
   & {
@@ -19,7 +20,7 @@ const MessageContainer = styled.div`
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
+    padding: 0 2rem;
     max-width: 500px;
     width: 100%;
     height: calc(100% - 2rem);
@@ -87,7 +88,14 @@ const Container = styled.div`
   height: 100vh;
   width: 100%;
   display: grid;
-  grid-template-rows: 1fr 3rem;
+  grid-template-rows: 3rem 1fr 3rem;
+`;
+
+const GoBackWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 1rem 0 0 1rem;
 `;
 
 const Form = styled.form`
@@ -141,6 +149,9 @@ function DetailMessage() {
 
   return (
     <Container>
+      <GoBackWrapper>
+        <GoBack destination="message" />
+      </GoBackWrapper>
       <MessageContainer className="chat">
         {messageList.length && user
           ? messageList.map(({ message, sender, _id }) => {
