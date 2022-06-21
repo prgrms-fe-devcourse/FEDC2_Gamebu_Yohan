@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetch, authFetch } from '@utils/fetch';
 import styled from '@emotion/styled';
-import { COLOR_BG } from '@utils/color';
+import { COLOR_SIGNATURE } from '@utils/color';
 import Divider from '@components/Divider';
-import ChannelImageContainer from '@components/Channels/ChannelImageContainer';
+import ChannelImage from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
 import channelImageObject from '@assets/ChannelImages/ChannelImageFiles';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import StarIcon from '@mui/icons-material/Star';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import PostCardContainer from 'react-infinite-scroll-component';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import useValueContext from '@hooks/useValueContext';
 import useActionContext from '@hooks/useActionContext';
+import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
+import { IconButton } from '@mui/material';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -20,19 +23,14 @@ const ChannelContainer = styled.div`
   height: 42rem;
 `;
 
-const FavoriteIcon = styled(StarIcon)`
-  color: #cddc39;
-  font-size: 32px;
+const IconWrapper = styled(IconButton)`
   position: absolute;
-  right: 2rem;
-  top: 6rem;
-`;
-const NotFavoriteIcon = styled(StarOutlineIcon)`
-  font-size: 32px;
-  position: absolute;
-  right: 2rem;
-  top: 6rem;
-  color: #cddc39;
+  right: 0;
+  top: 0;
+  & .MuiSvgIcon-root {
+    color: #c89f23;
+    font-size: 32px;
+  }
 `;
 
 const SortBox = styled.div`
@@ -50,227 +48,184 @@ const Text = styled.span`
   font-weight: ${(props) => (props.isBold ? 'bold' : 'normal')};
 `;
 
-const LinkButtonContainer = styled.div`
-  width: 100%;
+const LinkButton = styled(IconButton)`
+  width: 4rem;
+  height: 4rem;
+  position: fixed;
+  bottom: 5rem;
+  right: 2rem;
+  border-radius: 50%;
+  background-color: ${COLOR_SIGNATURE};
+  & .MuiSvgIcon-root {
+    color: white;
+  }
 `;
 
-const LinkButton = styled.button`
-  width: 4rem;
-  height: 1.5rem;
-  position: fixed;
-  bottom: 4rem;
-  left: 42%;
-  border-radius: 0.5rem;
-  border: 0.1rem solid black;
-  background-color: ${COLOR_BG};
+const ImageContainer = styled.div`
+  position: relative;
 `;
 
 function ChannelPage() {
+  const renderSnackbar = useOurSnackbar();
   const { user, isLogin } = useValueContext();
-  const userId = user && user._id; // 전역스토어에서 가져옴
-  const { favorites } = useActionContext();
+  const { favorites: setUserObject } = useActionContext();
   const navigate = useNavigate();
-  const [start, setStart] = useState(0);
+  const { channelId } = useParams('');
   const [channelData, setChannelData] = useState([]);
-  const [isNew, setIsNew] = useState(true);
-  const [isPopular, setIsPopular] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [order, setOrder] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // const { channelId } = useParams('');
-  const channelId = '62a817a85517e27ffcab3cce';
-  const infiniteChannelId = '62a97c1c6c77714531010109';
-  const tagTestChanneld = '62aa146171f64a5582899ae9';
-  const limit = 7;
+  const limit = 8;
 
-  const getChannelData = async () => {
-    const result = await fetch(
-      `posts/channel/${tagTestChanneld}?offset=${start}&limit=${limit}`
-    );
-    if (result.length > 0) {
-      setChannelData([...channelData, ...result]);
-      setStart(start + limit);
-    }
+  const latestOrder = useCallback(
+    (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
+    []
+  );
+  const popularityOrder = useCallback(
+    (a, b) => b.likes.length - a.likes.length,
+    []
+  );
+
+  const orderCompareFunc = {
+    true: latestOrder,
+    false: popularityOrder,
   };
-
-  // useEffect 시 채널을 즐겨찾기 해놓았는지 확인하는 로직
-  const findChannel = async () => {
-    const parsing = JSON.parse(user.username);
-    const found = parsing.find((id) => tagTestChanneld === id);
-    if (!found) return null;
-    setIsFavorite(true);
-  };
-
-  useEffect(() => {
-    getChannelData(); // 채널의 포스트 목록 조회 함수
-    user && findChannel(); // 채널 즐겨찾기 확인 함수
+  const favoriteList = useMemo(() => {
+    if (!user) return [];
+    return JSON.parse(user.username);
   }, [user]);
 
-  // 사용자 정보 수정 api
-  const modifyUserInfo = async () => {
-    await authFetch('settings/update-user', {
-      method: 'PUT',
-      data: {
-        fullName: 'EonDongKim',
-        username: JSON.stringify(['62aa146171f64a5582899ae9']),
+  const fetchChannelData = useCallback(async () => {
+    const result = await fetch(`posts/channel/${channelId}`, {
+      params: {
+        offset,
+        limit,
       },
     });
-  };
+    if (result.length > 0) {
+      setChannelData([...channelData, ...result]);
+      setOffset(offset + limit);
+    }
+  }, [channelData, channelId, offset]);
 
-  const favoriteClick = async (boolean) => {
-    if (!user) {
-      alert('로그인을 해야 사용할수 있는 기능입니다.');
+  const setFavoriteInfo = useCallback(async () => {
+    if (!isLogin) {
+      setIsFavorite(false);
       return;
     }
-    setIsFavorite(!isFavorite);
+    const isFavoriteChannel = favoriteList.includes(channelId);
+    setIsFavorite(isFavoriteChannel);
+  }, [channelId, favoriteList, isLogin]);
 
-    if (boolean) {
-      // 구독 취소 액션
-      // 사용자 정보 수정 api로 channelId 를 지운다
-      const modifiedChannelArray = JSON.parse(user.username).filter(
-        (id) => tagTestChanneld !== id // 채널이 있다면 지우기
-      );
-      const res = await authFetch('settings/update-user', {
-        method: 'PUT',
-        data: {
-          fullName: user.fullName,
-          username: JSON.stringify(modifiedChannelArray),
-        },
-      });
-      favorites(res);
+  useEffect(() => {
+    fetchChannelData();
+    setFavoriteInfo();
+  }, [fetchChannelData, setFavoriteInfo]);
+
+  const addFavorite = async () => {
+    const changedFavoriteList = [...favoriteList, channelId].sort();
+    const res = await authFetch('settings/update-user', {
+      method: 'PUT',
+      data: {
+        fullName: user.fullName,
+        username: JSON.stringify(changedFavoriteList),
+      },
+    });
+    setUserObject(res);
+  };
+
+  const cancelFavorite = async () => {
+    const changedFavoriteList = favoriteList.filter(
+      (favoriteId) => favoriteId !== channelId
+    );
+    const res = await authFetch('settings/update-user', {
+      method: 'PUT',
+      data: {
+        fullName: user.fullName,
+        username: JSON.stringify(changedFavoriteList),
+      },
+    });
+    setUserObject(res);
+  };
+
+  const handleFavoriteClick = () => {
+    if (favoriteList.includes(channelId)) {
+      cancelFavorite();
     } else {
-      const res = await authFetch('settings/update-user', {
-        method: 'PUT',
-        data: {
-          fullName: user.fullName,
-          username: JSON.stringify(
-            [...JSON.parse(user.username), tagTestChanneld].sort()
-          ),
-        },
-      });
-      favorites(res);
+      addFavorite();
     }
   };
 
-  const renderNewList = () => {
-    setIsPopular(false);
-    setIsNew(true);
-
-    const sortedChannelData = channelData.sort(
-      (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
-    );
-    setChannelData([...sortedChannelData]);
+  const handleOrderClick = () => {
+    setOrder((previous) => !previous);
+    const orderedPosts = channelData.sort(orderCompareFunc[order]);
+    setChannelData(orderedPosts);
   };
 
-  const renderPopularList = () => {
-    setIsNew(false);
-    setIsPopular(true);
-
-    const sortedChannelData = channelData.sort(
-      (a, b) => b.likes.length - a.likes.length
-    );
-    setChannelData([...sortedChannelData]);
-  };
-
-  const changeLikeCount = (bool, postId, likeId) => {
-    // 좋아요가 바뀌었을때 인기순을 바꿔주는 함수
-    if (bool) {
-      setChannelData([
-        ...channelData.map((item) => {
-          if (item._id === postId) {
-            return {
-              ...item,
-              likes: [
-                ...item.likes,
-                { _id: likeId, post: postId, user: userId },
-              ],
-            };
-          }
-          return item;
-        }),
-      ]);
-    } else {
-      setChannelData([
-        ...channelData.map((item) => {
-          if (item._id === postId) {
-            return {
-              ...item,
-              likes: [...item.likes.filter((i) => i.user !== userId)],
-            };
-          }
-          return item;
-        }),
-      ]);
-    }
-  };
-
-  const goToWrite = () => {
+  const handleWriteClick = () => {
     if (isLogin)
       return navigate(`/posts/write/${channelId}`, {
         state: { channelId, postId: false },
       });
-    navigate('/');
+    // modal
   };
 
   return (
     <>
       <ChannelContainer>
-        <ChannelImageContainer src={channelImageObject[channelId]} />
-        {isFavorite ? (
-          <FavoriteIcon
-            fontSize="inherit"
-            color="inherit"
-            onClick={() => favoriteClick(isFavorite)}
-          />
-        ) : (
-          <NotFavoriteIcon
-            fontSize="inherit"
-            color="inherit"
-            onClick={() => favoriteClick(isFavorite)}
-          />
-        )}
+        <ImageContainer>
+          <ChannelImage src={channelImageObject[channelId]} />
+          {isLogin && (
+            <IconWrapper onClick={handleFavoriteClick}>
+              {isFavorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+            </IconWrapper>
+          )}
+        </ImageContainer>
         <SortBox>
-          <Text onClick={renderNewList} isBold={isNew}>
+          <Text onClick={handleOrderClick} isBold={order}>
             최신순
           </Text>
           <Divider type="vertical" size={8} />
-          <Text onClick={renderPopularList} isBold={isPopular}>
+          <Text onClick={handleOrderClick} isBold={!order}>
             인기글
           </Text>
         </SortBox>
-        <InfiniteScroll
-          scrollableTarget="scrollableDiv"
+        <PostCardContainer
+          scrollableTarget="scroll-threshold"
           dataLength={channelData.length}
           hasMore
-          next={getChannelData}
+          next={fetchChannelData}
           height={600}
         >
           {channelData &&
-            channelData.map((item) => (
-              <ChannelPostCard
-                title={JSON.parse(item.title).dt}
-                key={item._id}
-                updatedAt={item.updatedAt}
-                fullName={item.author.fullName}
-                likes={item.likes}
-                tag={JSON.parse(item.title).tg}
-                comments={item.comments}
-                postId={item._id}
-                channelId={item.channel._id}
-                content={JSON.parse(item.title).dd}
-                authorId={item.author._id}
-                changeLikeCount={(bool, id, likeId) =>
-                  changeLikeCount(bool, id, likeId)
-                }
-              />
-            ))}
-          <div id="scrollableDiv" style={{ width: '100%', height: '2rem' }} />
-        </InfiniteScroll>
+            channelData.map((item) => {
+              const { dt: title, tg: tag } = JSON.parse(item.title);
+              const isLikedPost =
+                user && item.likes.find((item) => item._id === user._id);
+              return (
+                <ChannelPostCard
+                  title={title}
+                  tag={tag}
+                  key={item._id}
+                  updatedAt={item.updatedAt}
+                  fullName={item.author.fullName}
+                  numberOfLike={item.likes.length}
+                  isLiked={isLikedPost}
+                  numberOfComment={item.comments.length}
+                  postId={item._id}
+                />
+              );
+            })}
+          <div
+            id="scroll-threshold"
+            style={{ width: '100%', height: '2rem' }}
+          />
+        </PostCardContainer>
       </ChannelContainer>
-      <LinkButtonContainer>
-        <LinkButton type="button" onClick={goToWrite}>
-          글쓰기
-        </LinkButton>
-      </LinkButtonContainer>
+      <LinkButton type="button" onClick={handleWriteClick}>
+        <CreateRoundedIcon fontSize="large" />
+      </LinkButton>
     </>
   );
 }
