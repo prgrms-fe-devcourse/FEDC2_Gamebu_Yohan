@@ -12,6 +12,7 @@ import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import useValueContext from '@hooks/useValueContext';
 import useActionContext from '@hooks/useActionContext';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -66,8 +67,9 @@ const LinkButton = styled.button`
 `;
 
 function ChannelPage() {
+  const renderSnackbar = useOurSnackbar();
   const { user, isLogin } = useValueContext();
-  const userId = user && user._id; // 전역스토어에서 가져옴
+  const userId = user && user._id;
   const { favorites } = useActionContext();
   const navigate = useNavigate();
   const [start, setStart] = useState(0);
@@ -208,7 +210,7 @@ function ChannelPage() {
       return navigate(`/posts/write/${channelId}`, {
         state: { channelId, postId: false },
       });
-    navigate('/');
+    // modal
   };
 
   return (

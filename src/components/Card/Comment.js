@@ -37,6 +37,7 @@ const DateWrapper = styled.div`
 `;
 const NameWrapper = styled.div`
   max-width: 65%;
+  height: 1rem;
   overflow-x: hidden;
   text-overflow: ellipsis;
   font-size: 0.8rem;
