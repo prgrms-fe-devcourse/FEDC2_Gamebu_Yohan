@@ -61,7 +61,6 @@ function ContextProvider({ children }) {
     const { initialLoading } = state;
     if (initialLoading) {
       getAuthUser();
-      return;
     }
   }, [state, getAuthUser]);
 

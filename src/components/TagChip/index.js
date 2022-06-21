@@ -32,14 +32,24 @@ export default function TagChip({ label, index, simple, itemsx, chipsx }) {
 
   return (
     <ListItem label={label} name={label} index={index} sx={{ ...ItemStyle }}>
-      <Chip
-        label={simple ? `#${label}` : label}
-        name={label}
-        avatar={simple ? false : <Avatar alt={label} src={image} />}
-        variant="outlined"
-        size={simple ? 'small' : 'medium'}
-        sx={ChipStyle}
-      />
+      {simple ? (
+        <Chip
+          label={simple ? `#${label}` : label}
+          name={label}
+          variant="outlined"
+          size={simple ? 'small' : 'medium'}
+          sx={ChipStyle}
+        />
+      ) : (
+        <Chip
+          label={simple ? `#${label}` : label}
+          name={label}
+          avatar={<Avatar alt={label} src={image} />}
+          variant="outlined"
+          size={simple ? 'small' : 'medium'}
+          sx={ChipStyle}
+        />
+      )}
     </ListItem>
   );
 }

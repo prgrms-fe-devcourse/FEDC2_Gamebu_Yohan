@@ -19,7 +19,7 @@ function Toast({ children }) {
 }
 
 Toast.propTypes = {
-  children: PropTypes.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default Toast;
