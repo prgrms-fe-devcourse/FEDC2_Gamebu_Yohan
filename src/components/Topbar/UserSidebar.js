@@ -10,7 +10,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getAllUserList } from '@utils/user';
 import Thumbnail from '@components/Thumbnail';
 
@@ -33,6 +33,7 @@ const NoneDecorationLink = styled(Link)`
 
 function UserSidebar({ open, onClose }) {
   const [userList, setUserList] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
@@ -57,12 +58,12 @@ function UserSidebar({ open, onClose }) {
           return (
             <ListItem key={_id} disablePadding>
               <ListItemButton>
-                <ListItemIcon>
+                <ListItemIcon onClick={() => navigate(`/profile/${_id}`)}>
                   <Thumbnail name={fullName} badge isOnline={isOnline} />
                 </ListItemIcon>
                 <ListItemText
                   primary={
-                    <NoneDecorationLink to={`/profile/${_id}`}>
+                    <NoneDecorationLink to={`/message/${_id}`}>
                       {fullName}
                     </NoneDecorationLink>
                   }
