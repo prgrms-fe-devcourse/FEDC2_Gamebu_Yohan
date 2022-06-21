@@ -79,7 +79,7 @@ function Sidebar({ open, onClose }) {
       </DrawerHeader>
       <Divider />
       <List>
-        {user && (
+        {isLogin && (
           <>
             <Link to={`profile/${user._id}`}>
               <ProfileWrapper>
