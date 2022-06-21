@@ -26,7 +26,7 @@ export const changeMyInfoAPI = (option) => {
 };
 
 export const getUserInfo = (userId) => {
-  return authFetch(endpoints.getUserInfo(userId));
+  return fetch(endpoints.getUserInfo(userId));
 };
 
 export const getAllUserList = () => {
