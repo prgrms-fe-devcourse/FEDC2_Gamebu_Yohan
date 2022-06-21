@@ -10,7 +10,7 @@ import { CATEGORIES, CHANNELS, IMAGES } from '@utils/constants';
 import { authFetch } from '@utils/fetch';
 import { MessageTitle } from '@components/Categories';
 import { COLOR_MAIN } from '@utils/color';
-import CategoriItem from '@components/CategoryItem';
+import CategoryItem from '@components/CategoryItem';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const CategoriesPageContainer = styled.div`
@@ -110,7 +110,7 @@ function CategoriesPage() {
             <CategoriesContainer>
               {userFavorites.map((item) => (
                 <Link to={`/channel/${item}`} key={`${item}`}>
-                  <CategoriItem
+                  <CategoryItem
                     img={IMAGES[item]}
                     title={CATEGORIES[item]}
                     icon
@@ -136,7 +136,7 @@ function CategoriesPage() {
           {unlikes.map((channel) => {
             return (
               <Link to={`/channel/${channel.id}`} key={`${channel.id}`}>
-                <CategoriItem
+                <CategoryItem
                   img={IMAGES[channel.id]}
                   title={channel.name}
                   icon={Boolean(user)}
