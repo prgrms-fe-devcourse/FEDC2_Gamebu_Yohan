@@ -1,14 +1,9 @@
-import { ClickAwayListener, Fade, Popper } from '@mui/material';
+import { Card, ClickAwayListener, Fade, Popper } from '@mui/material';
 import React, { useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
-const ContentWrapper = styled.div`
-  box-sizing: border-box;
-  padding: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-`;
+const ContentWrapper = styled(Card)``;
 const StyledPopper = styled(Popper)`
   z-index: 1001;
 `;
@@ -53,13 +48,9 @@ function ClickAwayPopper({
         >
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              {contents.length > 1 ? (
-                <ContentWrapper {...contentProps}>
-                  {contents.map((content) => React.cloneElement(content))}
-                </ContentWrapper>
-              ) : (
-                React.cloneElement(contents[0], contentProps)
-              )}
+              <ContentWrapper {...contentProps}>
+                {contents.map((content) => React.cloneElement(content))}
+              </ContentWrapper>
             </Fade>
           )}
         </StyledPopper>
