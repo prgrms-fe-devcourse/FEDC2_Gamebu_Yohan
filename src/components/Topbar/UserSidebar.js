@@ -10,7 +10,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAllUserList } from '@utils/user';
 import Thumbnail from '@components/Thumbnail';
 
@@ -24,11 +24,6 @@ const StyledDrawer = styled(Drawer)`
 const UserSiderbarHeader = styled(IconButton)`
   width: 100%;
   justify-content: space-between;
-`;
-
-const NoneDecorationLink = styled(Link)`
-  text-decoration: none;
-  color: black;
 `;
 
 function UserSidebar({ open, onClose }) {
@@ -62,11 +57,11 @@ function UserSidebar({ open, onClose }) {
                   <Thumbnail name={fullName} badge isOnline={isOnline} />
                 </ListItemIcon>
                 <ListItemText
-                  primary={
-                    <NoneDecorationLink to={`/message/${_id}`}>
-                      {fullName}
-                    </NoneDecorationLink>
-                  }
+                  primary={fullName}
+                  onClick={() => {
+                    onClose();
+                    navigate(`/message/${_id}`);
+                  }}
                 />
               </ListItemButton>
             </ListItem>
