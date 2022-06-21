@@ -1,30 +1,55 @@
-import React from 'react';
-import { authFetch } from '@utils/fetch';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import useCheckAuth from '@hooks/useCheckAuth';
+import styled from '@emotion/styled';
+import { fetchNotifications, seenNotificationAll } from '@utils/alarm';
+import AlarmCard from '@components/AlarmCard';
+import Header from '@components/Header';
+
+const Container = styled.div``;
 
 function AlramPage() {
-  const handleClickTest = async () => {
-    // const array = ['글1', '글2', '글3'];
-    // const array = [];
+  useCheckAuth();
+  const [notifications, setNotifications] = useState(null);
 
-    const response = await authFetch('settings/update-user', {
-      method: 'PUT',
-      data: {
-        fullName: 'fullName222',
-        username: JSON.stringify([]),
-      },
-    });
+  const uncheckedList = useMemo(() => {
+    if (!notifications) return [];
+    return notifications.filter((item) => !item.seen);
+  }, [notifications]);
 
-    console.log(response);
+  const checkedList = useMemo(() => {
+    if (!notifications) return [];
+    return notifications.filter((item) => item.seen);
+  }, [notifications]);
+
+  const updateNotifications = async () => {
+    const response = await fetchNotifications();
+    Array.isArray(response) && setNotifications(response);
   };
 
+  const initPage = useCallback(async () => {
+    await updateNotifications();
+    await seenNotificationAll();
+  }, []);
+
+  useEffect(() => {
+    initPage();
+  }, [initPage]);
+
   return (
-    <div>
-      AlramPage
-      <button type="button" onClick={handleClickTest}>
-        test
-      </button>
-    </div>
+    <Container>
+      {uncheckedList.length !== 0 && <Header level={1}>새 알림</Header>}
+      <>
+        {uncheckedList.map((item) => (
+          <AlarmCard notification={item} key={item._id} />
+        ))}
+      </>
+      {checkedList.length !== 0 && <Header level={1}>지난 알림</Header>}
+      <>
+        {checkedList.map((item) => (
+          <AlarmCard notification={item} key={item._id} />
+        ))}
+      </>
+    </Container>
   );
 }
-
 export default AlramPage;
