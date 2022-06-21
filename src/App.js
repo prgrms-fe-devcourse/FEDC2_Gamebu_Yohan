@@ -50,8 +50,8 @@ function App() {
             <Route path="posts/edit/:postId" element={<PostEditPage />} />
             <Route path="posts/details/:postId" element={<PostDetailPage />} />
             <Route path="message" element={<MessagePage />} />
-            <Route path="message/:userId" element={<DetailMessage />} />
           </Route>
+          <Route path="message/:userId" element={<DetailMessage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
           <Route path="profile/:userId" element={<ProfilePage />} />

@@ -10,10 +10,14 @@ const MessageContainer = styled.div`
     --rad: 20px;
     --rad-sm: 3px;
     font: 16px/1.5 sans-serif;
+    box-sizing: border-box;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 2rem;
     max-width: 500px;
+    width: 100%;
+    height: calc(100% - 2rem);
     margin: auto;
   }
 
@@ -73,6 +77,13 @@ const MessageContainer = styled.div`
   }
 `;
 
+const Container = styled.div`
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 1fr 2rem;
+`;
 function DetailMessage() {
   const [messageList, setMessageList] = useState([]);
   const inputRef = useRef();
@@ -104,7 +115,7 @@ function DetailMessage() {
   }, [messageList]);
 
   return (
-    <>
+    <Container>
       <MessageContainer className="chat">
         {messageList.length && user
           ? messageList.map(({ message, sender, _id }) => {
@@ -121,7 +132,7 @@ function DetailMessage() {
         <input ref={inputRef} />
         <button type="submit">전송</button>
       </form>
-    </>
+    </Container>
   );
 }
 
