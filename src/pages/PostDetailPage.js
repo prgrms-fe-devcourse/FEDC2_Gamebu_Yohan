@@ -199,7 +199,7 @@ function PostDetailPage() {
         ...detailData,
         comments: [...detailData.comments, res],
       });
-      postNotification('COMMENT', res);
+      !isOwnPost && postNotification('COMMENT', res);
     }
     inputRef.current.value = '';
     return renderSnackbar('댓글작성', isSuccessful);
@@ -212,7 +212,7 @@ function PostDetailPage() {
     if (isSuccessful) {
       const changedLikes = [...detailData.likes, res];
       setDetailData({ ...detailData, likes: changedLikes });
-      postNotification('LIKE', res);
+      !isOwnPost && postNotification('LIKE', res);
     }
     renderSnackbar('좋아요', isSuccessful);
     setIsLoading(false);
