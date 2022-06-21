@@ -200,7 +200,16 @@ function ChannelPage() {
         >
           {channelData &&
             channelData.map((item) => {
-              const { dt: title, tg: tag } = JSON.parse(item.title);
+              // FIXME: DB 초기화 이후 수정
+              let isJson = true;
+              try {
+                JSON.parse(item.title);
+              } catch {
+                isJson = false;
+              }
+              const { dt: title, tg: tag } = isJson
+                ? JSON.parse(item.title)
+                : { dt: item.title, tg: [] };
               const isLikedPost =
                 user && item.likes.find((item) => item._id === user._id);
               return (
