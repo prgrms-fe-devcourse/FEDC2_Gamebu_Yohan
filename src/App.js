@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import Navbar from '@pages';
 import AlramPage from '@pages/AlramPage';
 import CategoriesPage from '@pages/CategoriesPage';
@@ -13,14 +14,22 @@ import SearchPostPage from '@pages/SearchPostPage';
 import SearchUserPage from '@pages/SearchUserPage';
 import SignupPage from '@pages/SignupPage';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import ContextProvider from '@contexts/ContextProvider';
 import InterestedChannelModal from '@components/InterestedChannelModal';
 import SearchAllPage from '@pages/SearchAllPage';
 import NotFoundPage from '@pages/NotFoundPage';
+import { SnackbarProvider } from 'notistack';
+import useActionContext from '@hooks/useActionContext';
 
 function App() {
+  const notistackRef = useRef();
+  const { setRef } = useActionContext();
+
+  useEffect(() => {
+    setRef(notistackRef);
+  }, [setRef]);
+
   return (
-    <ContextProvider>
+    <SnackbarProvider maxSnack={3} ref={notistackRef}>
       <InterestedChannelModal />
       <BrowserRouter>
         <Routes>
@@ -45,7 +54,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
-    </ContextProvider>
+    </SnackbarProvider>
   );
 }
 
