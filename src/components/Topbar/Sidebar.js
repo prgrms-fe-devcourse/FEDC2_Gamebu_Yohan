@@ -155,15 +155,15 @@ function Sidebar({ open, onClose }) {
           </Button>
         ) : (
           <Button
-            onClick={() => onClose()}
+            onClick={() => {
+              logout();
+              onClose();
+            }}
             variant="contained"
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
             <Link to="/#">
-              <LogoutIcon
-                sx={{ fontSize: 'small', mr: 1 }}
-                onClick={() => logout()}
-              />
+              <LogoutIcon sx={{ fontSize: 'small', mr: 1 }} />
               로그아웃
             </Link>
           </Button>
