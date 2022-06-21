@@ -108,7 +108,7 @@ function PostDetailPage() {
 
   const handleEditClick = () => {
     const { _id, channel } = detailData;
-    navigate(`/posts/edit/${detailData.postId}`, {
+    navigate(`/posts/edit/${_id}`, {
       state: {
         post: { title, tag, content },
         postId: _id,
