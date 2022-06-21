@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { convertDate } from '@utils/date';
+import { convertDate } from '@utils/time';
 import { CommentRounded } from '@mui/icons-material';
 import { COLOR_MAIN } from '@utils/color';
 import { Link, useNavigate } from 'react-router-dom';
