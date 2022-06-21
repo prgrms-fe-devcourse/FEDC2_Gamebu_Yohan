@@ -205,7 +205,9 @@ function ChannelPage() {
 
   const goToWrite = () => {
     if (isLogin)
-      return navigate('/posts/write', { state: { channelId, postId: false } });
+      return navigate(`/posts/write/${channelId}`, {
+        state: { channelId, postId: false },
+      });
     navigate('/');
   };
 

@@ -81,6 +81,7 @@ const sliderOptions = {
   slidesToScroll: 1,
   centerMode: true,
   centerPadding: '0px',
+  arrows: false,
 };
 
 function HomePage() {
