@@ -13,7 +13,14 @@ const DefaultListStyle = {
   alignItems: 'center',
 };
 
-export default function TagList({ tags, simple, itemsx, chipsx, ...props }) {
+export default function TagList({
+  tags,
+  simple,
+  itemsx,
+  chipsx,
+  avatarsx,
+  ...props
+}) {
   const BodyStyle = {
     ...DefaultBodyStyle,
     ...props.sx,

@@ -17,7 +17,14 @@ const DefaultChipStyle = {
   backgroundColor: 'white',
 };
 
-export default function TagChip({ label, index, simple, itemsx, chipsx }) {
+export default function TagChip({
+  label,
+  index,
+  simple,
+  itemsx,
+  chipsx,
+  avatarsx,
+}) {
   const ItemStyle = {
     ...DefaultItemStyle,
     ...itemsx,
@@ -35,7 +42,9 @@ export default function TagChip({ label, index, simple, itemsx, chipsx }) {
       <Chip
         label={simple ? `#${label}` : label}
         name={label}
-        avatar={simple ? false : <Avatar alt={label} src={image} />}
+        avatar={
+          simple ? false : <Avatar alt={label} src={image} sx={avatarsx} />
+        }
         variant="outlined"
         size={simple ? 'small' : 'medium'}
         sx={ChipStyle}
@@ -50,10 +59,12 @@ TagChip.propTypes = {
   simple: PropTypes.bool,
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
+  avatarsx: PropTypes.object,
 };
 
 TagChip.defaultProps = {
   simple: false,
   itemsx: {},
   chipsx: {},
+  avatarsx: {},
 };
