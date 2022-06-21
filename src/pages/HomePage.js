@@ -86,13 +86,8 @@ const sliderOptions = {
 
 function HomePage() {
   const [posts, setPosts] = useState(null);
-  const [channels, setChannels] = useState([]);
   const [offset, setOffset] = useState(0);
   const [limit] = useState(10);
-  const [images] = useState(IMAGES);
-  useEffect(() => {
-    setChannels(CHANNELS);
-  }, []);
 
   const getExtraPostsList = useCallback(async () => {
     const params = { offset: offset + limit, limit };
@@ -127,12 +122,12 @@ function HomePage() {
         <Header strong>게임 카테고리</Header>
         <Divider />
         <Slider {...sliderOptions}>
-          {channels &&
-            channels.map((item) => {
+          {CHANNELS &&
+            CHANNELS.map((item) => {
               return (
                 <Link to={`/channel/${item.id}`} key={item.id}>
                   <SliderItemWrapper>
-                    <BannerImage src={images[item.id] || NOT_FOUND_IMAGE} />
+                    <BannerImage src={IMAGES[item.id] || NOT_FOUND_IMAGE} />
                   </SliderItemWrapper>
                 </Link>
               );
