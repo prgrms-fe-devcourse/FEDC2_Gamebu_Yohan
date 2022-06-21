@@ -20,6 +20,7 @@ function ContextProvider({ children }) {
     user: null,
     isLogin: false,
     initialLoading: !!token,
+    ref: null,
   });
 
   const actions = useMemo(
@@ -49,6 +50,12 @@ function ContextProvider({ children }) {
         }));
         setToken('');
       },
+      setRef(ref) {
+        setState((prevState) => ({
+          ...prevState,
+          ref,
+        }));
+      },
     }),
     [setToken]
   );
@@ -61,7 +68,6 @@ function ContextProvider({ children }) {
     const { initialLoading } = state;
     if (initialLoading) {
       getAuthUser();
-      return;
     }
   }, [state, getAuthUser]);
 
