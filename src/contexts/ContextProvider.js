@@ -51,13 +51,10 @@ function ContextProvider({ children }) {
         setToken('');
       },
       setRef(ref) {
-        setState((prevState) => ({
-          ...prevState,
-          ref,
-        }));
+        state.ref = ref;
       },
     }),
-    [setToken]
+    [setToken, state]
   );
 
   const getAuthUser = useCallback(async () => {
