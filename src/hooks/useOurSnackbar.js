@@ -10,7 +10,11 @@ const WhiteColorButton = styled(Button)`
 
 const useOurSnackbar = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { ref } = useValueContext();
+  const value = useValueContext();
+
+  const handleClickSnackbar = (key) => {
+    value.ref.current.closeSnackbar(key);
+  };
 
   const renderSnackbar = (message, isSuccess = null) => {
     if (isSuccess === null) {
@@ -21,7 +25,7 @@ const useOurSnackbar = () => {
           horizontal: 'center',
         },
         action: (key) => (
-          <WhiteColorButton onClick={() => ref.current.closeSnackbar(key)}>
+          <WhiteColorButton onClick={() => handleClickSnackbar(key)}>
             닫기
           </WhiteColorButton>
         ),
@@ -37,7 +41,7 @@ const useOurSnackbar = () => {
           horizontal: 'center',
         },
         action: (key) => (
-          <WhiteColorButton onClick={() => ref.current.closeSnackbar(key)}>
+          <WhiteColorButton onClick={() => handleClickSnackbar(key)}>
             닫기
           </WhiteColorButton>
         ),
