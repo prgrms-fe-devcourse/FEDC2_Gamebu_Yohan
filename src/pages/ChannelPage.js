@@ -76,8 +76,6 @@ function ChannelPage() {
   const [order, setOrder] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  console.log(channelId);
-
   const limit = 8;
 
   const latestOrder = useCallback(
