@@ -5,6 +5,7 @@ export default function TextInput({
   name,
   label,
   value,
+  onBlur,
   onChange,
   error,
   placeholder,
@@ -16,6 +17,7 @@ export default function TextInput({
       name={name}
       label={label}
       value={value}
+      onBlur={onBlur}
       onChange={onChange}
       error={error}
       placeholder={placeholder}
@@ -28,6 +30,7 @@ TextInput.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
+  onBlur: PropTypes.func,
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool,
   placeholder: PropTypes.string,
@@ -37,6 +40,7 @@ TextInput.propTypes = {
 TextInput.defaultProps = {
   label: '',
   value: '',
+  onBlur: () => {},
   error: false,
   placeholder: '',
   helperText: '',

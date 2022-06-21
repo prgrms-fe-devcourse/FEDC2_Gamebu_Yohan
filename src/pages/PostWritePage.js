@@ -1,9 +1,12 @@
-import PostForm from '@components/PostForm';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import PostForm from '@components/PostForm';
+import useCheckAuth from '@hooks/useCheckAuth';
+import useValueContext from '../hooks/useValueContext';
 
 export default function PostWritePage() {
-  const location = useLocation();
-  console.log(location.state);
-  return <PostForm />;
+  const { initialLoading, isLogin } = useValueContext();
+  useCheckAuth();
+
+  const reloadEnd = isLogin ? <PostForm /> : '비로그인 유저';
+  return <div>{initialLoading ? '로딩 중' : reloadEnd}</div>;
 }
