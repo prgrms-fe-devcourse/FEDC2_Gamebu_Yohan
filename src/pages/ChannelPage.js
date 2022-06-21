@@ -14,6 +14,7 @@ import useValueContext from '@hooks/useValueContext';
 import useActionContext from '@hooks/useActionContext';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import { IconButton } from '@mui/material';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -65,6 +66,7 @@ const ImageContainer = styled.div`
 `;
 
 function ChannelPage() {
+  const renderSnackbar = useOurSnackbar();
   const { user, isLogin } = useValueContext();
   const { favorites: setUserObject } = useActionContext();
   const navigate = useNavigate();
@@ -163,8 +165,10 @@ function ChannelPage() {
 
   const handleWriteClick = () => {
     if (isLogin)
-      return navigate('/posts/write', { state: { channelId, postId: false } });
-    navigate('/');
+      return navigate(`/posts/write/${channelId}`, {
+        state: { channelId, postId: false },
+      });
+    // modal
   };
 
   return (

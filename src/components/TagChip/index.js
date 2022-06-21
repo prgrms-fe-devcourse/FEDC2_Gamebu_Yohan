@@ -1,7 +1,7 @@
 import { Chip, Avatar, ListItem } from '@mui/material';
 import PropTypes from 'prop-types';
 import { blue } from '@mui/material/colors';
-import tagdata from './tagdata';
+import TagAvatar from '@assets/TagAvatars';
 
 const DefaultItemStyle = {
   width: 'auto',
@@ -17,7 +17,14 @@ const DefaultChipStyle = {
   backgroundColor: 'white',
 };
 
-export default function TagChip({ label, index, simple, itemsx, chipsx }) {
+export default function TagChip({
+  label,
+  index,
+  simple,
+  itemsx,
+  chipsx,
+  avatarsx,
+}) {
   const ItemStyle = {
     ...DefaultItemStyle,
     ...itemsx,
@@ -27,8 +34,6 @@ export default function TagChip({ label, index, simple, itemsx, chipsx }) {
     ...chipsx,
     '& .MuiChip-avatar': {},
   };
-
-  const image = tagdata[label] ? tagdata[label].image : '';
 
   return (
     <ListItem label={label} name={label} index={index} sx={{ ...ItemStyle }}>
@@ -44,7 +49,7 @@ export default function TagChip({ label, index, simple, itemsx, chipsx }) {
         <Chip
           label={simple ? `#${label}` : label}
           name={label}
-          avatar={<Avatar alt={label} src={image} />}
+          avatar={<Avatar alt={label} src={TagAvatar[label]} sx={avatarsx} />}
           variant="outlined"
           size={simple ? 'small' : 'medium'}
           sx={ChipStyle}
@@ -60,10 +65,12 @@ TagChip.propTypes = {
   simple: PropTypes.bool,
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
+  avatarsx: PropTypes.object,
 };
 
 TagChip.defaultProps = {
   simple: false,
   itemsx: {},
   chipsx: {},
+  avatarsx: {},
 };

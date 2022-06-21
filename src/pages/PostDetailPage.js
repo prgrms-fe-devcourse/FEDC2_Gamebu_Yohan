@@ -14,6 +14,8 @@ import FiberNewIcon from '@mui/icons-material/FiberNew';
 import Card from '@components/Card';
 import Comment from '@components/Card/Comment';
 import CommentInput from '@components/CommentInput';
+import useOurSnackbar from '@hooks/useOurSnackbar';
+import LoginModal from '@components/LoginModal';
 
 const PageContainer = styled.div`
   box-sizing: border-box;
@@ -73,11 +75,13 @@ const convertDate = (dateString) => {
 };
 
 function PostDetailPage() {
+  const renderSnackbar = useOurSnackbar();
   const { postId } = useParams();
   const navigate = useNavigate();
   const { user, isLogin } = useValueContext();
   const inputRef = useRef(null);
   const [detailData, setDetailData] = useState(null); // page data
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { title, content, tag } = useMemo(() => {
     // TODO: 작성방식 수립 이후 try-catch 삭제
@@ -98,7 +102,7 @@ function PostDetailPage() {
   const fetchPostDetail = useCallback(async () => {
     const postDetail = await fetch(`posts/${postId}`);
     // FIXME: 이름이 null 인 경우를 대비한 임시 수정. 이후 삭제가 필요하다.
-    postDetail.author.fullName = '';
+    // postDetail.author.fullName = '';
     setDetailData(postDetail);
   }, [postId]);
 
@@ -108,7 +112,7 @@ function PostDetailPage() {
 
   const handleEditClick = () => {
     const { _id, channel } = detailData;
-    navigate(`/posts/edit/${detailData.postId}`, {
+    navigate(`/posts/edit/${_id}`, {
       state: {
         post: { title, tag, content },
         postId: _id,
@@ -119,17 +123,21 @@ function PostDetailPage() {
 
   const handleDelete = async (id) => {
     // TODO: error 발생시 별도 처리 추가 (낙관적 업데이트만 적용중)
-    await authFetch('comments/delete', {
+    const res = await authFetch('comments/delete', {
       method: 'DELETE',
       data: {
         id,
       },
     });
     const newComments = detailData.comments.filter((item) => item._id !== id);
-    setDetailData({
-      ...detailData,
-      comments: [...newComments],
-    });
+    if (res._id) {
+      setDetailData({
+        ...detailData,
+        comments: [...newComments],
+      });
+      return renderSnackbar('댓글삭제', true);
+    }
+    return renderSnackbar('댓글삭제', false);
   };
 
   const postNotification = async (res) => {
@@ -145,15 +153,13 @@ function PostDetailPage() {
   };
 
   const handlePostComment = async () => {
-    // TODO: error 발생시 별도 처리 추가 (낙관적 업데이트만 적용중)
-    // TODO: 댓글 입력시 로그인이 필요함을 알리는 코드 추가
     if (!isLogin) {
-      console.log('login이 필요합니다');
+      setModalVisible(true);
       return;
     }
-    // TODO: 입력이 필요함을 알리는 코드 추가.
     if (inputRef.current.value === '') {
-      console.log('댓글을 입력 해주세요');
+      // TODO: snackbar custom message
+      alert('1글자 이상 입력해주세요!');
       return;
     }
     const res = await authFetch('comments/create', {
@@ -163,12 +169,17 @@ function PostDetailPage() {
         postId: detailData._id,
       },
     });
-    setDetailData({
-      ...detailData,
-      comments: [res, ...detailData.comments],
-    });
-    if (res._id && user._id) postNotification(res);
+    if (res._id) {
+      setDetailData({
+        ...detailData,
+        comments: [res, ...detailData.comments],
+      });
+      if (user._id) postNotification(res);
+      inputRef.current.value = '';
+      return renderSnackbar('댓글작성', true);
+    }
     inputRef.current.value = '';
+    return renderSnackbar('댓글작성', false);
   };
 
   return (
@@ -179,6 +190,10 @@ function PostDetailPage() {
           {isOwnPost && (
             <Paragraph onClick={handleEditClick}>글 수정</Paragraph>
           )}
+          <LoginModal
+            visible={modalVisible}
+            handleCloseModal={() => setModalVisible(false)}
+          />
           <PostContentContainer>{content}</PostContentContainer>
           <CommentInput onPost={handlePostComment} inputRef={inputRef} />
           <CommentsContainer>

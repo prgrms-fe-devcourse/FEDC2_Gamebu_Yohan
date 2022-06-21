@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import { Button, CircularProgress, Stack } from '@mui/material';
 import { authFetch } from '@utils/fetch';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useForm from '@hooks/useForm';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import MultiLineTextInput from './MultiLineTextInput';
@@ -13,7 +15,6 @@ const Tags = [
   '레이드',
   'FPS',
   '듀오',
-  'AOS',
   'RPG',
   '딜러',
   '힐러',
@@ -22,11 +23,21 @@ const Tags = [
 ];
 
 export default function PostForm({ channelId, postId, post }) {
+  const [isComplete, setComplete] = useState(false);
+  const navigate = useNavigate();
+  const navigateTo = postId
+    ? `/posts/details/${postId}`
+    : `/channel/${channelId}`;
+  const renderSnackbar = useOurSnackbar();
+  useEffect(() => {
+    if (isComplete) {
+      navigate(navigateTo);
+    }
+  }, [isComplete, navigate, navigateTo]);
   const initialValues = post || { title: '', tags: [], content: '' };
   const { values, isLoading, handleChange, handleSubmit } = useForm({
     initialValues,
     onSubmit: async () => {
-      console.log(`Attempting ${postId ? 'Edit' : 'Post'}`);
       const { title, tags, content } = values;
       const response = await authFetch(
         `posts/${postId ? 'update' : 'create'}`,
@@ -34,13 +45,13 @@ export default function PostForm({ channelId, postId, post }) {
           method: `${postId ? 'PUT' : 'POST'}`,
           data: {
             postId,
+            channelId,
             title: JSON.stringify({
               dt: title,
               tg: tags,
               dd: content,
             }),
             image: null,
-            channelId,
           },
         }
       );
@@ -48,7 +59,11 @@ export default function PostForm({ channelId, postId, post }) {
       const isError = Boolean(response?.response);
 
       if (isError) {
+        renderSnackbar(`${postId ? '글 수정' : '글 작성'}`, false);
         throw new Error('Fetch 오류');
+      } else {
+        renderSnackbar(`${postId ? '글 수정' : '글 작성'}`, true);
+        setComplete(true);
       }
     },
     validate: (formValues) => {
@@ -132,7 +147,7 @@ export default function PostForm({ channelId, postId, post }) {
 
 PostForm.propTypes = {
   channelId: PropTypes.string.isRequired,
-  postId: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  postId: PropTypes.string,
   post: PropTypes.shape({
     title: PropTypes.string,
     tag: PropTypes.arrayOf(PropTypes.string),
@@ -141,6 +156,7 @@ PostForm.propTypes = {
 };
 
 PostForm.defaultProps = {
+  postId: '',
   post: {
     title: '',
     tag: [],
