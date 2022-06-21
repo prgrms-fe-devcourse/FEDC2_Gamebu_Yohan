@@ -59,7 +59,6 @@ function CategoriesPage() {
       newFavorites.push(id);
       newFavorites.sort();
       setUserFavorites(newFavorites);
-      renderSnackbar(`${name} 채널을 즐겨찾기 추가`, true);
 
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
@@ -68,6 +67,10 @@ function CategoriesPage() {
           username: JSON.stringify(newFavorites),
         },
       });
+
+      let isSuccess = false;
+      if (res) isSuccess = true;
+      renderSnackbar(`${name} 채널을 즐겨찾기 추가`, isSuccess);
 
       favorites(res);
     },
@@ -80,7 +83,6 @@ function CategoriesPage() {
 
       const newFavorites = userFavorites.filter((item) => item !== id);
       setUserFavorites(newFavorites);
-      renderSnackbar(`${CATEGORIES[id]} 채널을 즐겨찾기 삭제`, true);
 
       const res = await authFetch('settings/update-user', {
         method: 'PUT',
@@ -89,6 +91,11 @@ function CategoriesPage() {
           username: JSON.stringify(newFavorites),
         },
       });
+
+      let isSuccess = false;
+      if (res) isSuccess = true;
+      renderSnackbar(`${CATEGORIES[id]} 채널을 즐겨찾기 삭제`, isSuccess);
+
       favorites(res);
     },
     [userFavorites, renderSnackbar, user, favorites]
