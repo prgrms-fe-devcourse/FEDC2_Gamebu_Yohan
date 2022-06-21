@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
 import { getDetailMessage, postMessage } from '@utils/message';
@@ -98,6 +98,10 @@ function DetailMessage() {
     inputRef.current.value = '';
     keepInterval();
   };
+
+  useEffect(() => {
+    inputRef.current.scrollIntoView();
+  }, [messageList]);
 
   return (
     <>
