@@ -35,7 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navbar />}>
             <Route index element={<HomePage />} />
-            <Route path="alram/:user" element={<AlramPage />} />
+            <Route path="alarm" element={<AlramPage />} />
             <Route path="search" element={<SearchPage />}>
               <Route path="" element={<Navigate to="all" replace />} />
               <Route path="all" element={<SearchAllPage />} />
