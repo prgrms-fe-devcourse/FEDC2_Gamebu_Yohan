@@ -12,7 +12,7 @@ import {
   CATEGORIES,
   IMAGES,
 } from '@utils/constants';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import BannerImage from '@components/Image/BannerImage';
 import Button from '@mui/material/Button';
@@ -88,24 +88,14 @@ function HomePage() {
   const [posts, setPosts] = useState(null);
   const [channels, setChannels] = useState([]);
   const [offset, setOffset] = useState(0);
+  const [limit] = useState(10);
   const [images] = useState(IMAGES);
   useEffect(() => {
     setChannels(CHANNELS);
   }, []);
 
-  const getPostsList = async () => {
-    const params = { offset, limit: 10 };
-    const fetchPosts = await fetch('posts', {
-      method: 'GET',
-      params,
-    });
-
-    setOffset(offset + 10);
-    setPosts(fetchPosts);
-  };
-
-  const getExtraPostsList = async () => {
-    const params = { offset, limit: 10 };
+  const getExtraPostsList = useCallback(async () => {
+    const params = { offset: offset + limit, limit };
     const fetchPosts = await fetch('posts', {
       method: 'GET',
       params,
@@ -113,9 +103,21 @@ function HomePage() {
 
     setOffset(offset + 10);
     setPosts(posts.concat(fetchPosts));
-  };
+  }, [offset, limit, posts]);
 
   useEffect(() => {
+    const getPostsList = async () => {
+      const fetchPosts = await fetch('posts', {
+        method: 'GET',
+        params: {
+          offset: 0,
+          limit: 10,
+        },
+      });
+
+      setPosts(fetchPosts);
+    };
+
     getPostsList();
   }, []);
 
