@@ -17,11 +17,9 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
-
 import useValueContext from '@hooks/useValueContext';
 import Header from '@components/Header';
 import Thumbnail from '@components/Thumbnail';
-import EditIcon from '@mui/icons-material/Edit';
 import useActionContext from '@hooks/useActionContext';
 
 const DrawerHeader = styled.div`
@@ -60,7 +58,7 @@ const UserNameWrapper = styled.div`
 `;
 
 function Sidebar({ open, onClose }) {
-  const { user } = useValueContext();
+  const { user, isLogin } = useValueContext();
   const { logout } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
@@ -102,15 +100,13 @@ function Sidebar({ open, onClose }) {
         <HeaderWrapper>
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
-        {/* eslint-disable-next-line no-nested-ternary */}
-        {!user ? (
+        {!isLogin && (
           <ContentWrapper>로그인 후 즐겨찾기를 등록해보세요.</ContentWrapper>
-        ) : userFavorites.length === 0 ? (
+        )}
+        {isLogin && userFavorites.length === 0 ? (
           <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
         ) : (
           userFavorites.map((item) => {
-            if (item === '') return;
-
             return (
               <ListItem onClick={() => onClose()} key={item} disablePadding>
                 <Link to={`channel/${item}`}>
@@ -143,7 +139,7 @@ function Sidebar({ open, onClose }) {
         ))}
       </List>
       <AuthContainer>
-        {!user ? (
+        {!isLogin ? (
           <Button
             variant="contained"
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
