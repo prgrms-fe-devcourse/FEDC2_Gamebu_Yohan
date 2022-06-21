@@ -10,6 +10,7 @@ import { GAMEBU_TOKEN } from '@utils/constants';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import GoBack from '@components/GoBack';
+import SkeletonMessage from '@components/SkeletonMessage';
 
 const MessageContainer = styled.div`
   & {
@@ -105,10 +106,16 @@ const Form = styled.form`
 `;
 
 const BottomDiv = styled.div`
-  height: 1px;
+  height: 1rem;
+`;
+
+const ZeroMessage = styled.div`
+  border: 1px solid black;
+  flex-grow: 1;
 `;
 
 function DetailMessage() {
+  const [loading, setLoading] = useState(true);
   const [messageList, setMessageList] = useState([]);
   const inputRef = useRef();
   const bottomRef = useRef();
@@ -120,7 +127,10 @@ function DetailMessage() {
   const handleClickGetMessageButton = useCallback(() => {
     if (token) {
       console.log(456);
-      getDetailMessage(userId).then((response) => setMessageList(response));
+      getDetailMessage(userId).then((response) => {
+        setMessageList(response);
+        setLoading(false);
+      });
     }
   }, [userId, token]);
 
@@ -136,16 +146,30 @@ function DetailMessage() {
         receiver: userId,
       },
     });
+    bottomRef.current.scrollIntoView();
     input.value = '';
     keepInterval();
-    bottomRef.current.scrollIntoView();
   };
 
+  const Loaded =
+    messageList.length && user ? (
+      messageList.map(({ message, sender, _id }) => {
+        const isMe = sender._id === user._id;
+        return (
+          <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
+            {message}
+          </div>
+        );
+      })
+    ) : (
+      <ZeroMessage>아직 대화가 없어요</ZeroMessage>
+    );
+
   useEffect(() => {
-    setTimeout(() => {
+    if (!loading) {
       bottomRef.current.scrollIntoView();
-    }, 100);
-  }, []);
+    }
+  }, [loading]);
 
   return (
     <Container>
@@ -153,16 +177,7 @@ function DetailMessage() {
         <GoBack destination="message" />
       </GoBackWrapper>
       <MessageContainer className="chat">
-        {messageList.length && user
-          ? messageList.map(({ message, sender, _id }) => {
-              const isMe = sender._id === user._id;
-              return (
-                <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
-                  {message}
-                </div>
-              );
-            })
-          : '아직 대화가 없어요'}
+        {loading ? <SkeletonMessage.Detail repeat={16} /> : Loaded}
         <BottomDiv ref={bottomRef}>&nbsp;</BottomDiv>
       </MessageContainer>
       <Form onSubmit={handleSubmitMessage}>

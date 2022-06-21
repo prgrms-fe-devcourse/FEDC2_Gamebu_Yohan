@@ -42,7 +42,7 @@ function MessagePage() {
         })
       : '아직 대화한 상대가 없어요';
 
-  return <div>{loading ? <SkeletonMessage repeat={5} /> : Loaded}</div>;
+  return <div>{loading ? <SkeletonMessage.Card repeat={5} /> : Loaded}</div>;
 }
 
 export default MessagePage;
