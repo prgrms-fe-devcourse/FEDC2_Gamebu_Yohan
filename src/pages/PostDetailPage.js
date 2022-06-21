@@ -16,7 +16,7 @@ import CommentInput from '@components/CommentInput';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 import LoginModal from '@components/LoginModal';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { createLikes, deleteLikes } from '@utils/likes';
 import { convertDate } from '@utils/time';
 
@@ -37,11 +37,8 @@ const PostCardContainer = styled(Card.Author)`
 
 const PostContentContainer = styled.div`
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
   width: 100%;
-  min-height: 15rem;
+  min-height: 20rem;
   border-radius: 0.5rem;
   color: black;
   padding: 1rem;
@@ -76,8 +73,12 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  & .MuiIconButton-root {
+  & .MuiButton-root {
     background-color: white;
+    color: black;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
     box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
       0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
   }
@@ -254,12 +255,16 @@ function PostDetailPage() {
           />
           <PostContentContainer>
             <ContentWrapper>{content}</ContentWrapper>
-            <ButtonWrapper>
-              <IconButton onClick={handleClickLike}>
-                <LikeIcon like={likeInfo ? 'red' : 'black'} />
-              </IconButton>
-            </ButtonWrapper>
           </PostContentContainer>
+          <ButtonWrapper>
+            <Button
+              variant="contained"
+              onClick={handleClickLike}
+              endIcon={<LikeIcon like={likeInfo ? 'red' : 'black'} />}
+            >
+              파티신청!
+            </Button>
+          </ButtonWrapper>
           <CommentInput onPost={handlePostComment} inputRef={inputRef} />
           <CommentsContainer>
             {detailData.comments.length > 0 ? (
