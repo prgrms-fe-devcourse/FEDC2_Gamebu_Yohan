@@ -17,7 +17,14 @@ const DefaultChipStyle = {
   backgroundColor: 'white',
 };
 
-export default function TagChip({ label, index, simple, itemsx, chipsx }) {
+export default function TagChip({
+  label,
+  index,
+  simple,
+  itemsx,
+  chipsx,
+  avatarsx,
+}) {
   const ItemStyle = {
     ...DefaultItemStyle,
     ...itemsx,
@@ -60,10 +67,12 @@ TagChip.propTypes = {
   simple: PropTypes.bool,
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
+  avatarsx: PropTypes.object,
 };
 
 TagChip.defaultProps = {
   simple: false,
   itemsx: {},
   chipsx: {},
+  avatarsx: {},
 };

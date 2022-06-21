@@ -1,14 +1,7 @@
-import {
-  createContext,
-  useMemo,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import { createContext, useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
-import { authUserAPI } from '@utils/user';
 
 export const valueContext = createContext();
 export const actionContext = createContext();
@@ -51,25 +44,11 @@ function ContextProvider({ children }) {
         setToken('');
       },
       setRef(ref) {
-        setState((prevState) => ({
-          ...prevState,
-          ref,
-        }));
+        state.ref = ref;
       },
     }),
-    [setToken]
+    [setToken, state]
   );
-
-  const getAuthUser = useCallback(async () => {
-    authUserAPI().then((result) => result && actions.login(result));
-  }, [actions]);
-
-  useEffect(() => {
-    const { initialLoading } = state;
-    if (initialLoading) {
-      getAuthUser();
-    }
-  }, [state, getAuthUser]);
 
   useEffect(() => {
     console.log('state');
