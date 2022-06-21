@@ -4,16 +4,16 @@ import PropTypes from 'prop-types';
 const Image = styled.img`
   min-width: 100%;
   max-width: 100%;
-  height: 100px;
+  height: 10rem;
   object-fit: contain;
 `;
 
-function GameImage({ src }) {
+function BannerImage({ src }) {
   return <Image src={src} />;
 }
 
-GameImage.propTypes = {
+BannerImage.propTypes = {
   src: PropTypes.string.isRequired,
 };
 
-export default GameImage;
+export default BannerImage;
