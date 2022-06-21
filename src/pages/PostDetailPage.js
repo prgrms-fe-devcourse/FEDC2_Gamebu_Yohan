@@ -144,7 +144,7 @@ function PostDetailPage() {
       data: {
         notificationType: type,
         notificationTypeId: infoObject._id,
-        userId: user._id,
+        userId: detailData.author._id,
         postId: infoObject.post,
       },
     });
