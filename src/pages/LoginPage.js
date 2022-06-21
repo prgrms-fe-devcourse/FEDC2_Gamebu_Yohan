@@ -1,12 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Collapse from '@mui/material/Collapse';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import { useNavigate, Link } from 'react-router-dom';
-import { COLOR_BG, COLOR_MAIN } from '@utils/color';
+import { COLOR_BG, COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import useForm from '@hooks/useForm';
 import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
@@ -14,6 +12,7 @@ import useValueContext from '@hooks/useValueContext';
 import GoBack from '@components/GoBack';
 import { GAMEBU_TOKEN, regexId } from '@utils/constants';
 import { loginAPI } from '@utils/user';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -33,25 +32,36 @@ const LoginHeader = styled.h1`
 `;
 
 const FormWrapper = styled.div`
+  border-radius: 0.5rem;
   background-color: ${COLOR_BG};
   color: ${COLOR_MAIN};
 
   & p {
-    margin-left: 0;
     margin-top: 0.5rem;
   }
 
   & .MuiOutlinedInput-root {
     background-color: white;
   }
-
   & .MuiOutlinedInput-root.Mui-focused fieldset {
     border-color: ${COLOR_MAIN};
   }
 `;
 
+const StyledTextField = styled(TextField)`
+  & .MuiInputLabel-root {
+    color: ${COLOR_MAIN};
+  }
+
+  & .Mui-focused.MuiInputLabel-root {
+    color: ${COLOR_SIGNATURE};
+  }
+`;
 const Form = styled.form`
-  padding: 1.5rem;
+  padding: 1.5rem 1rem;
+  & .MuiTextField-root {
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const LoginButtonWrapper = styled.div`
@@ -71,11 +81,6 @@ const LoginButton = styled(Button)`
   }
 `;
 
-const LoginWarningAlert = styled(Alert)`
-  font-size: 0.75rem;
-  margin-top: 1rem;
-`;
-
 const SignupLinkBox = styled(Box)`
   margin-top: 1rem;
   text-align: center;
@@ -87,21 +92,12 @@ const SignupLink = styled(Link)`
   text-decoration: none;
 `;
 
-const helperText = {
-  id: '아이디를 입력하세요',
-  password: '비밀번호를 입력하세요',
-};
-
 function LoginPage() {
-  const [warningAlertInfo, setWarningAlertInfo] = useState({
-    visible: false,
-    message: '',
-  });
-
   const navigate = useNavigate();
   const [, setToken] = useCookieToken(GAMEBU_TOKEN);
   const { login } = useActionContext();
   const { isLogin } = useValueContext();
+  const renderSnackbar = useOurSnackbar();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues: {
       id: '',
@@ -119,39 +115,27 @@ function LoginPage() {
       const isError = Boolean(response);
       if (isError) {
         if (response?.status === 400) {
-          setWarningAlertInfo({
-            visible: true,
-            message: '아이디 또는 비밀번호를 잘못 입력했습니다',
-          });
+          renderSnackbar('아이디나 비밀번호가 다릅니다');
         } else {
-          setWarningAlertInfo({
-            visible: true,
-            message: '로그인 요청 중 오류가 발생했습니다',
-          });
+          renderSnackbar('로그인', false);
         }
         return;
       }
 
       setToken(token);
+      renderSnackbar('로그인', true);
       login(user);
     },
     validate: ({ id, password }) => {
       const newErrors = {};
-      if (!id) newErrors.id = '아이디를 입력하지 않았습니다';
+      if (!id) newErrors.id = '아이디를 입력하세요';
       const filteredId = id.replace(regexId, '');
       if (id !== filteredId)
         newErrors.id = '사용할 수 없는 문자가 포함되어 있습니다';
-      if (!password) newErrors.password = '비밀번호를 입력하지 않았습니다';
+      if (!password) newErrors.password = '비밀번호를 입력하세요';
       return newErrors;
     },
   });
-
-  const handleClickAlert = useCallback(() => {
-    setWarningAlertInfo((prevWarningAlertInfo) => ({
-      ...prevWarningAlertInfo,
-      visible: false,
-    }));
-  }, []);
 
   useEffect(() => {
     if (isLogin) {
@@ -162,29 +146,24 @@ function LoginPage() {
   return (
     <ContentWrapper>
       <GoBack />
-      <Collapse in={warningAlertInfo.visible}>
-        <LoginWarningAlert severity="warning" onClose={handleClickAlert}>
-          {warningAlertInfo.message}
-        </LoginWarningAlert>
-      </Collapse>
       <FlexGrowBox grow={1} />
       <LoginHeader>Login</LoginHeader>
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
-          <TextField
-            placeholder={helperText.id}
+          <StyledTextField
+            label="아이디"
             values={values.id}
             onChange={handleChange}
-            helperText={errors.id || helperText.id}
+            helperText={errors.id}
             fullWidth
             name="id"
             error={Boolean(errors.id)}
           />
-          <TextField
-            placeholder={helperText.password}
+          <StyledTextField
+            label="비밀번호"
             value={values.password}
             onChange={handleChange}
-            helperText={errors.password || helperText.password}
+            helperText={errors.password}
             fullWidth
             name="password"
             type="password"
