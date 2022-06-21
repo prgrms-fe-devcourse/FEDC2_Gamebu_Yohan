@@ -6,7 +6,6 @@ import { COLOR_SIGNATURE } from '@utils/color';
 import Divider from '@components/Divider';
 import ChannelImage from '@components/Channels/ChannelImageContainer';
 import ChannelPostCard from '@components/Channels/ChannelPostCard';
-import channelImageObject from '@assets/ChannelImages/ChannelImageFiles';
 import PostCardContainer from 'react-infinite-scroll-component';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
@@ -15,6 +14,7 @@ import useActionContext from '@hooks/useActionContext';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import { IconButton } from '@mui/material';
 import useOurSnackbar from '@hooks/useOurSnackbar';
+import bannerImages from '@assets/ChannelImages';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -175,7 +175,7 @@ function ChannelPage() {
     <>
       <ChannelContainer>
         <ImageContainer>
-          <ChannelImage src={channelImageObject[channelId]} />
+          <ChannelImage src={bannerImages[channelId]} />
           {isLogin && (
             <IconWrapper onClick={handleFavoriteClick}>
               {isFavorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
