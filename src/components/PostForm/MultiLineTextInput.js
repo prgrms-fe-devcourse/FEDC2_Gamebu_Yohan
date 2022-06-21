@@ -24,7 +24,7 @@ export default function MultiLineTextInput({
       error={error}
       placeholder={placeholder}
       helperText={error ? helperText : ''}
-      minRows={rows}
+      rows={rows}
     />
   );
 }
