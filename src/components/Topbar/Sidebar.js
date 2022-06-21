@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Drawer from '@mui/material/Drawer';
@@ -15,7 +15,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, Route, Navigate } from 'react-router-dom';
 import { CATEGORIES, CHANNELS } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
 import Header from '@components/Header';
@@ -62,12 +62,26 @@ function Sidebar({ open, onClose }) {
   const { logout } = useActionContext();
   const [userFavorites, setUserFavorites] = useState([]);
   const [channels] = useState(CHANNELS);
+  const [isRedirect, setIsRedirect] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (user && user.username) {
       setUserFavorites(JSON.parse(user.username));
+    } else {
+      setUserFavorites([]);
     }
   }, [user]);
+
+  const setRedirectPaths = useCallback(() => {
+    const currentPaths = location.pathname;
+    const splitPaths = currentPaths.split('/');
+    const checkPaths = splitPaths.some(
+      (path) => path === 'alram' || path === 'write' || path === 'edit'
+    );
+
+    setIsRedirect(checkPaths);
+  }, [location, setIsRedirect]);
 
   return (
     <Drawer variant="temporary" open={open} onClose={onClose}>
@@ -154,17 +168,17 @@ function Sidebar({ open, onClose }) {
             onClick={() => {
               logout();
               onClose();
+              setRedirectPaths();
             }}
             variant="contained"
             sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
-            <Link to="/#">
-              <LogoutIcon sx={{ fontSize: 'small', mr: 1 }} />
-              로그아웃
-            </Link>
+            <LogoutIcon sx={{ fontSize: 'small', mr: 1 }} />
+            로그아웃
           </Button>
         )}
       </AuthContainer>
+      {isRedirect && <Route path="/" element={<Navigate replace to="/" />} />}
     </Drawer>
   );
 }
