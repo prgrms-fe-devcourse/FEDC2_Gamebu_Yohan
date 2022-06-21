@@ -54,6 +54,7 @@ TagList.propTypes = {
   sx: PropTypes.object,
   itemsx: PropTypes.object,
   chipsx: PropTypes.object,
+  avatarsx: PropTypes.object,
 };
 
 TagList.defaultProps = {
@@ -61,4 +62,5 @@ TagList.defaultProps = {
   sx: {},
   itemsx: {},
   chipsx: {},
+  avatarsx: {},
 };
