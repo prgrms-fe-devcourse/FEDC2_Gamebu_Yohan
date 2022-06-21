@@ -61,8 +61,14 @@ function ContextProvider({ children }) {
     const { initialLoading } = state;
     if (initialLoading) {
       getAuthUser();
+      return;
     }
   }, [state, getAuthUser]);
+
+  useEffect(() => {
+    console.log('state');
+    console.log(state);
+  }, [state]);
 
   return (
     <actionContext.Provider value={actions}>

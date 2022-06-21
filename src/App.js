@@ -37,8 +37,8 @@ function App() {
             <Route path="channel/categories" element={<CategoriesPage />} />
             <Route path="posts/write" element={<PostWritePage />} />
             <Route path="posts/edit/:postId" element={<PostEditPage />} />
+            <Route path="posts/details/:postId" element={<PostDetailPage />} />
           </Route>
-          <Route path="posts/details/:postId" element={<PostDetailPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
           <Route path="profile/:userId" element={<ProfilePage />} />
