@@ -1,8 +1,17 @@
 import Card from '@components/Card';
+// import { likePost, unlikePost } from '@utils/test';
 
 export default {
   title: 'Component/Card',
   component: Card,
+  argTypes: {
+    badge: {
+      control: { type: 'boolean' },
+    },
+    icon: {
+      control: { type: 'boolean' },
+    },
+  },
 };
 const userObject = {
   role: 'Regular',
@@ -43,3 +52,7 @@ const postObject = {
 export function Post() {
   return <Card.Post>{postObject}</Card.Post>;
 }
+
+// export function Author(args) {
+//   return <Card.Author {...args} data={likePost} />;
+// }
