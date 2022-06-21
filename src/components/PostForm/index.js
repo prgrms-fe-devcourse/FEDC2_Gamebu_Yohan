@@ -31,7 +31,7 @@ export default function PostForm({ channelId, postId, post }) {
   const renderSnackbar = useOurSnackbar();
   useEffect(() => {
     if (isComplete) {
-      navigate(navigateTo);
+      navigate(navigateTo, { replace: true });
     }
   }, [isComplete, navigate, navigateTo]);
   const initialValues = post || { title: '', tags: [], content: '' };
