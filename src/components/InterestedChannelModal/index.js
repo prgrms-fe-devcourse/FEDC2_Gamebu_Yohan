@@ -7,6 +7,9 @@ import { COLOR_MAIN } from '@utils/color';
 import useCookieToken from '@hooks/useCookieToken';
 import { CHANNEL_MODAL_VISIBLE } from '@utils/constants';
 import useValueContext from '@hooks/useValueContext';
+import useActionContext from '@hooks/useActionContext';
+import useOurSnackbar from '@hooks/useOurSnackbar';
+import { authUserAPI } from '@utils/user';
 
 const ModalContentWrapper = styled(Box)`
   position: absolute;
@@ -49,13 +52,30 @@ function InterestedChannelModal() {
     'on'
   );
   const [open, setOpen] = useState(false);
-  const { user } = useValueContext();
+  const { initialLoading, user } = useValueContext();
+  const { login } = useActionContext();
+  const renderSnackbar = useOurSnackbar();
   const ref = useRef();
 
   const handleCloseModal = useCallback(() => {
     setCookie(ref.current.checked ? 'off' : 'on');
     setOpen(false);
   }, [setCookie]);
+
+  const getAuthUser = useCallback(async () => {
+    authUserAPI().then((result) => {
+      if (result) {
+        login(result);
+        renderSnackbar('자동 로그인', true);
+      }
+    });
+  }, [login, renderSnackbar]);
+
+  useEffect(() => {
+    if (initialLoading) {
+      getAuthUser();
+    }
+  }, [initialLoading, getAuthUser]);
 
   useEffect(() => {
     if (openModalInCookie === 'on' && user) {

@@ -6,6 +6,7 @@ export default function MultiLineTextInput({
   label,
   value,
   onChange,
+  onBlur,
   error,
   placeholder,
   rows,
@@ -18,6 +19,7 @@ export default function MultiLineTextInput({
       name={name}
       label={label}
       value={value}
+      onBlur={onBlur}
       onChange={onChange}
       error={error}
       placeholder={placeholder}
@@ -31,6 +33,7 @@ MultiLineTextInput.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
+  onBlur: PropTypes.func,
   onChange: PropTypes.func.isRequired,
   error: PropTypes.bool,
   placeholder: PropTypes.string,
@@ -41,6 +44,7 @@ MultiLineTextInput.propTypes = {
 MultiLineTextInput.defaultProps = {
   label: '',
   value: '',
+  onBlur: () => {},
   error: false,
   helperText: '',
   placeholder: '',

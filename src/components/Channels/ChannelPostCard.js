@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { PropTypes } from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { COLOR_MAIN } from '@utils/color';
+import { COLOR_BG, COLOR_SIGNATURE } from '@utils/color';
 import { Card } from '@mui/material';
 import Divider from '@components/Divider';
-import Tag from '@components/Tag';
-import IconButton from '@mui/material/IconButton';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { authFetch } from '@utils/fetch';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import { useNavigate } from 'react-router-dom';
+import TagList from '@components/TagChip/TagList';
+import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
 
-const HeaderAndButton = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-const UserNameAndDate = styled.div`
+const InfoWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -24,194 +18,112 @@ const UserNameAndDate = styled.div`
   font-size: 0.75rem;
 `;
 
-const TagAndHeart = styled.div`
+const FooterContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 0.25rem;
 `;
 
 const Title = styled.div`
   font-size: 1rem;
 `;
 
-const ApplicaitonButton = styled.div`
-  width: 4rem;
-  height: 1.2rem;
-  background-color: ${(props) => (props.isClick ? '#3f51b5' : '#e91e63')};
-  color: #eee;
-  font-size: 0.75rem;
-  text-align: center;
-  border-radius: 0.3rem;
-  vertical-align: middle;
-  line-height: 1.2rem;
-`;
-
 const CardContainer = styled(Card)`
   box-sizing: border-box;
-  background-color: ${COLOR_MAIN};
-  width: 100%;
-  height: 5rem;
-  margin-bottom: 0.5rem;
-  padding: 1rem 1rem;
-  border-radius: 0.5rem;
   display: flex;
+  width: 100%;
+  padding: 1rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 0.5rem;
+  justify-content: center;
+  background-color: ${COLOR_BG};
 `;
 
 const TagSpan = styled.span`
   margin-left: 0.5rem;
+  color: ${COLOR_SIGNATURE};
 `;
 
-const HeartIconButton = styled(IconButton)`
-  margin-left: 2rem;
+const TagListWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-grow: 1;
+  & .MuiList-root {
+    padding: 0.25rem;
+  }
 `;
 
-const TagDummy = [
-  'AD',
-  '솔로랭크',
-  '자유랭크',
-  '파티모집',
-  '레이드함께',
-  '추가태그칸',
-];
-
-const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
-
-function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
-  const [buttonIsClicked, setButtonIsClicked] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes.length);
-
-  // TODO: 사용자 id를 가져와야함
-  const userId = '629f07fa7e01ad1cb7250131';
-
-  useEffect(() => {
-    console.log(title);
-    setLikeCount(likes.length);
-    const data = likes.find((item) => item.user === userId);
-
-    if (data) {
-      const id = data._id;
-      console.log('id: ', id);
-    }
-
-    // 새로고침했을 때  내가 좋아요 눌러놓은 페이지 인지 확인
-    const filteredLikes = likes.filter((item) => item.user === userId);
-    if (filteredLikes.length > 0) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
-    }
-  }, [likes, title]);
-
-  const applicationButtonClick = (e) => {
-    e.stopPropagation();
-    console.log('buttonClick');
-    setButtonIsClicked(!buttonIsClicked);
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 0.25rem;
+`;
+function ChannelPostCard({
+  title,
+  tag,
+  updatedAt,
+  fullName,
+  numberOfLike,
+  isLiked,
+  numberOfComment,
+  postId,
+}) {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/posts/details/${postId}`);
   };
 
-  const postClick = () => {
-    console.log('postClick!');
-  };
-
-  const fetchLike = async (boolean) => {
-    if (boolean) {
-      // array.find를 통해서 사용자가 누른 좋아요 객체를 반환받고 객체의 id 값을 delete api body에 담아서 보낸다
-      const data = likes.find((item) => item.user === userId);
-
-      if (!data) return;
-
-      const id = data._id;
-
-      await authFetch('likes/delete', {
-        method: 'DELETE',
-        body: {
-          id,
-        },
-      });
-    } else {
-      await authFetch('likes/create', {
-        method: 'POST',
-        body: {
-          postId,
-        },
-      });
-    }
-  };
-
-  const heartClick = (e) => {
-    e.stopPropagation();
-    if (isLiked) {
-      fetchLike(isLiked);
-      setLikeCount(likeCount - 1);
-    } else {
-      fetchLike(isLiked);
-      setLikeCount(likeCount + 1);
-    }
-    // isLiked 가 true 면 좋아요취소 api 후 낙관적업데이트 : 좋아요 후 낙관적 업데이트
-    setIsLiked(!isLiked);
-    console.log('heartClick');
-  };
   return (
-    <CardContainer onClick={postClick}>
-      <HeaderAndButton>
-        <Title>{title}</Title>
-        <ApplicaitonButton
-          onClick={applicationButtonClick}
-          isClick={buttonIsClicked}
-        >
-          {buttonIsClicked ? '신청완료' : '신청하기'}
-        </ApplicaitonButton>
-      </HeaderAndButton>
-      <UserNameAndDate>
+    <CardContainer onClick={handleClick}>
+      <Title>{title}</Title>
+      <InfoWrapper>
         {fullName}
         <Divider type="vertical" />
         {updatedAt.slice(0, 10)}
-      </UserNameAndDate>
-      <TagAndHeart>
-        {TagDummy.slice(0, 4).map((item, index) => (
-          <Tag
-            backgroundColor={TagColor[index]}
-            content={item}
-            key={item}
-            style={{
-              boxSizing: 'borderBox',
-              borderRadius: '0.5rem',
-              padding: '0.1rem 0.25rem',
-              fontSize: '0.75rem',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: '#eee',
-              marginLeft: '0.2rem',
-              marginRight: 0,
-            }}
-          />
-        ))}
-        {TagDummy.length > 4 ? (
-          <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
-        ) : null}
-        <HeartIconButton onClick={heartClick}>
+      </InfoWrapper>
+      <FooterContainer>
+        <TagListWrapper>
+          <TagList tags={tag.slice(0, 3)} simple />
+          {tag.length > 3 && <TagSpan>+{tag.length - 3}</TagSpan>}
+        </TagListWrapper>
+        <IconContainer>
+          <CommentRoundedIcon fontSize="small" />
+          {numberOfComment}
+        </IconContainer>
+        <IconContainer>
           {isLiked ? (
-            <FavoriteIcon color="error" />
+            <FavoriteRoundedIcon fontSize="small" color="error" />
           ) : (
-            <FavoriteBorderIcon color="error" />
+            <FavoriteBorderRoundedIcon fontSize="small" color="error" />
           )}
-        </HeartIconButton>
-        {likeCount}
-      </TagAndHeart>
+          {numberOfLike}
+        </IconContainer>
+      </FooterContainer>
     </CardContainer>
   );
 }
 
 ChannelPostCard.propTypes = {
-  likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
+  tag: PropTypes.array.isRequired,
   updatedAt: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   postId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  numberOfLike: PropTypes.number,
+  isLiked: PropTypes.bool,
+  numberOfComment: PropTypes.number,
+};
+
+ChannelPostCard.defaultProps = {
+  numberOfLike: 0,
+  isLiked: false,
+  numberOfComment: 0,
 };
 
 export default ChannelPostCard;

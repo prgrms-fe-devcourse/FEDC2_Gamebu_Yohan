@@ -248,25 +248,6 @@ function ProfilePage() {
           );
         })}
       </MyPostContainer>
-      <MyPostContainer>
-        <div>내가 좋아요 한 글</div>
-        {targetUser?.likes.map((like) => {
-          const { _id, channel, comments } = like;
-          let { title } = like;
-          if (title.startsWith('{')) {
-            title = JSON.parse(title).dt;
-          }
-          return (
-            <RecentPostsWrapper key={_id}>
-              <PostCategory>{CATEGORIES[channel]}</PostCategory>
-              <Link to={`posts/details/${_id}`}>
-                <PostTitle>{title}</PostTitle>
-              </Link>
-              <PostComments>[{comments.length}]</PostComments>
-            </RecentPostsWrapper>
-          );
-        })}
-      </MyPostContainer>
     </ContentWrapper>
   );
 }

@@ -19,12 +19,13 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-slick": "^0.29.0",
+    "serve": "^13.0.2",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "GENERATE_SOURCEMAP=false craco build",
     "test": "craco test",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"

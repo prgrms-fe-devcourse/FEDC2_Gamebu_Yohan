@@ -81,6 +81,7 @@ const sliderOptions = {
   slidesToScroll: 1,
   centerMode: true,
   centerPadding: '0px',
+  arrows: false,
 };
 
 function HomePage() {
@@ -146,7 +147,7 @@ function HomePage() {
               title = JSON.parse(title).tt || JSON.parse(title).dt;
               // TODO : 추후 게시글 정리 후 dt로 통일
             }
-            const categoriesId = item.channel._id;
+            const categoriesId = item.channel?._id;
             const comments = item.comments.length;
 
             return (

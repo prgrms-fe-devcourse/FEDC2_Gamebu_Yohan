@@ -6,7 +6,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import styled from '@emotion/styled';
 import ClickAwayPopper from '@components/ClickAwayPopper';
+import PeopleIcon from '@mui/icons-material/People';
 import Sidebar from './Sidebar';
+import UserSidebar from './UserSidebar';
 
 const GrowBlank = styled.div`
   flex-grow: 1;
@@ -14,6 +16,7 @@ const GrowBlank = styled.div`
 
 function Topbar() {
   const [open, setOpen] = useState(false);
+  const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 
   const handleDrawerOpen = useCallback(() => {
     setOpen(true);
@@ -21,6 +24,14 @@ function Topbar() {
 
   const handleDrawerClose = useCallback(() => {
     setOpen(false);
+  }, []);
+
+  const handleUserDrawerOpen = useCallback(() => {
+    setUserDrawerOpen(true);
+  }, []);
+
+  const handleUserDrawerClose = useCallback(() => {
+    setUserDrawerOpen(false);
   }, []);
 
   return (
@@ -35,6 +46,13 @@ function Topbar() {
             <MenuIcon />
           </IconButton>
           <GrowBlank />
+          <IconButton
+            color="inherit"
+            aria-label="open userDrawer"
+            onClick={handleUserDrawerOpen}
+          >
+            <PeopleIcon />
+          </IconButton>
           <ClickAwayPopper
             id="alarm-popper"
             placement="auto-end"
@@ -60,6 +78,7 @@ function Topbar() {
         </Toolbar>
       </AppBar>
       <Sidebar open={open} onClose={handleDrawerClose} />
+      <UserSidebar open={userDrawerOpen} onClose={handleUserDrawerClose} />
     </>
   );
 }
