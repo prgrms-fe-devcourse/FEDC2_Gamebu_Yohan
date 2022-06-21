@@ -146,7 +146,7 @@ function ProfilePage() {
     </LinkButton>
   ) : null;
   const Name = isMe ? user?.fullName : targetUser?.fullName;
-  const EditfullNameIcon = isMe ? (
+  const EditFullNameIcon = isMe ? (
     <>
       <EditIconRight onClick={handleClickEditIcon} />
       <EditFullNameModal
@@ -167,15 +167,15 @@ function ProfilePage() {
       <ThumbnailCover>
         <Thumbnail
           image={targetUser?.image || null}
-          name={targetUser?.fullName || '로딩 중'}
-          badge={!targetUser}
+          name={targetUser?.fullName || ' '}
+          badge={!targetUser || false}
           isOnline={targetUser?.isOnline}
         />
       </ThumbnailCover>
       <ProfileMenuWrapper>
         <UserFullNameWrapper>
-          <Span>{Name}</Span>
-          {EditfullNameIcon}
+          <Span>{Name || ' '}</Span>
+          {EditFullNameIcon}
         </UserFullNameWrapper>
         <hr />
         <UserMenuWrapper>
