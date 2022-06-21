@@ -16,7 +16,12 @@ const Container = styled.div`
   flex-direction: column;
   gap: 0.5rem;
 `;
-
+const TitleWrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
 const InfoWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -42,11 +47,20 @@ const AccountIcon = styled(AccountBoxIcon)`
   font-size: 1.5rem;
   cursor: pointer;
 `;
+// TODO: 제목 작성 방식 확립 이후 삭제
+const parseTitle = (title) => {
+  try {
+    return JSON.parse(title);
+  } catch (e) {
+    return {};
+  }
+};
 function Post({ children }) {
   const { title, createdAt, comments, likes } = children;
+  const { dt: postTitle } = parseTitle(title);
   return (
     <Container>
-      <div>{title}</div>
+      <TitleWrapper>{postTitle || title}</TitleWrapper>
       <InfoWrapper>
         <AccountIcon />
         <div style={{ flexGrow: 1 }}>{createdAt.substring(0, 10)}</div>
@@ -70,7 +84,11 @@ Post.propTypes = {
     createdAt: PropTypes.string.isRequired,
     comments: PropTypes.array.isRequired,
     likes: PropTypes.array.isRequired,
-  }).isRequired,
+  }),
+};
+
+Post.defaultProps = {
+  children: null,
 };
 
 export default Post;

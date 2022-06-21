@@ -58,8 +58,15 @@ function InterestedChannelModal() {
   }, [setCookie]);
 
   useEffect(() => {
-    if (openModalInCookie === 'on' && user && !user?.username?.length) {
-      setOpen(true);
+    if (openModalInCookie === 'on' && user) {
+      try {
+        const NoneInterestedChannel = !JSON.parse(user.username)?.length;
+        if (NoneInterestedChannel) {
+          setOpen(true);
+        }
+      } catch (error) {
+        setOpen(true);
+      }
     }
   }, [openModalInCookie, user]);
 

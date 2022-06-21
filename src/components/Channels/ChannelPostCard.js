@@ -4,11 +4,12 @@ import styled from '@emotion/styled';
 import { COLOR_MAIN } from '@utils/color';
 import { Card } from '@mui/material';
 import Divider from '@components/Divider';
-import Tag from '@components/Tag';
 import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { authFetch } from '@utils/fetch';
+import { useNavigate } from 'react-router-dom';
+import TagList from '@components/TagChip/TagList';
 
 const HeaderAndButton = styled.div`
   width: 100%;
@@ -24,11 +25,10 @@ const UserNameAndDate = styled.div`
   font-size: 0.75rem;
 `;
 
-const TagAndHeart = styled.div`
+const Footer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
-  margin-bottom: 1rem;
 `;
 
 const Title = styled.div`
@@ -58,44 +58,121 @@ const CardContainer = styled(Card)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 `;
 
 const TagSpan = styled.span`
   margin-left: 0.5rem;
+  color: #8e24aa;
 `;
 
-const HeartIconButton = styled(IconButton)`
-  margin-left: 2rem;
+const HeartIconButton = styled(IconButton)``;
+
+const TagPartContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  height: 2rem;
 `;
 
-const TagDummy = [
-  'AD',
-  '솔로랭크',
-  '자유랭크',
-  '파티모집',
-  '레이드함께',
-  '추가태그칸',
-];
+const LikeButtonContainer = styled.div`
+  height: 2rem;
+  display: flex;
+  align-items: center;
+`;
 
-const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
+export const TagColor = ['#c51162', '#26a69a', '#29b6f6', '#aed581'];
 
-function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
+function Header({ title, onClick, isClicked }) {
+  return (
+    <HeaderAndButton>
+      <Title>{title}</Title>
+      <ApplicaitonButton onClick={onClick} isClick={isClicked}>
+        {isClicked ? '신청완료' : '신청하기'}
+      </ApplicaitonButton>
+    </HeaderAndButton>
+  );
+}
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isClicked: PropTypes.bool.isRequired,
+};
+
+function UserInfo({ name, updateDate }) {
+  return (
+    <UserNameAndDate>
+      {name}
+      <Divider type="vertical" />
+      {updateDate}
+    </UserNameAndDate>
+  );
+}
+
+UserInfo.propTypes = {
+  name: PropTypes.string.isRequired,
+  updateDate: PropTypes.string.isRequired,
+};
+
+function TagPart({ tag }) {
+  return (
+    <TagPartContainer>
+      <TagList tags={tag.slice(0, 4)} simple />
+      {tag.length > 4 ? <TagSpan>+{tag.length - 4}</TagSpan> : null}
+    </TagPartContainer>
+  );
+}
+TagPart.propTypes = {
+  tag: PropTypes.array.isRequired,
+};
+
+function LikeButton({ onClick, isLiked, likeCount }) {
+  return (
+    <LikeButtonContainer>
+      <HeartIconButton onClick={onClick}>
+        {isLiked ? (
+          <FavoriteIcon color="error" />
+        ) : (
+          <FavoriteBorderIcon color="error" />
+        )}
+      </HeartIconButton>
+      {likeCount}
+    </LikeButtonContainer>
+  );
+}
+LikeButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  isLiked: PropTypes.bool.isRequired,
+  likeCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+};
+
+function ChannelPostCard({
+  title,
+  updatedAt,
+  fullName,
+  postId,
+  likes,
+  tag,
+  channelId,
+  comments,
+  content,
+  authorId,
+  changeLikeCount,
+}) {
   const [buttonIsClicked, setButtonIsClicked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes.length);
+  const navigate = useNavigate();
 
   // TODO: 사용자 id를 가져와야함
   const userId = '629f07fa7e01ad1cb7250131';
 
   useEffect(() => {
-    console.log(title);
     setLikeCount(likes.length);
-    const data = likes.find((item) => item.user === userId);
-
-    if (data) {
-      const id = data._id;
-      console.log('id: ', id);
-    }
 
     // 새로고침했을 때  내가 좋아요 눌러놓은 페이지 인지 확인
     const filteredLikes = likes.filter((item) => item.user === userId);
@@ -104,16 +181,44 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
     } else {
       setIsLiked(false);
     }
-  }, [likes, title]);
+  }, [likes]);
 
   const applicationButtonClick = (e) => {
     e.stopPropagation();
-    console.log('buttonClick');
     setButtonIsClicked(!buttonIsClicked);
   };
 
+  const toDetailInfo = {
+    tag,
+    title,
+    fullName,
+    comments,
+    content,
+    isLiked,
+    postId,
+    channelId,
+    authorId,
+    updatedAt,
+    likes,
+  };
+
   const postClick = () => {
-    console.log('postClick!');
+    navigate(`/posts/details/${postId}`, {
+      replace: false,
+      state: toDetailInfo,
+    });
+  };
+
+  const postNotification = async (res) => {
+    await authFetch('notifications/create', {
+      method: 'POST',
+      data: {
+        notificationType: 'LIKE',
+        notificationTypeId: res._id,
+        userId,
+        postId: res.post,
+      },
+    });
   };
 
   const fetchLike = async (boolean) => {
@@ -122,22 +227,25 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
       const data = likes.find((item) => item.user === userId);
 
       if (!data) return;
-
       const id = data._id;
-
       await authFetch('likes/delete', {
         method: 'DELETE',
-        body: {
+        data: {
           id,
         },
       });
+
+      changeLikeCount(false, postId);
     } else {
-      await authFetch('likes/create', {
+      const res = await authFetch('likes/create', {
         method: 'POST',
-        body: {
+        data: {
           postId,
         },
       });
+
+      postNotification(res);
+      changeLikeCount(true, postId, res._id);
     }
   };
 
@@ -146,62 +254,31 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
     if (isLiked) {
       fetchLike(isLiked);
       setLikeCount(likeCount - 1);
+      // 불린값을 통해 좋아요 취소인지 좋아요 추가인지 구분
     } else {
       fetchLike(isLiked);
       setLikeCount(likeCount + 1);
     }
     // isLiked 가 true 면 좋아요취소 api 후 낙관적업데이트 : 좋아요 후 낙관적 업데이트
     setIsLiked(!isLiked);
-    console.log('heartClick');
   };
+
   return (
     <CardContainer onClick={postClick}>
-      <HeaderAndButton>
-        <Title>{title}</Title>
-        <ApplicaitonButton
-          onClick={applicationButtonClick}
-          isClick={buttonIsClicked}
-        >
-          {buttonIsClicked ? '신청완료' : '신청하기'}
-        </ApplicaitonButton>
-      </HeaderAndButton>
-      <UserNameAndDate>
-        {fullName}
-        <Divider type="vertical" />
-        {updatedAt.slice(0, 10)}
-      </UserNameAndDate>
-      <TagAndHeart>
-        {TagDummy.slice(0, 4).map((item, index) => (
-          <Tag
-            backgroundColor={TagColor[index]}
-            content={item}
-            key={item}
-            style={{
-              boxSizing: 'borderBox',
-              borderRadius: '0.5rem',
-              padding: '0.1rem 0.25rem',
-              fontSize: '0.75rem',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: '#eee',
-              marginLeft: '0.2rem',
-              marginRight: 0,
-            }}
-          />
-        ))}
-        {TagDummy.length > 4 ? (
-          <TagSpan style={{ marginLeft: '0.5rem' }}>...</TagSpan>
-        ) : null}
-        <HeartIconButton onClick={heartClick}>
-          {isLiked ? (
-            <FavoriteIcon color="error" />
-          ) : (
-            <FavoriteBorderIcon color="error" />
-          )}
-        </HeartIconButton>
-        {likeCount}
-      </TagAndHeart>
+      <Header
+        title={title}
+        onClick={applicationButtonClick}
+        isClicked={buttonIsClicked}
+      />
+      <UserInfo name={fullName} updateDate={updatedAt.slice(0, 10)} />
+      <Footer>
+        <TagPart tag={tag} />
+        <LikeButton
+          onClick={heartClick}
+          isLiked={isLiked}
+          likeCount={likeCount}
+        />
+      </Footer>
     </CardContainer>
   );
 }
@@ -209,9 +286,17 @@ function ChannelPostCard({ title, updatedAt, fullName, postId, likes }) {
 ChannelPostCard.propTypes = {
   likes: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
+  tag: PropTypes.array.isRequired,
   updatedAt: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   postId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  authorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  channelId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    .isRequired,
+  comments: PropTypes.array.isRequired,
+  changeLikeCount: PropTypes.func.isRequired,
 };
 
 export default ChannelPostCard;

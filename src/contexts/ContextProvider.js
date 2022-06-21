@@ -8,17 +8,19 @@ import {
 import PropTypes from 'prop-types';
 import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
-import { authUserAPI } from '../utils/user/index';
+import { authUserAPI } from '@utils/user';
 
 export const valueContext = createContext();
 export const actionContext = createContext();
 
 function ContextProvider({ children }) {
-  const [token] = useCookieToken(GAMEBU_TOKEN);
+  const [token, setToken] = useCookieToken(GAMEBU_TOKEN);
   const [state, setState] = useState({
     test: 100,
     user: null,
     isLogin: false,
+    initialLoading: !!token,
+    ref: null,
   });
 
   const actions = useMemo(
@@ -30,26 +32,49 @@ function ContextProvider({ children }) {
         setState((prevState) => ({
           ...prevState,
           isLogin: true,
+          initialLoading: false,
           user,
         }));
       },
+      favorites(user) {
+        setState((prevState) => ({
+          ...prevState,
+          user,
+        }));
+      },
+      logout() {
+        setState((prevState) => ({
+          ...prevState,
+          isLogin: false,
+          user: null,
+        }));
+        setToken('');
+      },
+      setRef(ref) {
+        setState((prevState) => ({
+          ...prevState,
+          ref,
+        }));
+      },
     }),
-    []
+    [setToken]
   );
 
   const getAuthUser = useCallback(async () => {
-    authUserAPI().then((result) => actions.login(result));
+    authUserAPI().then((result) => result && actions.login(result));
   }, [actions]);
 
   useEffect(() => {
-    const { isLogin } = state;
-    if (isLogin) {
-      return;
-    }
-    if (token) {
+    const { initialLoading } = state;
+    if (initialLoading) {
       getAuthUser();
     }
-  }, [state, token, getAuthUser]);
+  }, [state, getAuthUser]);
+
+  useEffect(() => {
+    console.log('state');
+    console.log(state);
+  }, [state]);
 
   return (
     <actionContext.Provider value={actions}>

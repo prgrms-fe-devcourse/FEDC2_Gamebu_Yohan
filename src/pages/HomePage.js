@@ -6,16 +6,16 @@ import Header from '@components/Header';
 import Divider from '@components/Divider';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import { fetch } from '@utils/fetch';
-import useAsync from '@hooks/useAsync';
-import { CHANNELS, NOT_FOUND_IMAGE, CATEGORIES } from '@utils/constants';
+import {
+  CHANNELS,
+  NOT_FOUND_IMAGE,
+  CATEGORIES,
+  IMAGES,
+} from '@utils/constants';
 import { useEffect, useState } from 'react';
-import Image from '@components/Image';
 import { Link } from 'react-router-dom';
-import maple from '@assets/img/maple.png';
-import lol from '@assets/img/lol.png';
-import lostark from '@assets/img/lostark.png';
-import overwatch from '@assets/img/overwatch.png';
-import battleground from '@assets/img/battleground.png';
+import BannerImage from '@components/Image/BannerImage';
+import Button from '@mui/material/Button';
 
 const HomePageContainer = styled.div`
   display: flex;
@@ -72,32 +72,46 @@ const PostComments = styled.div`
   color: red;
 `;
 
-const settings = {
-  dots: false, // 슬라이드 밑에 점 보이게
-  infinite: true, // 무한으로 반복
-  // speed: 500,     // 넘기는 속도
-  autoplay: true, // 자동으로 넘김
-  autoplaySpeed: 1500, // 자동으로 넘어가는 속도
-  slidesToShow: 1, // 스크린에 보여지는 슬라이드 개수
-  slidesToScroll: 1, // n장씩 뒤로 넘어가게 함
-  centerMode: true, // 중앙정렬
-  centerPadding: '0px', // 0px 하면 슬라이드 끝쪽 이미지가 안잘림
+const sliderOptions = {
+  dots: false,
+  infinite: true,
+  autoplay: true,
+  autoplaySpeed: 1500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  centerMode: true,
+  centerPadding: '0px',
 };
 
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [channels, setChannels] = useState([]);
-  const [images] = useState([maple, lol, battleground, lostark, overwatch]);
+  const [offset, setOffset] = useState(0);
+  const [images] = useState(IMAGES);
   useEffect(() => {
     setChannels(CHANNELS);
   }, []);
 
   const getPostsList = async () => {
-    const mapleResult = await fetch('posts/channel/62a7367f5517e27ffcab3bcb');
-    const lolResult = await fetch('posts/channel/62a736925517e27ffcab3bcf');
-    const postsResult = mapleResult.concat(lolResult);
-    postsResult.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-    setPosts(postsResult);
+    const params = { offset, limit: 10 };
+    const fetchPosts = await fetch('posts', {
+      method: 'GET',
+      params,
+    });
+
+    setOffset(offset + 10);
+    setPosts(fetchPosts);
+  };
+
+  const getExtraPostsList = async () => {
+    const params = { offset, limit: 10 };
+    const fetchPosts = await fetch('posts', {
+      method: 'GET',
+      params,
+    });
+
+    setOffset(offset + 10);
+    setPosts(posts.concat(fetchPosts));
   };
 
   useEffect(() => {
@@ -109,18 +123,13 @@ function HomePage() {
       <SliderWrapper>
         <Header strong>게임 카테고리</Header>
         <Divider />
-        <Slider {...settings}>
+        <Slider {...sliderOptions}>
           {channels &&
-            channels.map((item, index) => {
+            channels.map((item) => {
               return (
                 <Link to={`/channel/${item.id}`} key={item.id}>
                   <SliderItemWrapper>
-                    <Image
-                      src={images[index] || NOT_FOUND_IMAGE}
-                      width={342}
-                      height={160}
-                      alt={`${item.name} 카테고리`}
-                    />
+                    <BannerImage src={images[item.id] || NOT_FOUND_IMAGE} />
                   </SliderItemWrapper>
                 </Link>
               );
@@ -134,14 +143,17 @@ function HomePage() {
           posts.map((item) => {
             let { title } = item;
             if (title.startsWith('{')) {
-              title = JSON.parse(title).tt;
+              title = JSON.parse(title).tt || JSON.parse(title).dt;
+              // TODO : 추후 게시글 정리 후 dt로 통일
             }
-            const categoriesId = item.channel._id;
+            const categoriesId = item.channel?._id;
             const comments = item.comments.length;
 
             return (
               <RecentPostsWrapper key={item._id}>
-                <PostCategory>{CATEGORIES[categoriesId]}</PostCategory>
+                <Link to={`channel/${categoriesId}`}>
+                  <PostCategory>{CATEGORIES[categoriesId]}</PostCategory>
+                </Link>
                 <Link to={`posts/details/${item._id}`}>
                   <PostTitle>{title}</PostTitle>
                 </Link>
@@ -149,6 +161,14 @@ function HomePage() {
               </RecentPostsWrapper>
             );
           })}
+        <Button
+          onClick={() => {
+            getExtraPostsList();
+          }}
+          variant="outlined"
+        >
+          더보기
+        </Button>
       </RecentPostsContainer>
     </HomePageContainer>
   );
