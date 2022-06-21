@@ -5,20 +5,27 @@ import { useNavigate } from 'react-router-dom';
 import useInterval from '@hooks/useInterval';
 import Card from '@components/Card';
 import SkeletonMessage from '@components/SkeletonMessage';
+import useCheckAuth from '@hooks/useCheckAuth';
+import useCookieToken from '@hooks/useCookieToken';
+import { GAMEBU_TOKEN } from '@utils/constants';
 
 function MessagePage() {
   const [myMessageList, setMyMessageList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useValueContext();
+  const [token] = useCookieToken(GAMEBU_TOKEN);
   const navigate = useNavigate();
+  useCheckAuth();
 
   const handleClickGetMessageButton = useCallback(() => {
-    console.log(123);
-    getMyMessageList().then((response) => {
-      setMyMessageList(response);
-      setLoading(false);
-    });
-  }, []);
+    if (token) {
+      console.log(123);
+      getMyMessageList().then((response) => {
+        setMyMessageList(response);
+        setLoading(false);
+      });
+    }
+  }, [token]);
 
   useInterval(handleClickGetMessageButton, 3000);
 

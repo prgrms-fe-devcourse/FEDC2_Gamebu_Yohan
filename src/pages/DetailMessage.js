@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom';
 import { getDetailMessage, postMessage } from '@utils/message';
 import useValueContext from '@hooks/useValueContext';
 import useInterval from '@hooks/useInterval';
+import useCheckAuth from '@hooks/useCheckAuth';
+import useCookieToken from '@hooks/useCookieToken';
+import { GAMEBU_TOKEN } from '@utils/constants';
 
 const MessageContainer = styled.div`
   & {
@@ -89,11 +92,15 @@ function DetailMessage() {
   const inputRef = useRef();
   const { user } = useValueContext();
   const { userId } = useParams();
+  const [token] = useCookieToken(GAMEBU_TOKEN);
+  useCheckAuth();
 
   const handleClickGetMessageButton = useCallback(() => {
-    console.log(456);
-    getDetailMessage(userId).then((response) => setMessageList(response));
-  }, [userId]);
+    if (token) {
+      console.log(456);
+      getDetailMessage(userId).then((response) => setMessageList(response));
+    }
+  }, [userId, token]);
 
   const keepInterval = useInterval(handleClickGetMessageButton, 1500);
 
