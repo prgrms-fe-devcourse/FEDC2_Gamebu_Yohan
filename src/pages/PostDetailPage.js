@@ -101,8 +101,11 @@ function PostDetailPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const snackbarAlarm = useOurSnackbar();
   const { title, content, tag } = useMemo(() => {
-    const { dt: title, dd: content, tg: tag } = JSON.parse(detailData.title);
-    return { title, content, tag };
+    if (detailData) {
+      const { dt: title, dd: content, tg: tag } = JSON.parse(detailData.title);
+      return { title, content, tag };
+    }
+    return { title: null, content: null, tag: null };
   }, [detailData]);
 
   const isOwnPost = useMemo(() => {

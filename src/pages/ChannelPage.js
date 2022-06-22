@@ -100,7 +100,7 @@ function ChannelPage() {
   const limit = 8;
 
   const latestOrder = useCallback(
-    (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
+    (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt),
     []
   );
   const popularityOrder = useCallback(
@@ -243,7 +243,7 @@ function ChannelPage() {
                     title={title}
                     tag={tag}
                     key={item._id}
-                    updatedAt={item.updatedAt}
+                    updatedAt={item.createdAt}
                     fullName={item.author.fullName}
                     numberOfLike={item.likes.length}
                     isLiked={Boolean(isLikedPost)}
