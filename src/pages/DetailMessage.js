@@ -109,6 +109,10 @@ const Title = styled.h1`
   flex-grow: 1;
 `;
 
+const FitDiv = styled.div`
+  width: fit-content;
+`;
+
 const Time = styled.div`
   text-align: ${({ isMe }) => (isMe ? 'end' : 'start')};
   font-size: 0.75rem;
@@ -172,7 +176,9 @@ function DetailMessage() {
         return (
           <span key={_id}>
             <Time isMe={isMe}>{createdAt.slice(0, 16).replace('T', ' ')}</Time>
-            <div className={`msg ${isMe ? 'sent' : 'rcvd'}`}>{message}</div>
+            <FitDiv className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
+              {message}
+            </FitDiv>
           </span>
         );
       })

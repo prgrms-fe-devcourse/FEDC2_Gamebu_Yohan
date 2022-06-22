@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { COLOR_BG, COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import useForm from '@hooks/useForm';
 import GoBack from '@components/GoBack';
-import { regexId, regexName } from '@utils/constants';
+import {
+  regexId,
+  regexName,
+  MAX_ID_LENGTH,
+  MAX_NAME_LENGTH,
+  MAX_PASSWORD_LENGTH,
+  MIN_LENGTH,
+} from '@utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { signupAPI } from '@utils/user';
 import useOurSnackbar from '@hooks/useOurSnackbar';
@@ -79,6 +86,10 @@ const SignupButton = styled(Button)`
 `;
 
 function SignupPage() {
+  const idRef = useRef();
+  const nameRef = useRef();
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
   const renderSnackbar = useOurSnackbar();
   const navigate = useNavigate();
   const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
@@ -112,14 +123,19 @@ function SignupPage() {
     },
     validate: ({ id, name, password, passwordConfirm }) => {
       const newErrors = {};
+      if (id.length < MIN_LENGTH) newErrors.id = '아이디가 너무 짧습니다';
       if (!id) newErrors.id = '아이디를 입력하세요';
       const filteredId = id.replace(regexId, '');
       if (id !== filteredId)
         newErrors.id = '아이디에 사용할 수 없는 문자가 포함되어 있습니다';
+
       if (!name) newErrors.name = '이름을 입력하세요';
       const filteredName = name.replace(regexName, '');
       if (name !== filteredName)
         newErrors.name = '이름에 사용할 수 없는 문자가 포함되어 있습니다';
+
+      if (password.length < MIN_LENGTH)
+        newErrors.password = '비밀번호가 너무 짧습니다';
       if (!password) newErrors.password = '비밀번호를 입력하세요';
       if (!passwordConfirm)
         newErrors.passwordConfirm = '비밀번호 확인을 입력하세요';
@@ -130,6 +146,21 @@ function SignupPage() {
     },
   });
 
+  useEffect(() => {
+    idRef.current
+      .querySelector('[name=id]')
+      .setAttribute('maxlength', MAX_ID_LENGTH);
+    nameRef.current
+      .querySelector('[name=name]')
+      .setAttribute('maxlength', MAX_NAME_LENGTH);
+    passwordRef.current
+      .querySelector('[name=password]')
+      .setAttribute('maxlength', MAX_PASSWORD_LENGTH);
+    passwordConfirmRef.current
+      .querySelector('[name=passwordConfirm]')
+      .setAttribute('maxlength', MAX_PASSWORD_LENGTH);
+  }, []);
+
   return (
     <ContentWrapper>
       <GoBack />
@@ -138,6 +169,7 @@ function SignupPage() {
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
           <StyledTextField
+            ref={idRef}
             label="아이디"
             values={values.id}
             onChange={handleChange}
@@ -147,6 +179,7 @@ function SignupPage() {
             error={Boolean(errors.id)}
           />
           <StyledTextField
+            ref={nameRef}
             label="이름"
             values={values.name}
             onChange={handleChange}
@@ -156,6 +189,7 @@ function SignupPage() {
             error={Boolean(errors.name)}
           />
           <StyledTextField
+            ref={passwordRef}
             label="비밀번호"
             value={values.password}
             onChange={handleChange}
@@ -167,6 +201,7 @@ function SignupPage() {
             error={Boolean(errors.password)}
           />
           <StyledTextField
+            ref={passwordConfirmRef}
             label="비밀번호 확인"
             value={values.passwordConfirm}
             onChange={handleChange}
