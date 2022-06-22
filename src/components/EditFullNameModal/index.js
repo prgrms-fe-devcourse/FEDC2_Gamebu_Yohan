@@ -9,7 +9,7 @@ import useValueContext from '@hooks/useValueContext';
 import useActionContext from '@hooks/useActionContext';
 import { COLOR_MAIN } from '@utils/color';
 import { changeMyInfoAPI } from '@utils/user';
-import { regexName } from '@utils/constants';
+import { regexName, MAX_NAME_LENGTH } from '@utils/constants';
 
 const ModalContentWrapper = styled(Box)`
   position: absolute;
@@ -81,6 +81,8 @@ function EditFullNameModal({ visible, handleCloseModal, onSuccess, onError }) {
       const filteredName = fullName.replace(regexName, '');
       if (fullName !== filteredName)
         newErrors.fullName = '사용할 수 없는 문자가 포함되어 있습니다';
+      if (fullName.length > MAX_NAME_LENGTH)
+        newErrors.fullName = '변경할 이름이 너무 깁니다';
       return newErrors;
     },
   });
