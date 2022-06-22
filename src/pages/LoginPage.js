@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -10,7 +10,13 @@ import useCookieToken from '@hooks/useCookieToken';
 import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
 import GoBack from '@components/GoBack';
-import { GAMEBU_TOKEN, regexId } from '@utils/constants';
+import {
+  GAMEBU_TOKEN,
+  regexId,
+  MAX_ID_LENGTH,
+  MAX_PASSWORD_LENGTH,
+  MIN_LENGTH,
+} from '@utils/constants';
 import { loginAPI } from '@utils/user';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 
@@ -93,6 +99,8 @@ const SignupLink = styled(Link)`
 `;
 
 function LoginPage() {
+  const idRef = useRef();
+  const passwordRef = useRef();
   const navigate = useNavigate();
   const [, setToken] = useCookieToken(GAMEBU_TOKEN);
   const { login } = useActionContext();
@@ -128,14 +136,27 @@ function LoginPage() {
     },
     validate: ({ id, password }) => {
       const newErrors = {};
+      if (id.length < MIN_LENGTH) newErrors.id = '아이디가 너무 짧습니다';
       if (!id) newErrors.id = '아이디를 입력하세요';
       const filteredId = id.replace(regexId, '');
       if (id !== filteredId)
         newErrors.id = '사용할 수 없는 문자가 포함되어 있습니다';
+
+      if (password.length < MIN_LENGTH)
+        newErrors.password = '비밀번호가 너무 짧습니다';
       if (!password) newErrors.password = '비밀번호를 입력하세요';
       return newErrors;
     },
   });
+
+  useEffect(() => {
+    idRef.current
+      .querySelector('[name=id]')
+      .setAttribute('maxlength', MAX_ID_LENGTH);
+    passwordRef.current
+      .querySelector('[name=password]')
+      .setAttribute('maxlength', MAX_PASSWORD_LENGTH);
+  }, []);
 
   useEffect(() => {
     if (isLogin) {
@@ -151,6 +172,7 @@ function LoginPage() {
       <FormWrapper>
         <Form onSubmit={handleSubmit}>
           <StyledTextField
+            ref={idRef}
             label="아이디"
             values={values.id}
             onChange={handleChange}
@@ -160,6 +182,7 @@ function LoginPage() {
             error={Boolean(errors.id)}
           />
           <StyledTextField
+            ref={passwordRef}
             label="비밀번호"
             value={values.password}
             onChange={handleChange}

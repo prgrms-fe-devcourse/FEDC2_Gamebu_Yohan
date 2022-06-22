@@ -54,7 +54,6 @@ function BottomNavBar() {
         showLabels
         value={value}
         onChange={(_, newValue) => {
-          if (newValue === value) return;
           if (newValue === 3 && !isLogin) {
             setVisible(true);
             return;

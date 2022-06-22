@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { ChevronLeft, StarRate, Login, Logout } from '@mui/icons-material';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import {
   List,
   ListItem,
@@ -33,9 +35,11 @@ const HeaderWrapper = styled.div`
 `;
 
 const ContentWrapper = styled.div`
+  box-sizing: border-box;
   padding: 0.5rem;
+  width: 100%;
   margin-bottom: 0.5rem;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   text-align: center;
 `;
 
@@ -60,7 +64,28 @@ const GameIcon = styled.img`
   width: 24px;
   height: 24px;
 `;
-
+const StyledDrawer = styled(Drawer)`
+  & .MuiDrawer-paper {
+    min-width: 15rem;
+    max-width: 20rem;
+    width: 60vw;
+  }
+`;
+const LinkButton = styled(Button)`
+  color: #424242;
+  & .MuiButton-startIcon {
+    color: #424242;
+  }
+  & a {
+    color: #424242;
+  }
+  &.MuiButton-root:hover {
+    background-color: #eeeeee;
+  }
+  &.MuiButton-root {
+    background-color: #eeeeee;
+  }
+`;
 function Sidebar({ open, onClose }) {
   const { user, isLogin } = useValueContext();
   const { logout } = useActionContext();
@@ -88,7 +113,7 @@ function Sidebar({ open, onClose }) {
   }, [location, setIsRedirect]);
 
   return (
-    <Drawer variant="temporary" open={open} onClose={onClose}>
+    <StyledDrawer variant="temporary" open={open} onClose={onClose}>
       <DrawerHeader>
         <IconButton onClick={onClose}>
           <ChevronLeft />
@@ -119,7 +144,9 @@ function Sidebar({ open, onClose }) {
           <Header>즐겨찾기 목록</Header>
         </HeaderWrapper>
         {!isLogin && (
-          <ContentWrapper>로그인 후 즐겨찾기를 등록해보세요.</ContentWrapper>
+          <ContentWrapper>
+            <Link to="/login">로그인</Link> 후 즐겨찾기를 등록해보세요.
+          </ContentWrapper>
         )}
         {isLogin && userFavorites.length === 0 ? (
           <ContentWrapper>즐겨찾기를 등록해보세요.</ContentWrapper>
@@ -158,32 +185,25 @@ function Sidebar({ open, onClose }) {
       </List>
       <AuthContainer>
         {!isLogin ? (
-          <Button
-            variant="contained"
-            sx={{ color: '#424242', bgcolor: '#eeeeee' }}
-          >
-            <Link to="/login">
-              <Login sx={{ fontSize: 'small', mr: 1 }} />
-              로그인
-            </Link>
-          </Button>
+          <LinkButton startIcon={<LoginRoundedIcon />} variant="contained">
+            <Link to="/login">로그인</Link>
+          </LinkButton>
         ) : (
-          <Button
+          <LinkButton
             onClick={() => {
               logout();
               onClose();
               setRedirectPaths();
             }}
+            startIcon={<LogoutRoundedIcon />}
             variant="contained"
-            sx={{ color: '#424242', bgcolor: '#eeeeee' }}
           >
-            <Logout sx={{ fontSize: 'small', mr: 1 }} />
             로그아웃
-          </Button>
+          </LinkButton>
         )}
       </AuthContainer>
       {isRedirect && <Route path="/" element={<Navigate replace to="/" />} />}
-    </Drawer>
+    </StyledDrawer>
   );
 }
 
