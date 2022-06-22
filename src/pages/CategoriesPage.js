@@ -119,6 +119,7 @@ function CategoriesPage() {
               {userFavorites.map((item) => (
                 <Link to={`/channel/${item}`} key={`${item}`}>
                   <CategoryItem
+                    likes
                     img={IMAGES[item]}
                     title={CATEGORIES[item]}
                     icon
