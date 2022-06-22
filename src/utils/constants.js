@@ -3,42 +3,41 @@ import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
 
 export const CHANNELS = [
   {
-    id: '62a7367f5517e27ffcab3bcb',
+    id: '62b2c99563a66405b814409e',
     name: '메이플스토리',
   },
   {
-    id: '62a736925517e27ffcab3bcf',
+    id: '62b2c98063a66405b8144096',
     name: '리그오브레전드',
   },
   {
-    id: '62a736a15517e27ffcab3bd5',
+    id: '62b2c9a363a66405b81440a2',
     name: '배틀그라운드',
   },
   {
-    id: '62a818db5517e27ffcab3ce2',
+    id: '62b2c9a963a66405b81440a6',
     name: '로스트아크',
   },
   {
-    id: '62a818e85517e27ffcab3ce6',
+    id: '62b2c9ae63a66405b81440aa',
     name: '오버워치',
   },
 ];
 
 export const CATEGORIES = {
-  '62a7367f5517e27ffcab3bcb': '메이플스토리',
-  '62a736925517e27ffcab3bcf': '리그오브레전드',
-  '62a736a15517e27ffcab3bd5': '배틀그라운드',
-  '62a818db5517e27ffcab3ce2': '로스트아크',
-  '62a818e85517e27ffcab3ce6': '오버워치',
-  '629f0c7c7e01ad1cb7250151': '임시 카테고리',
+  '62b2c99563a66405b814409e': '메이플스토리',
+  '62b2c98063a66405b8144096': '리그오브레전드',
+  '62b2c9a363a66405b81440a2': '배틀그라운드',
+  '62b2c9a963a66405b81440a6': '로스트아크',
+  '62b2c9ae63a66405b81440aa': '오버워치',
 };
 
 export const IMAGES = {
-  '62a7367f5517e27ffcab3bcb': maple,
-  '62a736925517e27ffcab3bcf': lol,
-  '62a736a15517e27ffcab3bd5': battleground,
-  '62a818db5517e27ffcab3ce2': lostark,
-  '62a818e85517e27ffcab3ce6': overwatch,
+  '62b2c99563a66405b814409e': maple,
+  '62b2c98063a66405b8144096': lol,
+  '62b2c9a363a66405b81440a2': battleground,
+  '62b2c9a963a66405b81440a6': lostark,
+  '62b2c9ae63a66405b81440aa': overwatch,
 };
 
 export const NOT_FOUND_IMAGE =
