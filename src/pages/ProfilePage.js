@@ -222,7 +222,7 @@ function ProfilePage() {
           return (
             <RecentPostsWrapper key={_id}>
               <PostCategory>{CATEGORIES[channel]}</PostCategory>
-              <Link to={`posts/details/${_id}`}>
+              <Link to={`/posts/details/${_id}`}>
                 <PostTitle>{title}</PostTitle>
               </Link>
               <PostComments>[{comments.length}]</PostComments>

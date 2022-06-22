@@ -25,11 +25,21 @@ const ChannelContainer = styled.div`
 
 const IconWrapper = styled(IconButton)`
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 0.5rem;
+  top: 0.5rem;
+  &.MuiIconButton-root {
+    width: 1.75rem;
+    height: 1.75rem;
+    background-color: white;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+      0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  }
+  &.MuiIconButton-root:hover {
+    background-color: white;
+  }
   & .MuiSvgIcon-root {
-    color: #c89f23;
-    font-size: 32px;
+    color: gold;
+    font-size: 2rem;
   }
 `;
 
@@ -63,6 +73,8 @@ const LinkButton = styled(IconButton)`
 
 const ImageContainer = styled.div`
   position: relative;
+  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+    0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 `;
 
 function ChannelPage() {
