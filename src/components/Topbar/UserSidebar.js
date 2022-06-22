@@ -13,6 +13,8 @@ import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
 import { getAllUserList } from '@utils/user';
 import Thumbnail from '@components/Thumbnail';
+import useValueContext from '@hooks/useValueContext';
+import Header from '@components/Header';
 
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paperAnchorRight {
@@ -27,6 +29,7 @@ const UserSiderbarHeader = styled(IconButton)`
 `;
 
 function UserSidebar({ open, onClose }) {
+  const { user } = useValueContext();
   const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
 
@@ -35,7 +38,6 @@ function UserSidebar({ open, onClose }) {
       getAllUserList().then((response) => setUserList(response));
     }
   }, [open]);
-
   return (
     <StyledDrawer
       variant="temporary"
@@ -44,29 +46,34 @@ function UserSidebar({ open, onClose }) {
       anchor="right"
     >
       <UserSiderbarHeader onClick={onClose}>
-        <h1>유저 목록</h1>
+        <Header level={1} strong fontSize="1.25rem">
+          유저 목록
+        </Header>
         <ChevronRightIcon />
       </UserSiderbarHeader>
       <Divider />
       <List>
-        {userList.map(({ _id, fullName, isOnline }) => {
-          return (
-            <ListItem key={_id} disablePadding>
-              <ListItemButton>
-                <ListItemIcon onClick={() => navigate(`/profile/${_id}`)}>
-                  <Thumbnail name={fullName} badge isOnline={isOnline} />
-                </ListItemIcon>
-                <ListItemText
-                  primary={fullName}
-                  onClick={() => {
-                    onClose();
-                    navigate(`/message/${_id}`);
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
+        {userList
+          .filter((item) => item._id !== user._id && item.role !== 'SuperAdmin')
+          .sort((a, b) => b.isOnline - a.isOnline)
+          .map(({ _id, fullName, isOnline }) => {
+            return (
+              <ListItem key={_id} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon onClick={() => navigate(`/profile/${_id}`)}>
+                    <Thumbnail name={fullName} badge isOnline={isOnline} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={fullName}
+                    onClick={() => {
+                      onClose();
+                      navigate(`/message/${_id}`);
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
       </List>
     </StyledDrawer>
   );
