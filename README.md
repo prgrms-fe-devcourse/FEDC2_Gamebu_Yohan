@@ -2,11 +2,44 @@
 
 ## 목차
 
+0. [프로젝트 실행](#프로젝트-실행)
 1. [프로젝트 소개](#프로젝트-소개)
 2. [Ground Rules](#Ground-rules)
 3. [기술 스택](#기술-스택)
 4. [커뮤니케이션](#커뮤니케이션)
 5. [Contributors](#Contributors)
+
+## 프로젝트 실행
+
+### develop
+
+```
+// 개발 모드 실행
+npm run dev
+```
+
+### production build
+
+빌드
+
+```
+// mac
+npm run mac-build
+
+// window
+npm run window-build
+```
+
+실행
+
+```
+npm install -g serve
+serve -s build
+
+또는
+
+npx serve -s build
+```
 
 ## 프로젝트 소개
 
