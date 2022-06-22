@@ -15,6 +15,7 @@ import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import { IconButton } from '@mui/material';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 import bannerImages from '@assets/ChannelImages';
+import LoginModal from '@components/LoginModal';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -89,6 +90,7 @@ function ChannelPage() {
   const [offset, setOffset] = useState(0);
   const [order, setOrder] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const limit = 8;
 
@@ -195,7 +197,7 @@ function ChannelPage() {
       return navigate(`/posts/write/${channelId}`, {
         state: { channelId, postId: false },
       });
-    // modal
+    setModalVisible(true);
   };
 
   return (
@@ -259,6 +261,10 @@ function ChannelPage() {
           />
         </PostCardContainer>
       </ChannelContainer>
+      <LoginModal
+        visible={modalVisible}
+        handleCloseModal={() => setModalVisible(false)}
+      />
       <LinkButton type="button" onClick={handleWriteClick}>
         <CreateRoundedIcon fontSize="large" />
       </LinkButton>
