@@ -48,3 +48,8 @@ export const CHANNEL_MODAL_VISIBLE = 'CHANNEL_MODAL_VISIBLE';
 
 export const regexId = /[^0-9a-zA-Z]/g;
 export const regexName = /[^0-9a-zA-Zㄱ-ㅎ가-힣]/g;
+
+export const MAX_NAME_LENGTH = 10;
+export const MAX_ID_LENGTH = 20;
+export const MAX_PASSWORD_LENGTH = 20;
+export const MIN_LENGTH = 4;
