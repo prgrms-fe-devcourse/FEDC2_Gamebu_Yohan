@@ -45,8 +45,8 @@ function SearchPostPage() {
           <ListWrapper>
             {filterPost.length !== 0
               ? filterPost.map((item) => (
-                  <Link to={`/posts/details/${item._id}`}>
-                    <Card.Post key={item._id}>{item}</Card.Post>
+                  <Link to={`/posts/details/${item._id}`} key={item._id}>
+                    <Card.Post>{item}</Card.Post>
                   </Link>
                 ))
               : '키워드에 해당하는 결과가 없습니다'}
