@@ -1,5 +1,10 @@
 # Gamebu(껨부)
 
+**배포 링크** [배포는 여기](https://gamebu-dh2mrhd61-team-yohan.vercel.app/)
+위 링크는 모바일에 최적화되어 있습니다
+
+**피그마 링크** [피그마는 여기](https://www.figma.com/file/41VGC4WXTR6mWAM3FwiGfc/%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4?node-id=0%3A1)
+
 ## 목차
 
 0. [프로젝트 실행](#프로젝트-실행)
@@ -13,9 +18,11 @@
 ## 프로젝트 실행
 
 ### Node Version
+
 > v16.15.0
 
 ### Package Manager
+
 > npm(version 8.5.5)
 
 ### 환경 변수
