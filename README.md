@@ -12,7 +12,21 @@
 
 ## 프로젝트 실행
 
-의존성 라이브러리 설치
+### Node Version
+> v16.15.0
+
+### Package Manager
+> npm(version 8.5.5)
+
+### 환경 변수
+
+.env 파일에 API_URL 변수를 추가해야합니다.
+
+```
+REACT_APP_API_END_POINT=[API_URL]
+```
+
+### 의존성 라이브러리 설치
 
 ```
 npm i
@@ -241,8 +255,6 @@ let element;
    │  │  └─ index.js
    │  ├─ InterestedChannelModal
    │  │  └─ index.js
-   │  ├─ List
-   │  │  └─ index.js
    │  ├─ LoginModal
    │  │  └─ index.js
    │  ├─ PostForm
@@ -261,8 +273,6 @@ let element;
    │  │  ├─ ShortTagList.js
    │  │  └─ TagList.js
    │  ├─ Thumbnail
-   │  │  └─ index.js
-   │  ├─ Toast
    │  │  └─ index.js
    │  └─ Topbar
    │     ├─ index.js
@@ -314,7 +324,6 @@ let element;
    │  ├─ Divider.stories.js
    │  ├─ Header.stories.js
    │  ├─ Image.stories.js
-   │  ├─ List.stories.js
    │  ├─ PostInput.stories.js
    │  ├─ TagChip.stories.js
    │  └─ TagList.stories.js
@@ -343,6 +352,7 @@ let element;
   <img src="https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=#CB3837" />
   <img src="https://img.shields.io/badge/React Router-121212?style=for-the-badge&logo=React Router&logoColor=#CA4245" />
   <img src="https://img.shields.io/badge/styled components-3C3C3C?style=for-the-badge&logo=styled-components&logoColor=#DB7093" />
+  <img src="https://img.shields.io/badge/MUI-3C3C3C?style=for-the-badge&logo=MUI&logoColor=#007FFF" />
   <br>
   <img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=for-the-badge&logo=Visual Studio Code&logoColor=#007ACC" />
   
@@ -353,6 +363,7 @@ let element;
 <div align=center> 
   <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=#000000" />
   <img src="https://img.shields.io/badge/Discord-292841?style=for-the-badge&logo=Discord&logoColor=#5865F2" />
+  <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=#4A154B" />
   
 </div>
 
