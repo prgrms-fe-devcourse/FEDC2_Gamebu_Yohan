@@ -182,7 +182,7 @@ function DetailMessage() {
         );
       })
     ) : (
-      <div>아직 대화가 없어요</div>
+      <div className="msg rcvd">아직 대화가 없어요</div>
     );
 
   useEffect(() => {
