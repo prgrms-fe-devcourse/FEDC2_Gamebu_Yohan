@@ -12,7 +12,7 @@ import {
   CATEGORIES,
   IMAGES,
 } from '@utils/constants';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BannerImage from '@components/Image/BannerImage';
 import Button from '@mui/material/Button';
@@ -86,36 +86,33 @@ const sliderOptions = {
 
 function HomePage() {
   const [posts, setPosts] = useState(null);
-  const [channels, setChannels] = useState([]);
   const [offset, setOffset] = useState(0);
-  const [images] = useState(IMAGES);
-  useEffect(() => {
-    setChannels(CHANNELS);
-  }, []);
+  const limit = useRef(10);
 
-  const getPostsList = async () => {
-    const params = { offset, limit: 10 };
+  const getExtraPostsList = useCallback(async () => {
+    const params = { offset: offset + limit.current, limit: limit.current };
     const fetchPosts = await fetch('posts', {
       method: 'GET',
       params,
     });
 
-    setOffset(offset + 10);
-    setPosts(fetchPosts);
-  };
-
-  const getExtraPostsList = async () => {
-    const params = { offset, limit: 10 };
-    const fetchPosts = await fetch('posts', {
-      method: 'GET',
-      params,
-    });
-
-    setOffset(offset + 10);
+    setOffset(offset + limit.current);
     setPosts(posts.concat(fetchPosts));
-  };
+  }, [offset, limit, posts]);
 
   useEffect(() => {
+    const getPostsList = async () => {
+      const fetchPosts = await fetch('posts', {
+        method: 'GET',
+        params: {
+          offset: limit.current - limit.current,
+          limit: limit.current,
+        },
+      });
+
+      setPosts(fetchPosts);
+    };
+
     getPostsList();
   }, []);
 
@@ -125,12 +122,12 @@ function HomePage() {
         <Header strong>게임 카테고리</Header>
         <Divider />
         <Slider {...sliderOptions}>
-          {channels &&
-            channels.map((item) => {
+          {CHANNELS &&
+            CHANNELS.map((item) => {
               return (
                 <Link to={`/channel/${item.id}`} key={item.id}>
                   <SliderItemWrapper>
-                    <BannerImage src={images[item.id] || NOT_FOUND_IMAGE} />
+                    <BannerImage src={IMAGES[item.id] || NOT_FOUND_IMAGE} />
                   </SliderItemWrapper>
                 </Link>
               );
