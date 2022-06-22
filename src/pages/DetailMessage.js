@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import GoBack from '@components/GoBack';
 import SkeletonMessage from '@components/SkeletonMessage';
+import { getUserInfo } from '@utils/user';
 
 const MessageContainer = styled.div`
   & {
@@ -96,7 +97,12 @@ const GoBackWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 1rem 0 0 1rem;
+  padding: 1rem 1rem 0 1rem;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  flex-grow: 1;
 `;
 
 const Form = styled.form`
@@ -117,6 +123,7 @@ const ZeroMessage = styled.div`
 function DetailMessage() {
   const [loading, setLoading] = useState(true);
   const [messageList, setMessageList] = useState([]);
+  const [you, setYou] = useState(null);
   const inputRef = useRef();
   const bottomRef = useRef();
   const { user } = useValueContext();
@@ -166,6 +173,10 @@ function DetailMessage() {
     );
 
   useEffect(() => {
+    getUserInfo(userId).then((response) => setYou(response));
+  }, [userId]);
+
+  useEffect(() => {
     if (!loading) {
       bottomRef.current.scrollIntoView();
     }
@@ -175,6 +186,7 @@ function DetailMessage() {
     <Container>
       <GoBackWrapper>
         <GoBack destination="message" />
+        <Title>{you?.fullName} 채팅방</Title>
       </GoBackWrapper>
       <MessageContainer className="chat">
         {loading ? <SkeletonMessage.Detail repeat={16} /> : Loaded}
