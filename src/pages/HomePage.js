@@ -88,7 +88,7 @@ const sliderOptions = {
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [offset, setOffset] = useState(0);
-  const limit = useRef(1);
+  const limit = useRef(10);
   const renderSnackbar = useOurSnackbar();
 
   const getExtraPostsList = useCallback(async () => {
