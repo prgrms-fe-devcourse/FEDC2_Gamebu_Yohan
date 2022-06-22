@@ -54,7 +54,9 @@ function UserSidebar({ open, onClose }) {
       <Divider />
       <List>
         {userList
-          .filter((item) => item._id !== user._id && item.role !== 'SuperAdmin')
+          .filter(
+            (item) => item._id !== user?._id && item.role !== 'SuperAdmin'
+          )
           .sort((a, b) => b.isOnline - a.isOnline)
           .map(({ _id, fullName, isOnline }) => {
             return (
