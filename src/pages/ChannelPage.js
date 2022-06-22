@@ -249,7 +249,7 @@ function ChannelPage() {
                   updatedAt={item.updatedAt}
                   fullName={item.author.fullName}
                   numberOfLike={item.likes.length}
-                  isLiked={isLikedPost}
+                  isLiked={Boolean(isLikedPost)}
                   numberOfComment={item.comments.length}
                   postId={item._id}
                 />
