@@ -26,6 +26,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "build": "craco build",
     "mac-build": "GENERATE_SOURCEMAP=false craco build",
     "window-build": "set \"GENERATE_SOURCEMAP=false\" && craco build",
     "test": "craco test",
