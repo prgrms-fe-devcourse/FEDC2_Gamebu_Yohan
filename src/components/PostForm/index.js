@@ -113,8 +113,8 @@ export default function PostForm({ channelId, postId, post }) {
           onBlur={handleOnBlur('title')}
           onChange={handleChange}
           error={focused.title && title.length < 3}
-          placeholder="3글자 이상"
-          helperText="3글자 이상을 입력해주세요!"
+          placeholder="제목"
+          helperText="제목은 최소 3글자 이상을 입력해주세요!"
         />
         <SelectInput
           name="tags"
@@ -124,7 +124,7 @@ export default function PostForm({ channelId, postId, post }) {
           onBlur={handleOnBlur('tags')}
           onChange={handleChange}
           error={focused.tags && tags.length < 1}
-          helperText="하나 이상의 태그를 지정해주세요!"
+          helperText="태그는 최소 하나 이상을 선택해주세요!"
         />
         <MultiLineTextInput
           name="content"
@@ -133,8 +133,8 @@ export default function PostForm({ channelId, postId, post }) {
           onBlur={handleOnBlur('content')}
           onChange={handleChange}
           error={focused.content && content.length < 10}
-          placeholder="10글자 이상"
-          helperText="10글자 이상을 입력해주세요!"
+          placeholder="내용"
+          helperText="내용을 공란으로 둘 수 없습니다!"
           rows={15}
         />
         <Button
