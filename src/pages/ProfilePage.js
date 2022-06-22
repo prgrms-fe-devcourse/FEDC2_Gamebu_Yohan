@@ -5,13 +5,14 @@ import Thumbnail from '@components/Thumbnail';
 import useValueContext from '@hooks/useValueContext';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
-import Collapse from '@mui/material/Collapse';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import EditFullNameModal from '@components/EditFullNameModal';
 import { getUserInfo } from '@utils/user';
 import { CATEGORIES } from '@utils/constants';
+import useOurSnackbar from '@hooks/useOurSnackbar';
+import SendIcon from '@mui/icons-material/Send';
+import LoginModal from '@components/LoginModal';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -20,12 +21,6 @@ const ContentWrapper = styled.div`
 const ProfileTopbar = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const ProfileWarningAlert = styled(Alert)`
-  font-size: 0.75rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
 `;
 
 const NoneDecorationLink = styled(Link)`
@@ -70,6 +65,12 @@ const Span = styled.span`
 `;
 
 const EditIconRight = styled(EditIcon)`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+`;
+
+const SendIconRight = styled(SendIcon)`
   position: absolute;
   right: 0;
   bottom: 0;
@@ -129,35 +130,10 @@ function ProfilePage() {
   const { user } = useValueContext();
   const { userId } = useParams();
   const [modalVisible, setModalVisible] = useState(false);
-  const [alertInfo, setAlertInfo] = useState({
-    visible: false,
-    success: false,
-    message: '',
-  });
   const [targetUser, setTargetUser] = useState(null);
-
-  const handleClickAlert = useCallback(() => {
-    setAlertInfo((prevAlertInfo) => ({
-      ...prevAlertInfo,
-      visible: false,
-    }));
-  }, []);
-
-  const handleSuccessProfile = useCallback(() => {
-    setAlertInfo({
-      visible: true,
-      success: true,
-      message: '이름 변경을 완료했습니다',
-    });
-  }, []);
-
-  const handleErrorProfile = useCallback(() => {
-    setAlertInfo({
-      visible: true,
-      success: false,
-      message: '이름 변경 중 오류가 발생했습니다',
-    });
-  }, []);
+  const [loginModalVisbile, setLoginModalVisible] = useState(false);
+  const renderSnackbar = useOurSnackbar();
+  const navigate = useNavigate();
 
   const handleClickEditIcon = useCallback(() => {
     setModalVisible(true);
@@ -165,6 +141,10 @@ function ProfilePage() {
 
   const handleCloseModal = useCallback(() => {
     setModalVisible(false);
+  }, []);
+
+  const handleCloseLoginModal = useCallback(() => {
+    setLoginModalVisible(false);
   }, []);
 
   useEffect(() => {
@@ -179,28 +159,28 @@ function ProfilePage() {
       </NoneDecorationLink>
     </LinkButton>
   ) : null;
-  const ProfileAlert = isMe ? (
-    <Collapse in={alertInfo.visible}>
-      <ProfileWarningAlert
-        severity={alertInfo.success ? 'success' : 'warning'}
-        onClose={handleClickAlert}
-      >
-        {alertInfo.message}
-      </ProfileWarningAlert>
-    </Collapse>
-  ) : null;
   const Name = isMe ? user?.fullName : targetUser?.fullName;
-  const EditfullNameIcon = isMe ? (
+  const EditFullNameIcon = isMe ? (
     <>
       <EditIconRight onClick={handleClickEditIcon} />
       <EditFullNameModal
         visible={modalVisible}
         handleCloseModal={handleCloseModal}
-        onSuccess={handleSuccessProfile}
-        onError={handleErrorProfile}
+        onSuccess={() => renderSnackbar('이름 변경', true)}
+        onError={() => renderSnackbar('이름 변경', false)}
       />
     </>
-  ) : null;
+  ) : (
+    <SendIconRight
+      onClick={() => {
+        if (user) {
+          navigate(`/message/${targetUser._id}`);
+          return;
+        }
+        setLoginModalVisible(true);
+      }}
+    />
+  );
 
   return (
     <ContentWrapper>
@@ -208,30 +188,32 @@ function ProfilePage() {
         <GoBack />
         {LinkToCategories}
       </ProfileTopbar>
-      {ProfileAlert}
       <ThumbnailCover>
         <Thumbnail
           image={targetUser?.image || null}
-          name={targetUser?.fullName || '로딩 중'}
-          badge={!targetUser}
+          name={targetUser?.fullName || ' '}
+          badge={!targetUser || false}
           isOnline={targetUser?.isOnline}
         />
       </ThumbnailCover>
       <ProfileMenuWrapper>
         <UserFullNameWrapper>
-          <Span>{Name}</Span>
-          {EditfullNameIcon}
+          <Span>{Name || ' '}</Span>
+          {EditFullNameIcon}
         </UserFullNameWrapper>
         <hr />
         <UserMenuWrapper>
-          <UserMenu>팔로잉&nbsp;{user?.following?.length || 0}</UserMenu>
-          <UserMenu>팔로우&nbsp;{user?.followers?.length || 0}</UserMenu>
+          <UserMenu>작성한 글&nbsp;{targetUser?.posts?.length || 0}</UserMenu>
+          <UserMenu>
+            작성한 댓글&nbsp;{targetUser?.comments?.length || 0}
+          </UserMenu>
+          <UserMenu>좋아요한 글&nbsp;{targetUser?.likes?.length || 0}</UserMenu>
         </UserMenuWrapper>
       </ProfileMenuWrapper>
       {/* FIXME 확실한 카드의 형태가 정해지면 수정 */}
       <MyPostContainer>
         <div>내가 쓴 글</div>
-        {targetUser?.posts.map((post) => {
+        {targetUser?.posts?.map((post) => {
           const { _id, channel, comments } = post;
           let { title } = post;
           if (title.startsWith('{')) {
@@ -248,6 +230,10 @@ function ProfilePage() {
           );
         })}
       </MyPostContainer>
+      <LoginModal
+        visible={loginModalVisbile}
+        handleCloseModal={handleCloseLoginModal}
+      />
     </ContentWrapper>
   );
 }
