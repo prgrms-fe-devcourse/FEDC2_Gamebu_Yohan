@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Drawer from '@mui/material/Drawer';
@@ -15,6 +15,7 @@ import { getAllUserList } from '@utils/user';
 import Thumbnail from '@components/Thumbnail';
 import useValueContext from '@hooks/useValueContext';
 import Header from '@components/Header';
+import LoginModal from '@components/LoginModal';
 
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paperAnchorRight {
@@ -31,13 +32,19 @@ const UserSiderbarHeader = styled(IconButton)`
 function UserSidebar({ open, onClose }) {
   const { user } = useValueContext();
   const [userList, setUserList] = useState([]);
+  const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
+
+  const handleCloseModal = useCallback(() => {
+    setVisible(false);
+  }, []);
 
   useEffect(() => {
     if (open) {
       getAllUserList().then((response) => setUserList(response));
     }
   }, [open]);
+
   return (
     <StyledDrawer
       variant="temporary"
@@ -68,8 +75,12 @@ function UserSidebar({ open, onClose }) {
                   <ListItemText
                     primary={fullName}
                     onClick={() => {
-                      onClose();
-                      navigate(`/message/${_id}`);
+                      if (user) {
+                        onClose();
+                        navigate(`/message/${_id}`);
+                        return;
+                      }
+                      setVisible(true);
                     }}
                   />
                 </ListItemButton>
@@ -77,6 +88,7 @@ function UserSidebar({ open, onClose }) {
             );
           })}
       </List>
+      <LoginModal visible={visible} handleCloseModal={handleCloseModal} />
     </StyledDrawer>
   );
 }
