@@ -5,6 +5,22 @@
 
 **피그마 링크** [피그마는 여기](https://www.figma.com/file/41VGC4WXTR6mWAM3FwiGfc/%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4?node-id=0%3A1)
 
+![image](https://user-images.githubusercontent.com/66072832/175078346-1b7fa7bd-df4e-449c-b5d9-dbdfd3d43b83.png)
+![image](https://user-images.githubusercontent.com/66072832/175078483-7408bf6a-72ec-4b7b-83f0-d661744852af.png)
+![image](https://user-images.githubusercontent.com/66072832/175078897-60773b45-7d79-46b2-aa28-b61a21c1837f.png)
+![image](https://user-images.githubusercontent.com/66072832/175079124-f48d9275-2e08-400d-9a18-106998f0d1e8.png)
+![image](https://user-images.githubusercontent.com/66072832/175079289-b6096e25-4850-4de3-8ea3-45cea069c3a7.png)
+![image](https://user-images.githubusercontent.com/66072832/175080088-943273b6-280f-4b83-bcfd-59dea789e220.png)
+![image](https://user-images.githubusercontent.com/66072832/175079545-2c7a73d3-b796-4a72-a539-df7ff67bce4d.png)
+![image](https://user-images.githubusercontent.com/66072832/175079660-cd1d2573-40c3-4b8f-a040-52babaa4b20a.png)
+![image](https://user-images.githubusercontent.com/66072832/175079965-4d76ccc9-8ed0-4113-bc8e-fececadb3e50.png)
+![image](https://user-images.githubusercontent.com/66072832/175079386-6cb0c11b-0ba3-46c6-830e-87844c152b16.png)
+![image](https://user-images.githubusercontent.com/66072832/175080212-6939f8b1-d6e0-4118-955c-1e6c9d88a4f4.png)
+![image](https://user-images.githubusercontent.com/66072832/175080333-d6da9da7-7f28-46c0-95c2-2ce924614978.png)
+![image](https://user-images.githubusercontent.com/66072832/175080402-4631aa53-30b8-49ce-965a-d1ec28b4a179.png)
+
+
+
 ## 목차
 
 0. [프로젝트 실행](#프로젝트-실행)
