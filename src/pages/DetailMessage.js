@@ -109,6 +109,11 @@ const Title = styled.h1`
   flex-grow: 1;
 `;
 
+const Time = styled.div`
+  text-align: ${({ isMe }) => (isMe ? 'end' : 'start')};
+  font-size: 0.75rem;
+`;
+
 const Form = styled.form`
   display: flex;
   padding: 0 2rem 0.5rem 2rem;
@@ -119,15 +124,11 @@ const BottomDiv = styled.div`
   height: 1rem;
 `;
 
-const ZeroMessage = styled.div`
-  border: 1px solid black;
-  flex-grow: 1;
-`;
-
 function DetailMessage() {
   const [loading, setLoading] = useState(true);
   const [messageList, setMessageList] = useState([]);
   const [you, setYou] = useState(null);
+  const [bottomDivVisible, setBottomDivVisible] = useState(true);
   const inputRef = useRef();
   const bottomRef = useRef();
   const { user } = useValueContext();
@@ -141,6 +142,7 @@ function DetailMessage() {
       getDetailMessage(userId).then((response) => {
         setMessageList(response);
         setLoading(false);
+        setBottomDivVisible(false);
       });
     }
   }, [userId, token]);
@@ -158,23 +160,24 @@ function DetailMessage() {
       },
     });
     await postMessageNotification(response?._id, userId);
-    bottomRef.current.scrollIntoView();
+    setBottomDivVisible(true);
     input.value = '';
     keepInterval();
   };
 
   const Loaded =
     messageList.length && user ? (
-      messageList.map(({ message, sender, _id }) => {
+      messageList.map(({ message, sender, _id, createdAt }) => {
         const isMe = sender._id === user._id;
         return (
-          <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
-            {message}
-          </div>
+          <span key={_id}>
+            <Time isMe={isMe}>{createdAt.slice(0, 16).replace('T', ' ')}</Time>
+            <div className={`msg ${isMe ? 'sent' : 'rcvd'}`}>{message}</div>
+          </span>
         );
       })
     ) : (
-      <ZeroMessage>아직 대화가 없어요</ZeroMessage>
+      <div>아직 대화가 없어요</div>
     );
 
   useEffect(() => {
@@ -182,10 +185,10 @@ function DetailMessage() {
   }, [userId]);
 
   useEffect(() => {
-    if (!loading) {
+    if (bottomDivVisible) {
       bottomRef.current.scrollIntoView();
     }
-  }, [loading]);
+  }, [bottomDivVisible]);
 
   return (
     <Container>
@@ -195,6 +198,7 @@ function DetailMessage() {
       </GoBackWrapper>
       <MessageContainer className="chat">
         {loading ? <SkeletonMessage.Detail repeat={16} /> : Loaded}
+        {bottomDivVisible && <BottomDiv>&nbsp;</BottomDiv>}
         <BottomDiv ref={bottomRef}>&nbsp;</BottomDiv>
       </MessageContainer>
       <Form onSubmit={handleSubmitMessage}>

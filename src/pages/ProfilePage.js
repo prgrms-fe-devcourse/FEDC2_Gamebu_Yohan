@@ -13,6 +13,11 @@ import { CATEGORIES } from '@utils/constants';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 import SendIcon from '@mui/icons-material/Send';
 import LoginModal from '@components/LoginModal';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import IconImages from '@assets/ChannelIcons';
 
 const ContentWrapper = styled.div`
   padding: 1.5rem;
@@ -126,11 +131,19 @@ const MyPostContainer = styled.div`
   padding-bottom: 1rem;
 `;
 
+const GameIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
 function ProfilePage() {
   const { user } = useValueContext();
   const { userId } = useParams();
   const [modalVisible, setModalVisible] = useState(false);
   const [targetUser, setTargetUser] = useState(null);
+  const userFavoriteList = targetUser?.username
+    ? JSON.parse(targetUser.username)
+    : [];
   const [loginModalVisbile, setLoginModalVisible] = useState(false);
   const renderSnackbar = useOurSnackbar();
   const navigate = useNavigate();
@@ -210,25 +223,47 @@ function ProfilePage() {
           <UserMenu>좋아요한 글&nbsp;{targetUser?.likes?.length || 0}</UserMenu>
         </UserMenuWrapper>
       </ProfileMenuWrapper>
-      {/* FIXME 확실한 카드의 형태가 정해지면 수정 */}
       <MyPostContainer>
-        <div>내가 쓴 글</div>
-        {targetUser?.posts?.map((post) => {
-          const { _id, channel, comments } = post;
-          let { title } = post;
-          if (title.startsWith('{')) {
-            title = JSON.parse(title).dt;
-          }
-          return (
-            <RecentPostsWrapper key={_id}>
-              <PostCategory>{CATEGORIES[channel]}</PostCategory>
-              <Link to={`/posts/details/${_id}`}>
-                <PostTitle>{title}</PostTitle>
+        <div>즐겨찾는 채널 목록</div>
+        {userFavoriteList.length ? (
+          userFavoriteList.map((item) => (
+            <ListItem key={item} disablePadding>
+              <Link to={`/channel/${item}`}>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <GameIcon src={`${IconImages[item]}`} />
+                  </ListItemIcon>
+                  <ListItemText primary={CATEGORIES[item]} />
+                </ListItemButton>
               </Link>
-              <PostComments>[{comments.length}]</PostComments>
-            </RecentPostsWrapper>
-          );
-        })}
+            </ListItem>
+          ))
+        ) : (
+          <RecentPostsWrapper>아직 즐겨찾는 채널이 없습니다</RecentPostsWrapper>
+        )}
+      </MyPostContainer>
+      <MyPostContainer>
+        <div>작성한 글 목록</div>
+        {targetUser?.posts?.length ? (
+          targetUser.posts.slice(0, 5).map((post) => {
+            const { _id, channel, comments } = post;
+            let { title } = post;
+            if (title.startsWith('{')) {
+              title = JSON.parse(title).dt;
+            }
+            return (
+              <RecentPostsWrapper key={_id}>
+                <PostCategory>{CATEGORIES[channel]}</PostCategory>
+                <Link to={`/posts/details/${_id}`}>
+                  <PostTitle>{title}</PostTitle>
+                </Link>
+                <PostComments>[{comments.length}]</PostComments>
+              </RecentPostsWrapper>
+            );
+          })
+        ) : (
+          <RecentPostsWrapper>아직 작성한 글이 없습니다</RecentPostsWrapper>
+        )}
       </MyPostContainer>
       <LoginModal
         visible={loginModalVisbile}
