@@ -90,13 +90,13 @@ function HomePage() {
   const limit = useRef(10);
 
   const getExtraPostsList = useCallback(async () => {
-    const params = { offset: offset + limit, limit };
+    const params = { offset: offset + limit.current, limit: limit.current };
     const fetchPosts = await fetch('posts', {
       method: 'GET',
       params,
     });
 
-    setOffset(offset + 10);
+    setOffset(offset + limit.current);
     setPosts(posts.concat(fetchPosts));
   }, [offset, limit, posts]);
 
@@ -105,8 +105,8 @@ function HomePage() {
       const fetchPosts = await fetch('posts', {
         method: 'GET',
         params: {
-          offset: 0,
-          limit: 10,
+          offset: limit.current - limit.current,
+          limit: limit.current,
         },
       });
 
