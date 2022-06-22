@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import ContextProvider from '@contexts/ContextProvider';
 import Header from '@components/Header';
 import Divider from '@components/Divider';
 import useValueContext from '@hooks/useValueContext';
@@ -106,7 +105,7 @@ function CategoriesPage() {
   return (
     <CategoriesPageContainer>
       {isLogin && (
-        <ContextProvider>
+        <div>
           <Header strong>즐겨찾기 목록</Header>
           <Divider />
           {userFavorites.length === 0 ? (
@@ -129,7 +128,7 @@ function CategoriesPage() {
               ))}
             </CategoriesContainer>
           )}
-        </ContextProvider>
+        </div>
       )}
       <Header strong>게임 카테고리</Header>
       <Divider />
