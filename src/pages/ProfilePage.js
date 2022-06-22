@@ -210,25 +210,28 @@ function ProfilePage() {
           <UserMenu>좋아요한 글&nbsp;{targetUser?.likes?.length || 0}</UserMenu>
         </UserMenuWrapper>
       </ProfileMenuWrapper>
-      {/* FIXME 확실한 카드의 형태가 정해지면 수정 */}
       <MyPostContainer>
-        <div>내가 쓴 글</div>
-        {targetUser?.posts?.map((post) => {
-          const { _id, channel, comments } = post;
-          let { title } = post;
-          if (title.startsWith('{')) {
-            title = JSON.parse(title).dt;
-          }
-          return (
-            <RecentPostsWrapper key={_id}>
-              <PostCategory>{CATEGORIES[channel]}</PostCategory>
-              <Link to={`/posts/details/${_id}`}>
-                <PostTitle>{title}</PostTitle>
-              </Link>
-              <PostComments>[{comments.length}]</PostComments>
-            </RecentPostsWrapper>
-          );
-        })}
+        <div>작성한 글 목록</div>
+        {targetUser?.posts?.length ? (
+          targetUser.posts.slice(0, 5).map((post) => {
+            const { _id, channel, comments } = post;
+            let { title } = post;
+            if (title.startsWith('{')) {
+              title = JSON.parse(title).dt;
+            }
+            return (
+              <RecentPostsWrapper key={_id}>
+                <PostCategory>{CATEGORIES[channel]}</PostCategory>
+                <Link to={`/posts/details/${_id}`}>
+                  <PostTitle>{title}</PostTitle>
+                </Link>
+                <PostComments>[{comments.length}]</PostComments>
+              </RecentPostsWrapper>
+            );
+          })
+        ) : (
+          <RecentPostsWrapper>아직 작성한 글이 없습니다</RecentPostsWrapper>
+        )}
       </MyPostContainer>
       <LoginModal
         visible={loginModalVisbile}
