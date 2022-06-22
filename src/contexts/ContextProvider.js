@@ -50,11 +50,6 @@ function ContextProvider({ children }) {
     [setToken, state]
   );
 
-  useEffect(() => {
-    console.log('state');
-    console.log(state);
-  }, [state]);
-
   return (
     <actionContext.Provider value={actions}>
       <valueContext.Provider value={state}>{children}</valueContext.Provider>

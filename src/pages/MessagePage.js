@@ -25,7 +25,6 @@ function MessagePage() {
 
   const handleClickGetMessageButton = useCallback(() => {
     if (token) {
-      console.log(123);
       getMyMessageList().then((response) => {
         setMyMessageList(response);
         setLoading(false);

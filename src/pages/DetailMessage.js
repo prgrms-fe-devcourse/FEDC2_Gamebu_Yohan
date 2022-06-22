@@ -142,7 +142,6 @@ function DetailMessage() {
 
   const handleClickGetMessageButton = useCallback(() => {
     if (token) {
-      console.log(456);
       getDetailMessage(userId).then((response) => {
         setMessageList(response);
         setLoading(false);
