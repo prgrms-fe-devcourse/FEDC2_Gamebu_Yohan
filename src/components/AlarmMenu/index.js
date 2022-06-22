@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
 import { Button } from '@mui/material';
 import { seenNotificationAll } from '@utils/alarm';
@@ -41,17 +42,21 @@ const LinkButton = styled(Button)`
 
 function AlarmMenu() {
   const { user } = useValueContext();
+  const { favorites: setUser } = useActionContext();
   const notifications = useMemo(() => {
     if (!user) return [];
     return user.notifications;
   }, [user]);
+
+  const handleSeenClick = () => {
+    seenNotificationAll();
+    const nextUserState = { ...user };
+    nextUserState.notifications = [];
+    setUser(nextUserState);
+  };
   return (
     <Container>
-      <LinkButton
-        size="small"
-        variant="contained"
-        onClick={() => seenNotificationAll()}
-      >
+      <LinkButton size="small" variant="contained" onClick={handleSeenClick}>
         모두 읽음
       </LinkButton>
       {notifications.length === 0 ? (

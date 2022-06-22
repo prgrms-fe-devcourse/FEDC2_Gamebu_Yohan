@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import styled from '@emotion/styled';
 import ClickAwayPopper from '@components/ClickAwayPopper';
 import PeopleIcon from '@mui/icons-material/People';
 import useValueContext from '@hooks/useValueContext';
 import AlarmMenu from '@components/AlarmMenu';
+import { Badge } from '@mui/material';
 import Sidebar from './Sidebar';
 import UserSidebar from './UserSidebar';
 
@@ -19,8 +20,11 @@ const GrowBlank = styled.div`
 function Topbar() {
   const [open, setOpen] = useState(false);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
-  const { isLogin } = useValueContext();
-
+  const { user, isLogin } = useValueContext();
+  const numberOfAlarms = useMemo(
+    () => (user ? user.notifications.length : 0),
+    [user]
+  );
   const handleDrawerOpen = useCallback(() => {
     setOpen(true);
   }, []);
@@ -52,7 +56,9 @@ function Topbar() {
           {isLogin && (
             <ClickAwayPopper id="alarm-popper" placement="auto-end">
               <IconButton color="inherit">
-                <NotificationsNoneIcon />
+                <Badge badgeContent={numberOfAlarms} color="error" max={99}>
+                  <NotificationsRoundedIcon />
+                </Badge>
               </IconButton>
               <AlarmMenu />
             </ClickAwayPopper>
