@@ -20,7 +20,7 @@ const ChannelContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
-  height: 42rem;
+  height: 100%;
 `;
 
 const IconWrapper = styled(IconButton)`
@@ -64,8 +64,10 @@ const LinkButton = styled(IconButton)`
   position: fixed;
   bottom: 5rem;
   right: 2rem;
-  border-radius: 50%;
-  background-color: ${COLOR_SIGNATURE};
+  &.MuiIconButton-root {
+    border-radius: 50%;
+    background-color: ${COLOR_SIGNATURE};
+  }
   & .MuiSvgIcon-root {
     color: white;
   }
@@ -103,10 +105,22 @@ function ChannelPage() {
     true: latestOrder,
     false: popularityOrder,
   };
+
   const favoriteList = useMemo(() => {
     if (!user) return [];
     return JSON.parse(user.username);
   }, [user]);
+
+  const initChannelData = useCallback(async () => {
+    const result = await fetch(`posts/channel/${channelId}`, {
+      params: {
+        offset: 0,
+        limit,
+      },
+    });
+    setChannelData(result);
+    setOffset(limit);
+  }, [channelId]);
 
   const fetchChannelData = useCallback(async () => {
     const result = await fetch(`posts/channel/${channelId}`, {
@@ -116,10 +130,10 @@ function ChannelPage() {
       },
     });
     if (result.length > 0) {
-      setChannelData([...channelData, ...result]);
-      setOffset(offset + limit);
+      setChannelData((prevData) => [...prevData, ...result]);
+      setOffset((prevOffset) => prevOffset + limit);
     }
-  }, [channelData, channelId, offset]);
+  }, [channelId, offset]);
 
   const setFavoriteInfo = useCallback(async () => {
     if (!isLogin) {
@@ -131,9 +145,9 @@ function ChannelPage() {
   }, [channelId, favoriteList, isLogin]);
 
   useEffect(() => {
-    fetchChannelData();
+    initChannelData();
     setFavoriteInfo();
-  }, [fetchChannelData, setFavoriteInfo]);
+  }, [initChannelData, setFavoriteInfo]);
 
   const addFavorite = async () => {
     const changedFavoriteList = [...favoriteList, channelId].sort();
@@ -205,10 +219,10 @@ function ChannelPage() {
         </SortBox>
         <PostCardContainer
           scrollableTarget="scroll-threshold"
-          dataLength={channelData.length}
+          dataLength={channelData.length + 2}
           hasMore
           next={fetchChannelData}
-          height={600}
+          height="calc(100vh - 18.5rem)"
         >
           {channelData &&
             channelData.map((item) => {
@@ -223,7 +237,7 @@ function ChannelPage() {
                 ? JSON.parse(item.title)
                 : { dt: item.title, tg: [] };
               const isLikedPost =
-                user && item.likes.find((item) => item._id === user._id);
+                user && item.likes.find((item) => item.user === user._id);
               return (
                 <ChannelPostCard
                   title={title}
