@@ -123,6 +123,7 @@ function DetailMessage() {
   const [loading, setLoading] = useState(true);
   const [messageList, setMessageList] = useState([]);
   const [you, setYou] = useState(null);
+  const [bottomDivVisible, setBottomDivVisible] = useState(true);
   const inputRef = useRef();
   const bottomRef = useRef();
   const { user } = useValueContext();
@@ -136,6 +137,7 @@ function DetailMessage() {
       getDetailMessage(userId).then((response) => {
         setMessageList(response);
         setLoading(false);
+        setBottomDivVisible(false);
       });
     }
   }, [userId, token]);
@@ -153,7 +155,7 @@ function DetailMessage() {
       },
     });
     await postMessageNotification(response?._id, userId);
-    bottomRef.current.scrollIntoView();
+    setBottomDivVisible(true);
     input.value = '';
     keepInterval();
   };
@@ -177,10 +179,10 @@ function DetailMessage() {
   }, [userId]);
 
   useEffect(() => {
-    if (!loading) {
+    if (bottomDivVisible) {
       bottomRef.current.scrollIntoView();
     }
-  }, [loading]);
+  }, [bottomDivVisible]);
 
   return (
     <Container>
@@ -190,6 +192,7 @@ function DetailMessage() {
       </GoBackWrapper>
       <MessageContainer className="chat">
         {loading ? <SkeletonMessage.Detail repeat={16} /> : Loaded}
+        {bottomDivVisible && <BottomDiv>&nbsp;</BottomDiv>}
         <BottomDiv ref={bottomRef}>&nbsp;</BottomDiv>
       </MessageContainer>
       <Form onSubmit={handleSubmitMessage}>
