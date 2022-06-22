@@ -4,10 +4,11 @@
 
 0. [프로젝트 실행](#프로젝트-실행)
 1. [프로젝트 소개](#프로젝트-소개)
-2. [Ground Rules](#Ground-rules)
-3. [기술 스택](#기술-스택)
-4. [커뮤니케이션](#커뮤니케이션)
-5. [Contributors](#Contributors)
+2. [규칙](#규칙)
+3. [폴더 구조](#폴더-구조)
+4. [기술 스택](#기술-스택)
+5. [커뮤니케이션](#커뮤니케이션)
+6. [팀원](#팀원)
 
 ## 프로젝트 실행
 
@@ -57,7 +58,7 @@ npx serve -s build
 
 여러 게임의 커뮤니티를 하나하나 찾아다닐 필요 없이, 여러 게임과 콘텐츠를 함께 즐길 사람을 종합적으로 구하는 서비스를 이용할 수 있는 SNS 플랫폼입니다.
 
-## Ground Rules
+## 규칙
 
 ### Git Branch
 
@@ -136,6 +137,204 @@ let element;
 - 리뷰어가 확실히 알아볼 수 있도록 코드 작성자가 PR을 상세하게 적는다.
 - 리뷰가 끝나고 merge가 되었다면, 핵심 기능은 따로 문서화 한다.
 
+## 폴더 구조
+
+```
+🎮 껨부(Gamebu)
+├─ .eslintrc.js
+├─ .gitignore
+├─ .prettierrc.js
+├─ .storybook
+├─ craco.config.js
+├─ jsconfig.json
+├─ package-lock.json
+├─ package.json
+├─ public
+├─ README.md
+└─ src
+   ├─ App.js
+   ├─ App.test.js
+   ├─ assets
+   │  ├─ ChannelIcons
+   │  │  ├─ Icon_로스트아크.png
+   │  │  ├─ Icon_리그오브레전드.png
+   │  │  ├─ Icon_메이플스토리.png
+   │  │  ├─ Icon_배틀그라운드.png
+   │  │  ├─ Icon_오버워치.png
+   │  │  └─ index.js
+   │  ├─ ChannelImages
+   │  │  ├─ ChannelBanner_LOL.jpeg
+   │  │  ├─ ChannelBanner_LostArk.jpg
+   │  │  ├─ ChannelBanner_MapleStory.jpg
+   │  │  ├─ ChannelBanner_Overwatch.png
+   │  │  ├─ ChannelBanner_PUBG.png
+   │  │  └─ index.js
+   │  ├─ img
+   │  │  ├─ battleground.png
+   │  │  ├─ index.js
+   │  │  ├─ lol.png
+   │  │  ├─ lostark.png
+   │  │  ├─ maple.png
+   │  │  └─ overwatch.png
+   │  └─ TagAvatars
+   │     ├─ Competition.png
+   │     ├─ Dealer.png
+   │     ├─ Duo.png
+   │     ├─ FPS.png
+   │     ├─ Healer.png
+   │     ├─ index.js
+   │     ├─ Party.png
+   │     ├─ Raid.png
+   │     ├─ RPG.png
+   │     ├─ Support.png
+   │     └─ Tanker.png
+   ├─ components
+   │  ├─ AlarmCard
+   │  │  ├─ Comment.js
+   │  │  ├─ index.js
+   │  │  ├─ Like.js
+   │  │  └─ Message.js
+   │  ├─ AlarmMenu
+   │  │  └─ index.js
+   │  ├─ Avatar
+   │  │  ├─ AvatarGroup.js
+   │  │  └─ index.js
+   │  ├─ Badge
+   │  │  └─ index.js
+   │  ├─ BottomNavBar
+   │  │  └─ index.js
+   │  ├─ Card
+   │  │  ├─ Author.js
+   │  │  ├─ Comment.js
+   │  │  ├─ index.js
+   │  │  ├─ Post.js
+   │  │  └─ User.js
+   │  ├─ Categories
+   │  │  ├─ GameIcon.js
+   │  │  ├─ GameImage.js
+   │  │  ├─ GameTitle.js
+   │  │  ├─ index.js
+   │  │  └─ MessageTitle.js
+   │  ├─ CategoryItem
+   │  │  └─ index.js
+   │  ├─ Channels
+   │  │  ├─ ChannelImageContainer.js
+   │  │  ├─ ChannelPostCard.js
+   │  │  └─ index.js
+   │  ├─ ClickAwayPopper
+   │  │  └─ index.js
+   │  ├─ Comment
+   │  │  ├─ CommetInput.js
+   │  │  └─ index.js
+   │  ├─ CommentInput
+   │  │  └─ index.js
+   │  ├─ Divider
+   │  │  └─ index.js
+   │  ├─ EditFullNameModal
+   │  │  └─ index.js
+   │  ├─ GoBack
+   │  │  └─ index.js
+   │  ├─ Header
+   │  │  └─ index.js
+   │  ├─ Image
+   │  │  ├─ BannerImage.js
+   │  │  └─ index.js
+   │  ├─ InterestedChannelModal
+   │  │  └─ index.js
+   │  ├─ List
+   │  │  └─ index.js
+   │  ├─ LoginModal
+   │  │  └─ index.js
+   │  ├─ PostForm
+   │  │  ├─ index.js
+   │  │  ├─ MultiLineTextInput.js
+   │  │  ├─ SelectInput.js
+   │  │  └─ TextInput.js
+   │  ├─ SkeletonMessage
+   │  │  ├─ Card.js
+   │  │  ├─ Detail.js
+   │  │  └─ index.js
+   │  ├─ Tag
+   │  │  └─ index.js
+   │  ├─ TagChip
+   │  │  ├─ index.js
+   │  │  ├─ ShortTagList.js
+   │  │  └─ TagList.js
+   │  ├─ Thumbnail
+   │  │  └─ index.js
+   │  ├─ Toast
+   │  │  └─ index.js
+   │  └─ Topbar
+   │     ├─ index.js
+   │     ├─ Sidebar.js
+   │     └─ UserSidebar.js
+   ├─ contexts
+   │  └─ ContextProvider.js
+   ├─ hooks
+   │  ├─ useActionContext.js
+   │  ├─ useAsync.js
+   │  ├─ useAsyncFn.js
+   │  ├─ useCheckAuth.js
+   │  ├─ useCookieToken.js
+   │  ├─ useForm.js
+   │  ├─ useInterval.js
+   │  ├─ useOurSnackbar.js
+   │  ├─ usePostForm.js
+   │  └─ useValueContext.js
+   ├─ index.css
+   ├─ index.js
+   ├─ pages
+   │  ├─ AlramPage.js
+   │  ├─ CategoriesPage.js
+   │  ├─ ChannelPage.js
+   │  ├─ DetailMessage.js
+   │  ├─ Footer.js
+   │  ├─ Heading.js
+   │  ├─ HomePage.js
+   │  ├─ index.js
+   │  ├─ LoginPage.js
+   │  ├─ MessagePage.js
+   │  ├─ NotFoundPage.js
+   │  ├─ PostDetailPage.js
+   │  ├─ PostEditPage.js
+   │  ├─ PostWritePage.js
+   │  ├─ ProfilePage.js
+   │  ├─ SearchAllPage.js
+   │  ├─ SearchPage.js
+   │  ├─ SearchPostPage.js
+   │  ├─ SearchUserPage.js
+   │  └─ SignupPage.js
+   ├─ reportWebVitals.js
+   ├─ setupTests.js
+   ├─ stories
+   │  ├─ Avatar.stories.js
+   │  ├─ Badge.stories.js
+   │  ├─ Card.stories.js
+   │  ├─ ClickAwayPopper.stories.js
+   │  ├─ Divider.stories.js
+   │  ├─ Header.stories.js
+   │  ├─ Image.stories.js
+   │  ├─ List.stories.js
+   │  ├─ PostInput.stories.js
+   │  ├─ TagChip.stories.js
+   │  └─ TagList.stories.js
+   └─ utils
+      ├─ alarm
+      │  └─ index.js
+      ├─ color.js
+      ├─ constants.js
+      ├─ fetch.js
+      ├─ likes
+      │  └─ index.js
+      ├─ message
+      │  └─ index.js
+      ├─ search
+      │  └─ index.js
+      ├─ time.js
+      └─ user
+         └─ index.js
+```
+
 ## 기술 스택
 
 <div align=center> 
@@ -157,7 +356,7 @@ let element;
   
 </div>
 
-## Contributors
+## 팀원
 
 | 조채우                                 | 고광필                                | 김동언                              | 박민제                               | 이상진                                  |
 | -------------------------------------- | ------------------------------------- | ----------------------------------- | ------------------------------------ | --------------------------------------- |
