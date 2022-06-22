@@ -6,16 +6,32 @@ import {
   postMessage,
   postMessageNotification,
 } from '@utils/message';
+import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import useValueContext from '@hooks/useValueContext';
 import useInterval from '@hooks/useInterval';
 import useCheckAuth from '@hooks/useCheckAuth';
 import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
-import Button from '@mui/material/Button';
+import MuiButton from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import GoBack from '@components/GoBack';
 import SkeletonMessage from '@components/SkeletonMessage';
 import { getUserInfo } from '@utils/user';
+
+const Button = styled(MuiButton)`
+  background-color: white;
+  color: black;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+    0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  border: 1px solid ${COLOR_MAIN};
+
+  &:hover {
+    border: 1px solid ${COLOR_SIGNATURE};
+  }
+`;
 
 const MessageContainer = styled.div`
   & {
@@ -182,7 +198,7 @@ function DetailMessage() {
         );
       })
     ) : (
-      <div className="msg rcvd">아직 대화가 없어요</div>
+      <div>아직 대화가 없어요</div>
     );
 
   useEffect(() => {

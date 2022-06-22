@@ -5,6 +5,18 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { searchAll } from '@utils/search';
 import React, { useEffect, useRef, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
+import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
+
+const CustomTextField = styled(TextField)`
+  & label.Mui-focused {
+    color: ${COLOR_SIGNATURE};
+  }
+  & .MuiOutlinedInput-root {
+    &.Mui-focused fieldset {
+      border-color: ${COLOR_MAIN};
+    }
+  }
+`;
 
 const Container = styled.div`
   height: 100%;
@@ -68,7 +80,7 @@ function SearchPage() {
   };
   return (
     <Container>
-      <TextField
+      <CustomTextField
         fullWidth
         InputProps={InputProps}
         inputRef={inputRef}

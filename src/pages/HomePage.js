@@ -15,7 +15,7 @@ import {
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BannerImage from '@components/Image/BannerImage';
-import Button from '@mui/material/Button';
+import MuiButton from '@mui/material/Button';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const HomePageContainer = styled.div`
@@ -73,6 +73,21 @@ const PostComments = styled.div`
   color: red;
 `;
 
+const Button = styled(MuiButton)`
+  background-color: white;
+  color: black;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+    0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  border: 1px solid ${COLOR_MAIN};
+
+  &:hover {
+    border: 1px solid ${COLOR_SIGNATURE};
+  }
+`;
+
 const sliderOptions = {
   dots: false,
   infinite: true,
@@ -88,7 +103,7 @@ const sliderOptions = {
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [offset, setOffset] = useState(0);
-  const limit = useRef(10);
+  const limit = useRef(2);
   const renderSnackbar = useOurSnackbar();
 
   const getExtraPostsList = useCallback(async () => {
