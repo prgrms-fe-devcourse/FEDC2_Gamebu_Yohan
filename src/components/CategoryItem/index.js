@@ -1,6 +1,7 @@
 import { GameIcon, GameImage, GameTitle } from '@components/Categories';
 import { COLOR_MAIN, COLOR_SIGNATURE } from '@utils/color';
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+import StarIcon from '@mui/icons-material/Star';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
@@ -15,7 +16,7 @@ const GameItem = styled.div`
   overflow: hidden;
 `;
 
-function CategoriItem({ img, title, onIconClick, icon }) {
+function CategoriItem({ img, title, onIconClick, icon, likes }) {
   const handleIconClick = (e) => {
     onIconClick && onIconClick(e);
   };
@@ -25,7 +26,11 @@ function CategoriItem({ img, title, onIconClick, icon }) {
         <GameImage src={img} />
         {icon && (
           <GameIcon onClick={handleIconClick}>
-            <StarOutlineRoundedIcon fontSize="small" sx={{ color: 'red' }} />
+            {likes ? (
+              <StarIcon fontSize="small" sx={{ color: 'red' }} />
+            ) : (
+              <StarOutlineRoundedIcon fontSize="small" sx={{ color: 'red' }} />
+            )}
           </GameIcon>
         )}
       </GameItem>
@@ -41,6 +46,7 @@ CategoriItem.propTypes = {
   title: PropTypes.string,
   onIconClick: PropTypes.func,
   icon: PropTypes.bool,
+  likes: PropTypes.bool,
 };
 
 CategoriItem.defaultProps = {
@@ -48,5 +54,6 @@ CategoriItem.defaultProps = {
   title: '',
   onIconClick: undefined,
   icon: false,
+  likes: false,
 };
 export default CategoriItem;
