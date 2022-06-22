@@ -43,7 +43,7 @@ function SearchUserPage() {
           <ListWrapper>
             {filterUser.length !== 0
               ? filterUser.map((item) => (
-                  <Link to={`/profile/${item._id}`}>
+                  <Link to={`/profile/${item._id}`} key={item._id}>
                     <Card.User key={item._id}>{item}</Card.User>
                   </Link>
                 ))
