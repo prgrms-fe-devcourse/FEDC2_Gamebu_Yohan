@@ -50,7 +50,6 @@ export default function PostForm({ channelId, postId, post }) {
           values[key] = value.trim();
         }
       });
-      console.log(values);
 
       const { title, tags, content } = values;
 
@@ -94,7 +93,6 @@ export default function PostForm({ channelId, postId, post }) {
   });
 
   useEffect(() => {
-    console.log(errors);
     if (Object.keys(errors).length > 0) {
       Object.keys(errors).forEach((key) => {
         renderSnackbar(errors[key], null);
