@@ -10,39 +10,45 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { COLOR_BG } from '@utils/color';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch, fetch } from '@utils/fetch';
-import FiberNewIcon from '@mui/icons-material/FiberNew';
 import Card from '@components/Card';
 import Comment from '@components/Card/Comment';
 import CommentInput from '@components/CommentInput';
+import useOurSnackbar from '@hooks/useOurSnackbar';
+import LoginModal from '@components/LoginModal';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import { Button, IconButton } from '@mui/material';
+import { createLikes, deleteLikes } from '@utils/likes';
+import { convertDate } from '@utils/time';
 
 const PageContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const PostCardContainer = styled(Card.Author)`
   width: 100%;
   height: 7.5rem;
+  border-radius: 0.5rem;
   background-color: ${COLOR_BG};
 `;
 
 const PostContentContainer = styled.div`
   box-sizing: border-box;
-  background-color: ${COLOR_BG};
   width: 100%;
-  height: 14.75rem;
+  min-height: 20rem;
+  border-radius: 0.5rem;
   color: black;
-  padding: 1rem 1rem;
-  margin: 1rem 0;
-  overflow: scroll;
+  padding: 1rem;
+  background-color: ${COLOR_BG};
 `;
 
 const CommentsContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
   width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
 `;
 
 const NoneExistingComments = styled.div`
@@ -59,26 +65,43 @@ const Paragraph = styled.p`
   text-align: right;
 `;
 
-const NewIcon = styled(FiberNewIcon)`
-  width: 4.1rem;
-  font-size: 1.7rem;
-  color: #f44336;
+const ContentWrapper = styled.div`
+  flex-grow: 1;
+`;
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & .MuiButton-root {
+    background-color: white;
+    color: black;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+      0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+  }
+  & .MuiIconButton-root:hover {
+    background-color: white;
+  }
+`;
+const LikeIcon = styled(FavoriteRoundedIcon)`
+  &.MuiSvgIcon-root {
+    transition: color 0.3s ease-out;
+    color: ${({ like }) => like};
+  }
 `;
 
-const convertDate = (dateString) => {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-};
-
 function PostDetailPage() {
+  const renderSnackbar = useOurSnackbar();
   const { postId } = useParams();
   const navigate = useNavigate();
   const { user, isLogin } = useValueContext();
   const inputRef = useRef(null);
-  const [detailData, setDetailData] = useState(null); // page data
-
+  const [detailData, setDetailData] = useState(null);
+  const [isLoding, setIsLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const { title, content, tag } = useMemo(() => {
     // TODO: 작성방식 수립 이후 try-catch 삭제
     try {
@@ -95,16 +118,32 @@ function PostDetailPage() {
     return user._id && detailData.author._id === user._id;
   }, [detailData, user]);
 
+  const likeInfo = useMemo(() => {
+    if (!user) return false;
+    if (!detailData) return false;
+    return detailData.likes.find((item) => item.user === user._id);
+  }, [detailData, user]);
+
   const fetchPostDetail = useCallback(async () => {
     const postDetail = await fetch(`posts/${postId}`);
-    // FIXME: 이름이 null 인 경우를 대비한 임시 수정. 이후 삭제가 필요하다.
-    postDetail.author.fullName = '';
     setDetailData(postDetail);
   }, [postId]);
 
   useEffect(() => {
     fetchPostDetail();
   }, [fetchPostDetail]);
+
+  const postNotification = async (type, infoObject) => {
+    await authFetch('notifications/create', {
+      method: 'POST',
+      data: {
+        notificationType: type,
+        notificationTypeId: infoObject._id,
+        userId: detailData.author._id,
+        postId: infoObject.post,
+      },
+    });
+  };
 
   const handleEditClick = () => {
     const { _id, channel } = detailData;
@@ -117,43 +156,34 @@ function PostDetailPage() {
     });
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteComment = async (id) => {
     // TODO: error 발생시 별도 처리 추가 (낙관적 업데이트만 적용중)
-    await authFetch('comments/delete', {
+    const res = await authFetch('comments/delete', {
       method: 'DELETE',
       data: {
         id,
       },
     });
-    const newComments = detailData.comments.filter((item) => item._id !== id);
-    setDetailData({
-      ...detailData,
-      comments: [...newComments],
-    });
-  };
-
-  const postNotification = async (res) => {
-    await authFetch('notifications/create', {
-      method: 'POST',
-      data: {
-        notificationType: 'COMMENT',
-        notificationTypeId: res._id,
-        userId: user._id,
-        postId: res.post,
-      },
-    });
+    // TODO: axios error 처리 관련 확인 후 수정 여부 논의
+    const isSuccessful = Object.prototype.hasOwnProperty.call(res, '_id');
+    if (isSuccessful) {
+      const newComments = detailData.comments.filter((item) => item._id !== id);
+      setDetailData({
+        ...detailData,
+        comments: [...newComments],
+      });
+    }
+    return renderSnackbar('댓글삭제', isSuccessful);
   };
 
   const handlePostComment = async () => {
-    // TODO: error 발생시 별도 처리 추가 (낙관적 업데이트만 적용중)
-    // TODO: 댓글 입력시 로그인이 필요함을 알리는 코드 추가
     if (!isLogin) {
-      console.log('login이 필요합니다');
+      setModalVisible(true);
       return;
     }
-    // TODO: 입력이 필요함을 알리는 코드 추가.
     if (inputRef.current.value === '') {
-      console.log('댓글을 입력 해주세요');
+      // TODO: snackbar custom message
+      alert('1글자 이상 입력해주세요!');
       return;
     }
     const res = await authFetch('comments/create', {
@@ -163,14 +193,54 @@ function PostDetailPage() {
         postId: detailData._id,
       },
     });
-    setDetailData({
-      ...detailData,
-      comments: [res, ...detailData.comments],
-    });
-    if (res._id && user._id) postNotification(res);
+    // TODO: axios error 처리 관련 확인 후 수정 여부 논의
+    const isSuccessful = Object.prototype.hasOwnProperty.call(res, '_id');
+    if (isSuccessful) {
+      setDetailData({
+        ...detailData,
+        comments: [...detailData.comments, res],
+      });
+      !isOwnPost && postNotification('COMMENT', res);
+    }
     inputRef.current.value = '';
+    return renderSnackbar('댓글작성', isSuccessful);
   };
 
+  const onLike = async () => {
+    setIsLoading(true);
+    const res = await createLikes(detailData._id);
+    const isSuccessful = Object.prototype.hasOwnProperty.call(res, '_id');
+    if (isSuccessful) {
+      const changedLikes = [...detailData.likes, res];
+      setDetailData({ ...detailData, likes: changedLikes });
+      !isOwnPost && postNotification('LIKE', res);
+    }
+    renderSnackbar('좋아요', isSuccessful);
+    setIsLoading(false);
+  };
+
+  const onUnlike = async () => {
+    setIsLoading(true);
+    const res = await deleteLikes(likeInfo._id);
+    const isSuccessful = Object.prototype.hasOwnProperty.call(res, '_id');
+    if (isSuccessful) {
+      const changedLikes = detailData.likes.filter(
+        (item) => item._id !== res._id
+      );
+      setDetailData({ ...detailData, likes: changedLikes });
+    }
+    renderSnackbar('좋아요 취소', isSuccessful);
+    setIsLoading(false);
+  };
+  const handleClickLike = () => {
+    if (isLoding) return;
+    if (!isLogin) return setModalVisible(true);
+    if (likeInfo) {
+      onUnlike();
+    } else {
+      onLike();
+    }
+  };
   return (
     <PageContainer>
       {detailData && (
@@ -179,7 +249,22 @@ function PostDetailPage() {
           {isOwnPost && (
             <Paragraph onClick={handleEditClick}>글 수정</Paragraph>
           )}
-          <PostContentContainer>{content}</PostContentContainer>
+          <LoginModal
+            visible={modalVisible}
+            handleCloseModal={() => setModalVisible(false)}
+          />
+          <PostContentContainer>
+            <ContentWrapper>{content}</ContentWrapper>
+          </PostContentContainer>
+          <ButtonWrapper>
+            <Button
+              variant="contained"
+              onClick={handleClickLike}
+              endIcon={<LikeIcon like={likeInfo ? 'red' : 'black'} />}
+            >
+              파티신청!
+            </Button>
+          </ButtonWrapper>
           <CommentInput onPost={handlePostComment} inputRef={inputRef} />
           <CommentsContainer>
             {detailData.comments.length > 0 ? (
@@ -191,7 +276,7 @@ function PostDetailPage() {
                   comment={item.comment}
                   updatedAt={convertDate(item.updatedAt)}
                   deletable={user && item.author._id === user._id}
-                  onDelete={handleDelete}
+                  onDelete={handleDeleteComment}
                 />
               ))
             ) : (

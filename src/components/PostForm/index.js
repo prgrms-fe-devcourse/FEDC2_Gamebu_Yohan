@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import { Button, CircularProgress, Stack } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { authFetch } from '@utils/fetch';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useForm from '@hooks/useForm';
+import useOurSnackbar from '@hooks/useOurSnackbar';
+import styled from '@emotion/styled';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import MultiLineTextInput from './MultiLineTextInput';
@@ -14,7 +16,6 @@ const Tags = [
   '레이드',
   'FPS',
   '듀오',
-  'AOS',
   'RPG',
   '딜러',
   '힐러',
@@ -22,15 +23,21 @@ const Tags = [
   '서폿',
 ];
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
 export default function PostForm({ channelId, postId, post }) {
   const [isComplete, setComplete] = useState(false);
   const navigate = useNavigate();
   const navigateTo = postId
     ? `/posts/details/${postId}`
     : `/channel/${channelId}`;
+  const renderSnackbar = useOurSnackbar();
   useEffect(() => {
     if (isComplete) {
-      navigate(navigateTo);
+      navigate(navigateTo, { replace: true });
     }
   }, [isComplete, navigate, navigateTo]);
   const initialValues = post || { title: '', tags: [], content: '' };
@@ -58,8 +65,10 @@ export default function PostForm({ channelId, postId, post }) {
       const isError = Boolean(response?.response);
 
       if (isError) {
+        renderSnackbar(`${postId ? '글 수정' : '글 작성'}`, false);
         throw new Error('Fetch 오류');
       } else {
+        renderSnackbar(`${postId ? '글 수정' : '글 작성'}`, true);
         setComplete(true);
       }
     },
@@ -96,7 +105,7 @@ export default function PostForm({ channelId, postId, post }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack spacing={2}>
+      <Container>
         <TextInput
           name="title"
           label="제목"
@@ -126,7 +135,7 @@ export default function PostForm({ channelId, postId, post }) {
           error={focused.content && content.length < 10}
           placeholder="10글자 이상"
           helperText="10글자 이상을 입력해주세요!"
-          rows={5}
+          rows={15}
         />
         <Button
           type="submit"
@@ -137,7 +146,7 @@ export default function PostForm({ channelId, postId, post }) {
         >
           {isLoading ? <CircularProgress color="inherit" /> : '제출'}
         </Button>
-      </Stack>
+      </Container>
     </form>
   );
 }
