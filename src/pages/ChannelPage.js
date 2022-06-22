@@ -16,6 +16,7 @@ import { IconButton } from '@mui/material';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 import bannerImages from '@assets/ChannelImages';
 import LoginModal from '@components/LoginModal';
+import SkeletonMessage from '@components/SkeletonMessage';
 
 const ChannelContainer = styled.div`
   display: flex;
@@ -80,13 +81,19 @@ const ImageContainer = styled.div`
     0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 `;
 
+const SkeletonWrapper = styled.div`
+  & div {
+    margin-bottom: 8px;
+  }
+`;
+
 function ChannelPage() {
   const renderSnackbar = useOurSnackbar();
   const { user, isLogin } = useValueContext();
   const { favorites: setUserObject } = useActionContext();
   const navigate = useNavigate();
   const { channelId } = useParams('');
-  const [channelData, setChannelData] = useState([]);
+  const [channelData, setChannelData] = useState(null);
   const [offset, setOffset] = useState(0);
   const [order, setOrder] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -220,46 +227,52 @@ function ChannelPage() {
             인기글
           </Text>
         </SortBox>
-        <PostCardContainer
-          scrollableTarget="scroll-threshold"
-          dataLength={channelData.length + 2}
-          hasMore
-          next={fetchChannelData}
-          height="calc(100vh - 18.5rem)"
-        >
-          {channelData &&
-            channelData.map((item) => {
-              // FIXME: DB 초기화 이후 수정
-              let isJson = true;
-              try {
-                JSON.parse(item.title);
-              } catch {
-                isJson = false;
-              }
-              const { dt: title, tg: tag } = isJson
-                ? JSON.parse(item.title)
-                : { dt: item.title, tg: [] };
-              const isLikedPost =
-                user && item.likes.find((item) => item.user === user._id);
-              return (
-                <ChannelPostCard
-                  title={title}
-                  tag={tag}
-                  key={item._id}
-                  updatedAt={item.updatedAt}
-                  fullName={item.author.fullName}
-                  numberOfLike={item.likes.length}
-                  isLiked={Boolean(isLikedPost)}
-                  numberOfComment={item.comments.length}
-                  postId={item._id}
-                />
-              );
-            })}
-          <div
-            id="scroll-threshold"
-            style={{ width: '100%', height: '2rem' }}
-          />
-        </PostCardContainer>
+        {channelData ? (
+          <PostCardContainer
+            scrollableTarget="scroll-threshold"
+            dataLength={channelData.length + 2}
+            hasMore
+            next={fetchChannelData}
+            height="calc(100vh - 18.5rem)"
+          >
+            {channelData.length &&
+              channelData.map((item) => {
+                // FIXME: DB 초기화 이후 수정
+                let isJson = true;
+                try {
+                  JSON.parse(item.title);
+                } catch {
+                  isJson = false;
+                }
+                const { dt: title, tg: tag } = isJson
+                  ? JSON.parse(item.title)
+                  : { dt: item.title, tg: [] };
+                const isLikedPost =
+                  user && item.likes.find((item) => item.user === user._id);
+                return (
+                  <ChannelPostCard
+                    title={title}
+                    tag={tag}
+                    key={item._id}
+                    updatedAt={item.updatedAt}
+                    fullName={item.author.fullName}
+                    numberOfLike={item.likes.length}
+                    isLiked={Boolean(isLikedPost)}
+                    numberOfComment={item.comments.length}
+                    postId={item._id}
+                  />
+                );
+              })}
+            <div
+              id="scroll-threshold"
+              style={{ width: '100%', height: '2rem' }}
+            />
+          </PostCardContainer>
+        ) : (
+          <SkeletonWrapper>
+            <SkeletonMessage.Card repeat={5} />
+          </SkeletonWrapper>
+        )}
       </ChannelContainer>
       <LoginModal
         visible={modalVisible}
