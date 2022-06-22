@@ -41,10 +41,19 @@ export default function PostForm({ channelId, postId, post }) {
     }
   }, [isComplete, navigate, navigateTo]);
   const initialValues = post || { title: '', tags: [], content: '' };
-  const { values, isLoading, handleChange, handleSubmit } = useForm({
+  const { values, errors, isLoading, handleChange, handleSubmit } = useForm({
     initialValues,
     onSubmit: async () => {
+      Object.keys(values).forEach((key) => {
+        const value = values[key];
+        if (typeof value === 'string') {
+          values[key] = value.trim();
+        }
+      });
+      console.log(values);
+
       const { title, tags, content } = values;
+
       const response = await authFetch(
         `posts/${postId ? 'update' : 'create'}`,
         {
@@ -75,14 +84,24 @@ export default function PostForm({ channelId, postId, post }) {
     validate: (formValues) => {
       const { title, tags, content } = formValues;
       const newErrors = {};
-      if (title.length < 3)
-        newErrors.title = '3글자 이상의 제목을 입력해주세요!';
+      if (title.trim().length < 3)
+        newErrors.title = '앞뒤 공백 제외 3글자 이상의 제목을 입력해주세요!';
       if (tags.length < 1) newErrors.tags = '1개 이상의 태그를 설정해주세요!';
-      if (content.length < 10)
-        newErrors.content = '10글자 이상의 내용을 입력해주세요!';
+      if (content.trim().length < 10)
+        newErrors.content = '앞뒤 공백 제외 10글자 이상의 내용을 입력해주세요!';
       return newErrors;
     },
   });
+
+  useEffect(() => {
+    console.log(errors);
+    if (Object.keys(errors).length > 0) {
+      Object.keys(errors).forEach((key) => {
+        renderSnackbar(errors[key], null);
+      });
+    }
+  }, [errors]);
+
   const { title, tags, content } = values;
 
   const [focused, setFocused] = useState({
