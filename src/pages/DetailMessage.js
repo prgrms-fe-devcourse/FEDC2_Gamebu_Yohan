@@ -109,6 +109,11 @@ const Title = styled.h1`
   flex-grow: 1;
 `;
 
+const Time = styled.div`
+  text-align: ${({ isMe }) => (isMe ? 'end' : 'start')};
+  font-size: 0.75rem;
+`;
+
 const Form = styled.form`
   display: flex;
   padding: 0 2rem 0.5rem 2rem;
@@ -162,12 +167,13 @@ function DetailMessage() {
 
   const Loaded =
     messageList.length && user ? (
-      messageList.map(({ message, sender, _id }) => {
+      messageList.map(({ message, sender, _id, createdAt }) => {
         const isMe = sender._id === user._id;
         return (
-          <div key={_id} className={`msg ${isMe ? 'sent' : 'rcvd'}`}>
-            {message}
-          </div>
+          <span key={_id}>
+            <Time isMe={isMe}>{createdAt.slice(0, 16).replace('T', ' ')}</Time>
+            <div className={`msg ${isMe ? 'sent' : 'rcvd'}`}>{message}</div>
+          </span>
         );
       })
     ) : (
