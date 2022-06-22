@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState, useEffect } from 'react';
+import { createContext, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import useCookieToken from '@hooks/useCookieToken';
 import { GAMEBU_TOKEN } from '@utils/constants';
@@ -9,7 +9,6 @@ export const actionContext = createContext();
 function ContextProvider({ children }) {
   const [token, setToken] = useCookieToken(GAMEBU_TOKEN);
   const [state, setState] = useState({
-    test: 100,
     user: null,
     isLogin: false,
     initialLoading: !!token,
@@ -18,9 +17,6 @@ function ContextProvider({ children }) {
 
   const actions = useMemo(
     () => ({
-      changeTest(newValue) {
-        setState((prevState) => ({ ...prevState, test: newValue }));
-      },
       login(user) {
         setState((prevState) => ({
           ...prevState,

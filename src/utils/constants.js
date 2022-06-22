@@ -1,4 +1,3 @@
-// TODO: 추후 채널 카테고리 더 추가
 import { maple, lol, lostark, overwatch, battleground } from '@assets/img';
 
 export const CHANNELS = [

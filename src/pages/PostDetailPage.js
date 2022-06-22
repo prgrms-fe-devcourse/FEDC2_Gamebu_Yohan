@@ -99,14 +99,10 @@ function PostDetailPage() {
   const [detailData, setDetailData] = useState(null);
   const [isLoding, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const snackbarAlarm = useOurSnackbar();
   const { title, content, tag } = useMemo(() => {
-    // TODO: 작성방식 수립 이후 try-catch 삭제
-    try {
-      const { dt: title, dd: content, tg: tag } = JSON.parse(detailData.title);
-      return { title, content, tag };
-    } catch (e) {
-      return { title: 'error', content: '', tag: [] };
-    }
+    const { dt: title, dd: content, tg: tag } = JSON.parse(detailData.title);
+    return { title, content, tag };
   }, [detailData]);
 
   const isOwnPost = useMemo(() => {
@@ -154,14 +150,12 @@ function PostDetailPage() {
   };
 
   const handleDeleteComment = async (id) => {
-    // TODO: error 발생시 별도 처리 추가 (낙관적 업데이트만 적용중)
     const res = await authFetch('comments/delete', {
       method: 'DELETE',
       data: {
         id,
       },
     });
-    // TODO: axios error 처리 관련 확인 후 수정 여부 논의
     const isSuccessful = Object.prototype.hasOwnProperty.call(res, '_id');
     if (isSuccessful) {
       const newComments = detailData.comments.filter((item) => item._id !== id);
@@ -179,8 +173,7 @@ function PostDetailPage() {
       return;
     }
     if (inputRef.current.value === '') {
-      // TODO: snackbar custom message
-      alert('1글자 이상 입력해주세요!');
+      snackbarAlarm('1글자 이상 입력해야합니다.', null);
       return;
     }
     const res = await authFetch('comments/create', {
@@ -190,7 +183,6 @@ function PostDetailPage() {
         postId: detailData._id,
       },
     });
-    // TODO: axios error 처리 관련 확인 후 수정 여부 논의
     const isSuccessful = Object.prototype.hasOwnProperty.call(res, '_id');
     if (isSuccessful) {
       setDetailData({

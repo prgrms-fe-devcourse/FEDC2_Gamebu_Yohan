@@ -13,7 +13,6 @@ import useValueContext from '@hooks/useValueContext';
 import useActionContext from '@hooks/useActionContext';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import { IconButton } from '@mui/material';
-import useOurSnackbar from '@hooks/useOurSnackbar';
 import bannerImages from '@assets/ChannelImages';
 import LoginModal from '@components/LoginModal';
 import SkeletonMessage from '@components/SkeletonMessage';
@@ -88,14 +87,13 @@ const SkeletonWrapper = styled.div`
 `;
 
 function ChannelPage() {
-  const renderSnackbar = useOurSnackbar();
   const { user, isLogin } = useValueContext();
   const { favorites: setUserObject } = useActionContext();
   const navigate = useNavigate();
   const { channelId } = useParams('');
   const [channelData, setChannelData] = useState(null);
   const [offset, setOffset] = useState(0);
-  const [order, setOrder] = useState(true);
+  const [order, setOrder] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -219,11 +217,11 @@ function ChannelPage() {
           )}
         </ImageContainer>
         <SortBox>
-          <Text onClick={handleOrderClick} isBold={order}>
+          <Text onClick={handleOrderClick} isBold={!order}>
             최신순
           </Text>
           <Divider type="vertical" size={8} />
-          <Text onClick={handleOrderClick} isBold={!order}>
+          <Text onClick={handleOrderClick} isBold={order}>
             인기글
           </Text>
         </SortBox>
@@ -237,16 +235,7 @@ function ChannelPage() {
           >
             {channelData.length &&
               channelData.map((item) => {
-                // FIXME: DB 초기화 이후 수정
-                let isJson = true;
-                try {
-                  JSON.parse(item.title);
-                } catch {
-                  isJson = false;
-                }
-                const { dt: title, tg: tag } = isJson
-                  ? JSON.parse(item.title)
-                  : { dt: item.title, tg: [] };
+                const { dt: title, tg: tag } = JSON.parse(item.title);
                 const isLikedPost =
                   user && item.likes.find((item) => item.user === user._id);
                 return (

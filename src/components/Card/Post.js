@@ -48,17 +48,9 @@ const AccountIcon = styled(AccountBoxIcon)`
   font-size: 1.5rem;
   cursor: pointer;
 `;
-// TODO: 제목 작성 방식 확립 이후 삭제
-const parseTitle = (title) => {
-  try {
-    return JSON.parse(title);
-  } catch (e) {
-    return {};
-  }
-};
 function Post({ children }) {
   const { title, updatedAt, comments, likes } = children;
-  const { dt: postTitle } = parseTitle(title);
+  const { dt: postTitle } = JSON.parse(title);
   return (
     <Container>
       <TitleWrapper>{postTitle || title}</TitleWrapper>

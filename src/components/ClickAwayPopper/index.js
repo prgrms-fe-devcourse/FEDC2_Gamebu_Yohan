@@ -24,7 +24,7 @@ function ClickAwayPopper({
   }, []);
   const handlePopperClose = useCallback(() => {
     setPop(false);
-  });
+  }, []);
   const [trigger, ...contents] = React.Children.toArray(children).filter(
     (item) => React.isValidElement(item)
   );

@@ -63,13 +63,8 @@ function Author({ data, badge, icon, ...props }) {
   const { author, likes, createdAt, comments } = data;
   const { fullName, isOnline } = author;
   const { title, tag } = useMemo(() => {
-    // TODO: 작성방식 수립 이후 try-catch 삭제
-    try {
-      const { dt: title, tg: tag } = JSON.parse(data.title);
-      return { title, tag };
-    } catch (e) {
-      return { title: 'error', tag: [] };
-    }
+    const { dt: title, tg: tag } = JSON.parse(data.title);
+    return { title, tag };
   }, [data]);
   return (
     <Container {...props}>

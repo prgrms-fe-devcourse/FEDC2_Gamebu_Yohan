@@ -9,6 +9,7 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { useNavigate } from 'react-router-dom';
 import TagList from '@components/TagChip/TagList';
 import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
+import { convertDate } from '@utils/time';
 
 const InfoWrapper = styled.div`
   width: 100%;
@@ -85,7 +86,7 @@ function ChannelPostCard({
       <InfoWrapper>
         {fullName}
         <Divider type="vertical" />
-        {updatedAt.slice(0, 10)}
+        {convertDate(updatedAt)}
       </InfoWrapper>
       <FooterContainer>
         <TagListWrapper>
