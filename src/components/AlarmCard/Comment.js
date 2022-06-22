@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { convertDate } from '@utils/time';
@@ -68,6 +68,9 @@ const DateWrapper = styled.p`
 `;
 function Comment({ authorName, authorId, postId, date, comment }) {
   const navigate = useNavigate();
+  const handleClick = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
   return (
     <Container
       variant="outlined"
@@ -78,8 +81,10 @@ function Comment({ authorName, authorId, postId, date, comment }) {
       </IconWrapper>
       <ContentContainer>
         <LinkWrapper>
-          <Link to={`/profile/${authorId}`}>{authorName}</Link> 님이 댓글을
-          남겼습니다.
+          <Link to={`/profile/${authorId}`} onClick={handleClick}>
+            {authorName}
+          </Link>{' '}
+          님이 댓글을 남겼습니다.
         </LinkWrapper>
         <CommentContainer>
           <CommentWrapper>{comment}</CommentWrapper>

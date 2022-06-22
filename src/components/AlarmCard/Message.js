@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { convertDate } from '@utils/time';
@@ -50,6 +50,9 @@ const DateWrapper = styled.p`
 `;
 function Message({ authorName, authorId, date }) {
   const navigate = useNavigate();
+  const handleClick = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
   return (
     <Container
       variant="outlined"
@@ -60,8 +63,10 @@ function Message({ authorName, authorId, date }) {
       </IconWrapper>
       <ContentContainer>
         <LinkWrapper>
-          <Link to={`/profile/${authorId}`}>{authorName}</Link> 님이 메시지를
-          남겼습니다.
+          <Link to={`/profile/${authorId}`} onClick={handleClick}>
+            {authorName}
+          </Link>{' '}
+          님이 메시지를 남겼습니다.
         </LinkWrapper>
         <DateWrapper>{convertDate(date)}</DateWrapper>
       </ContentContainer>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { convertDate } from '@utils/time';
@@ -68,6 +68,9 @@ const DateWrapper = styled.p`
 `;
 function Like({ authorName, authorId, postId, postTitle, date }) {
   const navigate = useNavigate();
+  const handleClick = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
   let title = '';
   try {
     title = JSON.parse(postTitle).dt;
@@ -84,8 +87,10 @@ function Like({ authorName, authorId, postId, postTitle, date }) {
       </IconWrapper>
       <ContentContainer>
         <LinkWrapper>
-          <Link to={`/profile/${authorId}`}>{authorName}</Link> 님이 게시글을
-          좋아합니다.
+          <Link to={`/profile/${authorId}`} onClick={handleClick}>
+            {authorName}
+          </Link>{' '}
+          님이 게시글을 좋아합니다.
         </LinkWrapper>
         <TitleContainer>
           <TitleWrapper>{title}</TitleWrapper>
