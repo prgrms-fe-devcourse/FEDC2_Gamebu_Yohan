@@ -23,7 +23,12 @@ function AlramPage() {
 
   const updateNotifications = async () => {
     const response = await fetchNotifications();
-    Array.isArray(response) && setNotifications(response);
+    Array.isArray(response) &&
+      setNotifications(
+        response.filter(
+          ({ like, comment, message }) => like || comment || message
+        )
+      );
   };
 
   const initPage = useCallback(async () => {
