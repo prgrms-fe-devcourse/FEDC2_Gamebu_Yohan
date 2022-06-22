@@ -1,7 +1,11 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
-import { getDetailMessage, postMessage } from '@utils/message';
+import {
+  getDetailMessage,
+  postMessage,
+  postMessageNotification,
+} from '@utils/message';
 import useValueContext from '@hooks/useValueContext';
 import useInterval from '@hooks/useInterval';
 import useCheckAuth from '@hooks/useCheckAuth';
@@ -146,13 +150,14 @@ function DetailMessage() {
   const handleSubmitMessage = async (e) => {
     e.preventDefault();
     const input = inputRef.current.querySelector('input');
-    await postMessage({
+    const response = await postMessage({
       method: 'POST',
       data: {
         message: input.value,
         receiver: userId,
       },
     });
+    await postMessageNotification(response?._id, userId);
     bottomRef.current.scrollIntoView();
     input.value = '';
     keepInterval();
