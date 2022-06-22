@@ -16,6 +16,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BannerImage from '@components/Image/BannerImage';
 import Button from '@mui/material/Button';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const HomePageContainer = styled.div`
   display: flex;
@@ -87,7 +88,8 @@ const sliderOptions = {
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [offset, setOffset] = useState(0);
-  const limit = useRef(10);
+  const limit = useRef(1);
+  const renderSnackbar = useOurSnackbar();
 
   const getExtraPostsList = useCallback(async () => {
     const params = { offset: offset + limit.current, limit: limit.current };
@@ -96,9 +98,14 @@ function HomePage() {
       params,
     });
 
+    if (Array.isArray(fetchPosts) && fetchPosts.length === 0) {
+      renderSnackbar('더 불러올 게시글이 없습니다.');
+      return;
+    }
+
     setOffset(offset + limit.current);
     setPosts(posts.concat(fetchPosts));
-  }, [offset, limit, posts]);
+  }, [offset, limit, posts, renderSnackbar]);
 
   useEffect(() => {
     const getPostsList = async () => {
