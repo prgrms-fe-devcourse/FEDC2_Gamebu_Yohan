@@ -108,6 +108,7 @@ function ChannelPage() {
 
   const favoriteList = useMemo(() => {
     if (!user) return [];
+    if (!user.username) return [];
     return JSON.parse(user.username);
   }, [user]);
 
