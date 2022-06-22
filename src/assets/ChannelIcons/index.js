@@ -5,11 +5,11 @@ import overwatch from './Icon_오버워치.png';
 import battleground from './Icon_배틀그라운드.png';
 
 const IconImages = {
-  '62a7367f5517e27ffcab3bcb': maple,
-  '62a736925517e27ffcab3bcf': lol,
-  '62a818db5517e27ffcab3ce2': lostark,
-  '62a818e85517e27ffcab3ce6': overwatch,
-  '62a736a15517e27ffcab3bd5': battleground,
+  '62b2c99563a66405b814409e': maple,
+  '62b2c98063a66405b8144096': lol,
+  '62b2c9a363a66405b81440a2': battleground,
+  '62b2c9a963a66405b81440a6': lostark,
+  '62b2c9ae63a66405b81440aa': overwatch,
 };
 
 export default IconImages;
