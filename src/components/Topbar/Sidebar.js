@@ -22,6 +22,7 @@ import Header from '@components/Header';
 import Thumbnail from '@components/Thumbnail';
 import useActionContext from '@hooks/useActionContext';
 import IconImages from '@assets/ChannelIcons';
+import useOurSnackbar from '@hooks/useOurSnackbar';
 
 const DrawerHeader = styled.div`
   display: 'flex';
@@ -93,6 +94,7 @@ function Sidebar({ open, onClose }) {
   const [channels] = useState(CHANNELS);
   const [isRedirect, setIsRedirect] = useState(false);
   const location = useLocation();
+  const renderSnackbar = useOurSnackbar();
 
   useEffect(() => {
     if (user && user.username) {
@@ -194,6 +196,7 @@ function Sidebar({ open, onClose }) {
               logout();
               onClose();
               setRedirectPaths();
+              renderSnackbar('로그아웃', true);
             }}
             startIcon={<LogoutRoundedIcon />}
             variant="contained"
