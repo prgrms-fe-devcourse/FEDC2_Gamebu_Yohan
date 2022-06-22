@@ -140,7 +140,7 @@ export default function PostForm({ channelId, postId, post }) {
           value={tags}
           onBlur={handleOnBlur('tags')}
           onChange={handleChange}
-          error={focused.tags && tags}
+          error={Boolean(focused.tags && tags)}
           helperText="태그는 최소 하나 이상을 선택해주세요!"
         />
         <MultiLineTextInput
