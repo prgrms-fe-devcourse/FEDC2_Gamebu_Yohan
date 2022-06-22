@@ -139,11 +139,8 @@ function HomePage() {
         <Divider />
         {posts &&
           posts.map((item) => {
-            let { title } = item;
-            if (title.startsWith('{')) {
-              title = JSON.parse(title).tt || JSON.parse(title).dt;
-              // TODO : 추후 게시글 정리 후 dt로 통일
-            }
+            const titleJSON = JSON.parse(item.title);
+            const title = titleJSON.dt;
             const categoriesId = item.channel?._id;
             const comments = item.comments.length;
 
