@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Divider from '@components/Divider';
 import CommentIcon from '@mui/icons-material/Comment';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import { convertDate } from '@utils/time';
 
 const Container = styled.div`
   box-sizing: border-box;
@@ -56,21 +57,21 @@ const parseTitle = (title) => {
   }
 };
 function Post({ children }) {
-  const { title, createdAt, comments, likes } = children;
+  const { title, updatedAt, comments, likes } = children;
   const { dt: postTitle } = parseTitle(title);
   return (
     <Container>
       <TitleWrapper>{postTitle || title}</TitleWrapper>
       <InfoWrapper>
         <AccountIcon />
-        <div style={{ flexGrow: 1 }}>{createdAt.substring(0, 10)}</div>
+        <div style={{ flexGrow: 1 }}>{convertDate(updatedAt)}</div>
         <IconWrapper>
           <CommentIcon />
           <div>{comments.length}</div>
         </IconWrapper>
         <Divider type="vertical" size={4} />
         <IconWrapper>
-          <ThumbUpIcon />
+          <FavoriteRoundedIcon />
           <div>{likes.length}</div>
         </IconWrapper>
       </InfoWrapper>
@@ -81,7 +82,7 @@ function Post({ children }) {
 Post.propTypes = {
   children: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
+    updatedAt: PropTypes.string.isRequired,
     comments: PropTypes.array.isRequired,
     likes: PropTypes.array.isRequired,
   }),

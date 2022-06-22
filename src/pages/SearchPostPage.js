@@ -1,9 +1,8 @@
 import Card from '@components/Card';
 import Header from '@components/Header';
 import styled from '@emotion/styled';
-import React from 'react';
-import { useOutletContext, useSearchParams } from 'react-router-dom';
-import List from '@components/List';
+import React, { useMemo } from 'react';
+import { Link, useOutletContext, useSearchParams } from 'react-router-dom';
 
 const HeaderBox = styled.div`
   width: 100%;
@@ -12,7 +11,13 @@ const HeaderBox = styled.div`
   flex-direction: column;
 `;
 const ListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   flex-grow: 1;
+  & a {
+    color: inherit;
+  }
 `;
 const HeaderWrapper = styled.div`
   margin: 8px 0;
@@ -21,13 +26,13 @@ function SearchPostPage() {
   const { value } = useOutletContext();
   const [searchParam] = useSearchParams();
 
-  const filterPost = () => {
+  const filterPost = useMemo(() => {
     if (!value) return [];
     if (!Array.isArray(value)) return [];
     return value
       .filter((data) => data.title)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  };
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  }, [value]);
   return (
     <HeaderBox>
       {searchParam.get('k') ? (
@@ -38,14 +43,13 @@ function SearchPostPage() {
             </Header>
           </HeaderWrapper>
           <ListWrapper>
-            <List
-              items={filterPost()}
-              keyName="_id"
-              alt="키워드에 해당하는 결과가 없습니다"
-              limit={100}
-              gap="8px"
-              frame={<Card.Post />}
-            />
+            {filterPost.length !== 0
+              ? filterPost.map((item) => (
+                  <Link to={`/posts/details/${item._id}`}>
+                    <Card.Post key={item._id}>{item}</Card.Post>
+                  </Link>
+                ))
+              : '키워드에 해당하는 결과가 없습니다'}
           </ListWrapper>
         </>
       ) : (

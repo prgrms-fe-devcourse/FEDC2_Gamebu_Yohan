@@ -2,10 +2,9 @@ import Card from '@components/Card';
 import Header from '@components/Header';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link, useOutletContext, useSearchParams } from 'react-router-dom';
 import { COLOR_SIGNATURE } from '@utils/color';
-import List from '@components/List';
 
 const HeaderBox = styled.div`
   width: 100%;
@@ -13,7 +12,13 @@ const HeaderBox = styled.div`
   flex-direction: column;
 `;
 const ListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   flex-grow: 1;
+  & a {
+    color: inherit;
+  }
 `;
 const HeaderWrapper = styled.div`
   display: flex;
@@ -36,18 +41,20 @@ function SearchAllPage() {
   const { value } = useOutletContext();
   const [searchParam] = useSearchParams();
 
-  const filterUser = () => {
+  const filterUser = useMemo(() => {
     if (!value) return [];
     if (!Array.isArray(value)) return [];
     return value.filter((data) => data.fullName);
-  };
-  const filterPost = () => {
+  }, [value]);
+
+  const filterPost = useMemo(() => {
     if (!value) return [];
     if (!Array.isArray(value)) return [];
     return value
       .filter((data) => data.title)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  };
+  }, [value]);
+
   return (
     <Container>
       {searchParam.get('k') ? (
@@ -64,14 +71,13 @@ function SearchAllPage() {
               </Button>
             </HeaderWrapper>
             <ListWrapper>
-              <List
-                items={filterUser()}
-                keyName="_id"
-                alt="키워드에 해당하는 결과가 없습니다"
-                limit={3}
-                gap="8px"
-                frame={<Card.User />}
-              />
+              {filterUser.length !== 0
+                ? filterUser.slice(0, 3).map((item) => (
+                    <Link to={`/profile/${item._id}`}>
+                      <Card.User key={item._id}>{item}</Card.User>
+                    </Link>
+                  ))
+                : '키워드에 해당하는 결과가 없습니다'}
             </ListWrapper>
           </HeaderBox>
           <HeaderBox>
@@ -86,14 +92,13 @@ function SearchAllPage() {
               </Button>
             </HeaderWrapper>
             <ListWrapper>
-              <List
-                items={filterPost()}
-                keyName="_id"
-                alt="키워드에 해당하는 결과가 없습니다"
-                limit={3}
-                gap="8px"
-                frame={<Card.Post />}
-              />
+              {filterPost.length !== 0
+                ? filterPost.slice(0, 3).map((item) => (
+                    <Link to={`/posts/details/${item._id}`}>
+                      <Card.Post key={item._id}>{item}</Card.Post>
+                    </Link>
+                  ))
+                : '키워드에 해당하는 결과가 없습니다'}
             </ListWrapper>
           </HeaderBox>
         </>
