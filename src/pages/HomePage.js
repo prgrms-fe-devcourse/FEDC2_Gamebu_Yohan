@@ -12,7 +12,7 @@ import {
   CATEGORIES,
   IMAGES,
 } from '@utils/constants';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import BannerImage from '@components/Image/BannerImage';
 import Button from '@mui/material/Button';
@@ -87,7 +87,7 @@ const sliderOptions = {
 function HomePage() {
   const [posts, setPosts] = useState(null);
   const [offset, setOffset] = useState(0);
-  const [limit] = useState(10);
+  const limit = useRef(10);
 
   const getExtraPostsList = useCallback(async () => {
     const params = { offset: offset + limit, limit };
