@@ -42,7 +42,7 @@ function BottomNavBar() {
     if (pathname.includes('message')) {
       return setValue(3);
     }
-    if (pathname.includes('alram')) {
+    if (pathname.includes('alarm')) {
       return setValue(4);
     }
     return setValue(1);
