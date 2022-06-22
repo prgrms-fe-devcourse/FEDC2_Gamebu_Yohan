@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { COLOR_BG } from '@utils/color';
+import { COLOR_BG, COLOR_MAIN } from '@utils/color';
 import useValueContext from '@hooks/useValueContext';
 import { authFetch, fetch } from '@utils/fetch';
 import Card from '@components/Card';
@@ -16,7 +16,7 @@ import CommentInput from '@components/CommentInput';
 import useOurSnackbar from '@hooks/useOurSnackbar';
 import LoginModal from '@components/LoginModal';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import { Button, IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import { createLikes, deleteLikes } from '@utils/likes';
 import { convertDate } from '@utils/time';
 
@@ -53,12 +53,9 @@ const CommentsContainer = styled.div`
 
 const NoneExistingComments = styled.div`
   width: 100%;
-  height: 10rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  color: #009688;
+  text-align: center;
+  font-size: 1rem;
+  color: ${COLOR_MAIN};
 `;
 
 const Paragraph = styled.p`
@@ -280,7 +277,9 @@ function PostDetailPage() {
                 />
               ))
             ) : (
-              <NoneExistingComments>댓글이 없습니다</NoneExistingComments>
+              <NoneExistingComments>
+                아직 작성된 댓글이 없습니다.
+              </NoneExistingComments>
             )}
           </CommentsContainer>
         </>
