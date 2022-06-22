@@ -17,7 +17,7 @@
     "react-dom": "^18.1.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^5.1.0-next.14",
     "react-slick": "^0.29.0",
     "serve": "^13.0.2",
     "slick-carousel": "^1.8.1",
