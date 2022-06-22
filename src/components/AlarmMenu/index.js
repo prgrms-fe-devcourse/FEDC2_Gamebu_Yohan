@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import useActionContext from '@hooks/useActionContext';
 import useValueContext from '@hooks/useValueContext';
+import PropTypes from 'prop-types';
 import { Button } from '@mui/material';
 import { seenNotificationAll } from '@utils/alarm';
 import { COLOR_SIGNATURE } from '@utils/color';
@@ -40,7 +41,7 @@ const LinkButton = styled(Button)`
   }
 `;
 
-function AlarmMenu() {
+function AlarmMenu({ onClose }) {
   const { user } = useValueContext();
   const { favorites: setUser } = useActionContext();
   const notifications = useMemo(() => {
@@ -65,12 +66,20 @@ function AlarmMenu() {
         <p>{notifications.length}개의 알림이 있습니다.</p>
       )}
       <Link to="/alarm">
-        <LinkButton size="small" variant="contained">
+        <LinkButton onClick={onClose} size="small" variant="contained">
           전체 알림 보기
         </LinkButton>
       </Link>
     </Container>
   );
 }
+
+AlarmMenu.propTypes = {
+  onClose: PropTypes.func,
+};
+
+AlarmMenu.defaultProps = {
+  onClose: undefined,
+};
 
 export default AlarmMenu;

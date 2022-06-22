@@ -22,7 +22,9 @@ function ClickAwayPopper({
   const handlePopperClickAway = useCallback(() => {
     setPop(false);
   }, []);
-
+  const handlePopperClose = useCallback(() => {
+    setPop(false);
+  });
   const [trigger, ...contents] = React.Children.toArray(children).filter(
     (item) => React.isValidElement(item)
   );
@@ -49,7 +51,9 @@ function ClickAwayPopper({
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <ContentWrapper {...contentProps}>
-                {contents.map((content) => React.cloneElement(content))}
+                {contents.map((content) =>
+                  React.cloneElement(content, { onClose: handlePopperClose })
+                )}
               </ContentWrapper>
             </Fade>
           )}
