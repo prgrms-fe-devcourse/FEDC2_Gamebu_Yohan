@@ -119,11 +119,6 @@ const BottomDiv = styled.div`
   height: 1rem;
 `;
 
-const ZeroMessage = styled.div`
-  border: 1px solid black;
-  flex-grow: 1;
-`;
-
 function DetailMessage() {
   const [loading, setLoading] = useState(true);
   const [messageList, setMessageList] = useState([]);
@@ -174,7 +169,7 @@ function DetailMessage() {
         );
       })
     ) : (
-      <ZeroMessage>아직 대화가 없어요</ZeroMessage>
+      <div>아직 대화가 없어요</div>
     );
 
   useEffect(() => {
